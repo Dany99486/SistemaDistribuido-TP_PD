@@ -1,0 +1,24 @@
+CREATE TABLE presencas (
+    id       INTEGER PRIMARY KEY,
+    idEvento INTEGER REFERENCES eventos (idEvento),
+    idCC     TEXT    REFERENCES usuarios (cartaoCidadao) 
+);
+
+CREATE TABLE usuarios (
+    nome          TEXT,
+    cartaoCidadao TEXT PRIMARY KEY,
+    email         TEXT UNIQUE,
+    pass          TEXT,
+    role          TEXT NOT NULL
+);
+
+CREATE TABLE eventos (
+    idEvento    INTEGER PRIMARY KEY,
+    nome        TEXT,
+    local       TEXT,
+    data        TEXT,
+    hora_inicio TEXT,
+    hora_fim    TEXT
+);
+
+adicionar "IF NOT EXISTS" no programa servidor
