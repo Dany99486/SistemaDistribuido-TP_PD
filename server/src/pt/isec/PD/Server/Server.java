@@ -1,6 +1,7 @@
 package pt.isec.PD.Server;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -9,85 +10,47 @@ import java.util.List;
 public class Server {
     private final String[] args;
     private File localDirectory;
-    private String requestedFileName;
-    private String requestedCanonicalFilePath=null;
+    private String BDFileName = "serverdatabase";
+    private String BDCanonicalFilePath = null;
+    private String RMIService;
     private OutputStream out;
-    private List<Socket> clients = new ArrayList<>();
+    private List<Socket> clients;
+    int nClients = 0;
+    private String hertbeat;
 
     public Server(String[] a) {
         this.args = a;
+        this.clients = new ArrayList<>();
     }
 
     public String server() {
-        String show = null;
+        String show;
 
         if (args.length != 4) {
             show = "Sintaxe: <Porto conexão do cliente> <Diretoria> <NomeRMI> <Porto registry>";
             return show;
         }
 
-        show = CheckBDFolder();
+        show = checkBDFolder();
 
-        if (show == null)
+        if (show != null)
             return null;
 
-        /*
-        try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]))) {
-            while (true) {
-                try(Socket socket = serverSocket.accept();
-                    BufferedReader bin = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        try {
+            show = checkBDFile();
+            if (show != null)
+                return null;
+            show = createBD();
+        } catch (IOException ignored) {}
 
-                    socket.setSoTimeout(50000);
-                    out = socket.getOutputStream();
+        RMIService = args[2];
 
-                    requestedFileName = bin.readLine();
 
-                    if (requestedFileName == null)
-                        continue;
 
-                    System.out.println("Recebido pedido para \"" + requestedFileName + "\" de " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
-                    requestedCanonicalFilePath = new File(localDirectory + File.separator + requestedFileName).getCanonicalPath();
-
-                    if (!requestedCanonicalFilePath.startsWith(localDirectory.getCanonicalPath() + File.separator)) {
-                        System.err.println("Não é permitido aceder ao ficheiro " + requestedCanonicalFilePath + "!");
-                        System.err.println("A diretoria de base não corresponde a " + localDirectory.getCanonicalPath() + "!");
-                    }
-                    try (InputStream requestedFileInputStream = new FileInputStream(requestedCanonicalFilePath)) {
-                        System.out.println("Ficheiro " + requestedCanonicalFilePath + " aberto para leitura.");
-
-                        int totalBytes = 0, nChunks = 0, nbytes;
-                        byte[] fileChunk = new byte[1000];
-                        do {
-                            nbytes = requestedFileInputStream.read(fileChunk);
-
-                            if (nbytes != -1) {
-                                out.write(fileChunk, 0, nbytes);
-                                out.flush();
-                                totalBytes+=nbytes;
-                                nChunks++;
-                            }
-                        } while (nbytes > 0);
-                        System.out.println("Transferência concluida em " + nChunks + " blocos com um total de " + nbytes + " bytes\r\n");
-                    } catch (SocketTimeoutException e) { //Subclasse de IOException
-                        System.err.println("O cliente atual não enviou qualquer nome de ficheiro (timeout)");
-                    } catch (FileNotFoundException e) {   //Subclasse de IOException
-                        System.err.println("Ocorreu a exceção {" + e + "} ao tentar abrir o ficheiro " + requestedCanonicalFilePath + "!");
-                    } catch (IOException e) {
-                        System.err.println("Problema de I/O no atendimento ao cliente atual: " + e);
-                    }
-                }
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("O porto de escuta deve ser um inteiro positivo:\n\t" + e);
-        } catch (SocketException e) {
-            System.err.println("Ocorreu uma exceção ao nível do socket TCP:\n\t" + e);
-        } catch (IOException e) {
-            System.err.println("Ocorreu a exceção:\n\t" + e);
-        } */
         return show;
     }
 
-    private String CheckBDFolder() {
+    private String checkBDFolder() {
         String show = null;
 
         localDirectory = new File(args[1].trim());
@@ -107,5 +70,35 @@ public class Server {
             return show;
         }
         return show;
+    }
+
+    private String checkBDFile() throws IOException {
+        String show = null;
+        BDCanonicalFilePath = new File(localDirectory + File.separator + BDFileName).getCanonicalPath();
+
+        if (!BDCanonicalFilePath.startsWith(localDirectory.getCanonicalPath() + File.separator)) {
+            show = "Não é permitido aceder ao ficheiro " + BDCanonicalFilePath + "!";
+            show += "A diretoria de base não corresponde a " + localDirectory.getCanonicalPath() + "!";
+        }
+        return show;
+    }
+
+    private String createBD() {
+        String show;
+
+        //A realizar
+        return show = null;
+    }
+
+    private String serverTCPConnection() {
+        String show;
+
+        nClients = getClients(args[0], clients);
+
+        return show;
+    }
+
+    private int getClients(String arg, List<Socket> clients) {
+        
     }
 }
