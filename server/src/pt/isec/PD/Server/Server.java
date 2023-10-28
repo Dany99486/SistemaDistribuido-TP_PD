@@ -1,11 +1,15 @@
 package pt.isec.PD.Server;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
+    private int TIMEOUT = 1000;
     private final String[] args;
     private File localDirectory;
     private String BDFileName = "serverdatabase";
@@ -44,7 +48,7 @@ public class Server {
 
         RMIService = args[2];
 
-
+        show = serverTCPConnection();
 
         return show;
     }
@@ -93,8 +97,31 @@ public class Server {
         String show;
 
         //nClients = getClients(args[0], clients); //A realizar
-        
 
+        show = socketServer();
+
+        return show;
+    }
+
+    private String socketServer() {
+        String show = null;
+
+        try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]))) {
+            try (Socket socket = serverSocket.accept()) {
+                socket.setSoTimeout(TIMEOUT * 10);
+                //A realizar
+            } catch (SocketTimeoutException e) {
+                show = "Timeout " + e;
+            } catch (IOException e) {
+                show += "Problema de I/O " + e;
+            }
+        } catch (NumberFormatException e) {
+            show += "O porto de escuta deve ser um inteiro positivo:\n\t" + e;
+        } catch (SocketException e) {
+            show += "Ocorreu uma excepcao ao nivel do socket UDP:\n\t" + e;
+        } catch (IOException e) {
+            show += "Ocorreu a excepcao de E/S: \n\t" + e;
+        }
         return show;
     }
 
