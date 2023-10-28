@@ -4,7 +4,7 @@ CREATE TABLE presencas (
     idCC     TEXT    REFERENCES usuarios (cartaoCidadao) 
 );
 
-CREATE TABLE usuarios (
+CREATE TABLE utilizadores (
     nome          TEXT,
     cartaoCidadao TEXT PRIMARY KEY,
     email         TEXT UNIQUE,

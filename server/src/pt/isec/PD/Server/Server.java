@@ -1,8 +1,6 @@
 package pt.isec.PD.Server;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,8 @@ public class Server {
     private String BDFileName = "serverdatabase";
     private String BDCanonicalFilePath = null;
     private String RMIService;
-    private OutputStream out;
+    private ObjectOutputStream output;
+    private ObjectInputStream input;
     private List<Socket> clients;
     int nClients = 0;
     private String hertbeat;
@@ -93,12 +92,13 @@ public class Server {
     private String serverTCPConnection() {
         String show;
 
-        nClients = getClients(args[0], clients);
+        //nClients = getClients(args[0], clients); //A realizar
+        
 
         return show;
     }
 
     private int getClients(String arg, List<Socket> clients) {
-        
+        return 0;
     }
 }
