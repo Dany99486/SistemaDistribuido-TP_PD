@@ -96,9 +96,9 @@ public class Server {
     private String serverTCPConnection() {
         String show;
 
-        //nClients = getClients(args[0], clients); //A realizar
-
         show = socketServer();
+
+        //nClients = getClients(args[0], clients); //A realizar
 
         return show;
     }
