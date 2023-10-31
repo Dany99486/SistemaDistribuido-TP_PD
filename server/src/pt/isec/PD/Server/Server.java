@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,72 +37,16 @@ public class Server {
         show = checkBDFolder();
         if (show != null)
             return null;
-//TODO: Criar base de dados se nao existir
 
-        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
-
+        show = new BD().createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
+        /*
         try {
-            // Estabelece a conexão com a base de dados ou cria uma nova se não existir
-            System.out.println(url);
-            System.out.println("jdbc:sqlite:C:\\Users\\Danie\\Documents\\GitHub\\SistemaDistribuido-TP_PD\\server\\resources\\serverdatabase.db");
-            System.out.println("Conectando à base de dados...");
-            Connection connection = DriverManager.getConnection(url);
-            System.out.println("Conectado à base de dados com sucesso.");
-            if (connection != null) {
-                System.out.println("Conexão com a base de dados estabelecida com sucesso.");
-            }
-            Statement statement = connection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS presencas (" +
-                    "id INTEGER PRIMARY KEY, " +
-                    "idEvento INTEGER REFERENCES eventos (idEvento), " +
-                    "idCC TEXT REFERENCES utilizadores (cartaoCidadao)" +
-                    ")");
-            statement.execute("CREATE TABLE IF NOT EXISTS utilizadores (" +
-                    "nome TEXT, " +
-                    "cartaoCidadao TEXT PRIMARY KEY, " +
-                    "email TEXT UNIQUE, " +
-                    "pass TEXT, " +
-                    "role TEXT NOT NULL" +
-                    ")");
-            statement.execute("CREATE TABLE IF NOT EXISTS eventos (" +
-                    "idEvento INTEGER PRIMARY KEY, " +
-                    "nome TEXT, " +
-                    "local TEXT, " +
-                    "data TEXT, " +
-                    "hora_inicio TEXT, " +
-                    "hora_fim TEXT" +
-                    ")");
-            System.out.println("Tabelas criadas com sucesso.");
-
-
-            String query = "SELECT * FROM utilizadores";
-            ResultSet resultSet = statement.executeQuery(query);
-
-            // Exibe os resultados no console
-            while (resultSet.next()) {
-                String nome = resultSet.getString("nome");
-                String cartaoCidadao = resultSet.getString("cartaoCidadao");
-                String email = resultSet.getString("email");
-                String pass = resultSet.getString("pass");
-                String role = resultSet.getString("role");
-                System.out.println("Nome: " + nome + ", Cartão de Cidadão: " + cartaoCidadao + ", Email: " + email + ", Senha: " + pass + ", Função: " + role);
-            }
-
-            connection.close();
-
-        } catch (SQLException e) {
-            System.err.println("Erro ao conectar à base de dados: " + e.getMessage());
-        }
-
-
-
-
-        /*try {
             show = checkBDFile();
             if (show != null)
                 return null;
-            show = createBD();
+            //show = createBD();
         } catch (IOException ignored) {}*/
+
         RMIService = args[2];
 
         show = serverTCPConnection();
