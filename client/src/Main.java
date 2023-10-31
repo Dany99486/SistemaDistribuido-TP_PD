@@ -24,7 +24,7 @@ public class Main {
 
                 System.out.println("Escolha uma opção:");
                 System.out.println("1. Autenticar");
-                System.out.println("2. Registrar");
+                System.out.println("2. Registar");
                 int choice = scanner.nextInt();
 
                 String action;
@@ -33,20 +33,20 @@ public class Main {
                 } else if (choice == 2) {
                     action = "REGISTAR";
                 } else {
-                    System.out.println("Escolha inválida. Saindo do programa.");
+                    System.out.println("Escolha inválida. A sair do programa...");
                     return;
                 }
 
                 scanner.nextLine();
 
-                System.out.println("Digite seu endereço de e-mail: ");
+                System.out.println("Digite o seu endereço de e-mail: ");
                 String email = scanner.nextLine();
-                System.out.println("Digite sua senha: ");
+                System.out.println("Digite a sua senha: ");
                 String password = scanner.nextLine();
 
                 String message = action + " " + email + " " + password;
                 out.println(message);
-                System.out.println("String de envio: " + message);
+                System.out.println("String enviada: " + message);
 
                 String response = in.readLine();
                 System.out.println("Resposta do servidor: " + response);
