@@ -80,6 +80,7 @@ public class BD {
                 show += "\nConexão com a base de dados estabelecida com sucesso.";
             else {
                 show += "\nConexão com a base de dados não foi estabelecida.";
+                return false;
             }
             Statement statement = connection.createStatement();
             String query = "SELECT nome, pass FROM utilizadores WHERE nome = '" + user + "' AND pass = '" + pass + "'";

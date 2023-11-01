@@ -9,20 +9,14 @@ public class RequestToClient implements Serializable {
 
     protected int id;
     protected int nClients;
-    protected long nIntervals;
 
-    public RequestToClient(int id, int nClients, long nIntervals) {
+    public RequestToClient(int id, int nClients) {
         this.id = id;
         this.nClients = nClients;
-        this.nIntervals = nIntervals;
     }
 
     public int getId() {
         return id;
-    }
-
-    public long getnIntervals() {
-        return nIntervals;
     }
 
     public int getnClients() {

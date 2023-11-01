@@ -1,9 +1,6 @@
 package pt.isec.PD.Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
@@ -28,11 +25,15 @@ public class TCPConnection extends Thread {
 
     @Override
     public void run() {
-        try (PrintWriter out = new PrintWriter(toClientSocket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(toClientSocket.getInputStream()))) {
+        try (/*PrintWriter out = new PrintWriter(toClientSocket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(toClientSocket.getInputStream()))*/
+                ObjectOutputStream out = new ObjectOutputStream(toClientSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(toClientSocket.getInputStream())
+        ) {
 
             toClientSocket.setSoTimeout(TIMEOUT);
-            recebido = in.readLine();
+            //recebido = in.readLine();
+            recebido = (String) in.readObject();
 
             if (recebido == null)
                 return; //EOF
@@ -51,10 +52,13 @@ public class TCPConnection extends Thread {
                 nClients++;
             }
 
-            out.println(envia);
+            //out.println(envia);
+            out.writeObject(envia);
             out.flush();
         } catch (IOException e) {
             msgShow = "\nErro na comunicação com o cliente atual: " + e;
+        } catch (ClassNotFoundException e) {
+            msgShow = "\nErro, dados passados não são reconhecidos " + e;
         }
     }
 

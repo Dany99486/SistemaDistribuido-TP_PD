@@ -37,13 +37,6 @@ public class Server {
             return null;
 
         show = new BD().createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
-        /*
-        try {
-            show = checkBDFile();
-            if (show != null)
-                return null;
-            //show = createBD();
-        } catch (IOException ignored) {}*/
 
         RMIService = args[2];
 
@@ -54,8 +47,15 @@ public class Server {
         clients = socketClient.getClients();
         nClients = socketClient.getnClients();
 
-        //nClients = getClients(args[0], clients); //A realizar
-
+        for (Socket s : clients) {
+            try {
+                s.close();
+            } catch (IOException e) {
+                show = "\nErro ao fechar sockets dos clientes.";
+            } finally {
+                clients.clear();
+            }
+        }
         return show;
     }
 
@@ -91,9 +91,5 @@ public class Server {
             show += "A diretoria de base não corresponde a " + localDirectory.getCanonicalPath() + "!";
         }
         return show;
-    }
-
-    private int getClients(String arg, List<Socket> clients) {
-        return 0;
     }
 }
