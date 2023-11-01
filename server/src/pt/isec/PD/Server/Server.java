@@ -15,8 +15,6 @@ public class Server {
     private String BDFileName = "serverdatabase.db";
     private String BDCanonicalFilePath = null;
     private String RMIService;
-    private ObjectOutputStream output;
-    private ObjectInputStream input;
     private List<Socket> clients;
     int nClients = 0;
     private String hertbeat;
@@ -49,7 +47,14 @@ public class Server {
 
         RMIService = args[2];
 
-        show = serverTCPConnection();
+        //TODO: Conexão com clientes via TCP
+        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, args, BDFileName);
+
+        show = socketClient.serverTCPConnection();
+        clients = socketClient.getClients();
+        nClients = socketClient.getnClients();
+
+        //nClients = getClients(args[0], clients); //A realizar
 
         return show;
     }
@@ -84,45 +89,6 @@ public class Server {
         if (!BDCanonicalFilePath.startsWith(localDirectory.getCanonicalPath() + File.separator)) {
             show = "Não é permitido aceder ao ficheiro " + BDCanonicalFilePath + "!";
             show += "A diretoria de base não corresponde a " + localDirectory.getCanonicalPath() + "!";
-        }
-        return show;
-    }
-
-    private String createBD() {
-        String show;
-
-        //A realizar
-        return show = null;
-    }
-
-    private String serverTCPConnection() {
-        String show;
-
-        show = socketServer();
-
-        //nClients = getClients(args[0], clients); //A realizar
-
-        return show;
-    }
-
-    private String socketServer() {
-        String show = null;
-
-        try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(args[0]))) {
-            try (Socket socket = serverSocket.accept()) {
-                socket.setSoTimeout(TIMEOUT * 10);
-                //A realizar
-            } catch (SocketTimeoutException e) {
-                show = "Timeout " + e;
-            } catch (IOException e) {
-                show += "Problema de I/O " + e;
-            }
-        } catch (NumberFormatException e) {
-            show += "O porto de escuta deve ser um inteiro positivo:\n\t" + e;
-        } catch (SocketException e) {
-            show += "Ocorreu uma excepcao ao nivel do socket UDP:\n\t" + e;
-        } catch (IOException e) {
-            show += "Ocorreu a excepcao de E/S: \n\t" + e;
         }
         return show;
     }

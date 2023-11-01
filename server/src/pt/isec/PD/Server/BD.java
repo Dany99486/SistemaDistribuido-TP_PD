@@ -43,7 +43,6 @@ public class BD {
                     ")");
             show += "\nTabelas criadas com sucesso.";
 
-
             String query = "SELECT * FROM utilizadores";
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -65,5 +64,33 @@ public class BD {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
         return show;
+    }
+
+    //TODO: Verifica se utilizador existe
+    public boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        boolean exist = false;
+        
+        try {
+            // Estabelece a conexão com a base de dados ou cria uma nova se não existir
+            show = url;
+            show += "\nConectando à base de dados...";
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+            }
+            Statement statement = connection.createStatement();
+            String query = "SELECT nome, pass FROM utilizadores WHERE nome = '" + user + "' AND pass = '" + pass + "'";
+            ResultSet resultSet = statement.executeQuery(query);
+            
+            exist = resultSet.next();
+            
+            connection.close();
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+        }
+        return exist;
     }
 }
