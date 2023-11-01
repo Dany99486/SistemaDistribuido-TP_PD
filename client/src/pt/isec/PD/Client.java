@@ -1,13 +1,21 @@
-import java.io.*;
-import java.net.*;
+package pt.isec.PD;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Scanner;
 
-public class Main {
-    public static final int MAX_SIZE = 4000;
-    public static final int TIMEOUT = 10000;
+public class Client {
+    private String[] args;
 
-    public static void main(String[] args) throws IOException {
+    public Client(String[] args) {
+        this.args = args;
+    }
 
+    public void client() {
         if (args.length != 2) {
             System.out.println("Sintaxe: java Cliente serverAddress serverUdpPort");
             return;
@@ -50,6 +58,18 @@ public class Main {
 
                 String response = in.readLine();
                 System.out.println("Resposta do servidor: " + response);
+                scanner.reset();
+
+                do {
+                    System.out.println("Edição dos dados de registo");
+                    System.out.println("Submissão de código");
+                    System.out.println("Consulta de presenças");
+                    System.out.println("Obtenção de um ficheiro csv");
+
+                    scanner.nextLine();
+
+                } while (!scanner.nextLine().equalsIgnoreCase("Logout"));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
