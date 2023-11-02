@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
+    private final String AUTENTICAR = "AUTENTICAR";
+    private final String REGISTAR = "REGISTAR";
     private String[] args;
 
     public Client(String[] args) {
@@ -37,9 +39,9 @@ public class Client {
 
                 String action;
                 if (choice == 1) {
-                    action = "AUTENTICAR";
+                    action = AUTENTICAR;
                 } else if (choice == 2) {
-                    action = "REGISTAR";
+                    action = REGISTAR;
                 } else {
                     System.out.println("Escolha inválida. A sair do programa...");
                     return;

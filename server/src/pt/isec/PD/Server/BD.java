@@ -87,11 +87,42 @@ public class BD {
             ResultSet resultSet = statement.executeQuery(query);
             
             exist = resultSet.next();
-            
             connection.close();
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
         return exist;
+    }
+
+    //TODO: Regista utilizador se nao existir
+    public int registClient(String user, String pass, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        int registed = 0;
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return -1;
+            }
+            String query = "INSERT OR IGNORE INTO utilizadores (nome, pass) VALUES (?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, user);
+            preparedStatement.setString(2, pass);
+            int resultSet = preparedStatement.executeUpdate();
+
+            if (resultSet > 0)
+                registed = 1;
+
+            connection.close();
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            registed = -2;
+        }
+        return registed;
     }
 }
