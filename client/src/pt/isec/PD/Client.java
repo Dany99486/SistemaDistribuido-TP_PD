@@ -60,8 +60,11 @@ public class Client {
 
                 String response = in.readLine();
                 System.out.println("Resposta do servidor: " + response);
-                scanner.reset();
 
+                if (response.contains("Erro"))
+                    throw new IOException("A fechar.");
+
+                scanner.reset();
                 do {
                     System.out.println("Edição dos dados de registo");
                     System.out.println("Submissão de código");
