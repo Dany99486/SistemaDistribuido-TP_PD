@@ -74,6 +74,7 @@ public class BD {
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
             show = url;
+            System.out.println(url);
             show += "\nConectando à base de dados...";
             Connection connection = DriverManager.getConnection(url);
             if (connection != null)
@@ -83,25 +84,33 @@ public class BD {
                 return false;
             }
             Statement statement = connection.createStatement();
-            String query = "SELECT nome, pass FROM utilizadores WHERE nome = '" + user + "' AND pass = '" + pass + "'";
+            String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
+            System.out.println(query);
             ResultSet resultSet = statement.executeQuery(query);
-            
+
+            System.out.println(resultSet.getString("nome"));
+            System.out.println(resultSet.getString("pass"));
             exist = resultSet.next();
+
+
+            System.out.println(exist);
             connection.close();
         } catch (SQLException e) {
+            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
         return exist;
     }
 
     //TODO: Regista utilizador se nao existir
-    public int registClient(String user, String pass, String[] args, String BDFileName) {
+    public int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+
             Connection connection = DriverManager.getConnection(url);
             if (connection != null)
                 show += "\nConexão com a base de dados estabelecida com sucesso.";
@@ -109,10 +118,15 @@ public class BD {
                 show += "\nConexão com a base de dados não foi estabelecida.";
                 return -1;
             }
-            String query = "INSERT OR IGNORE INTO utilizadores (nome, pass) VALUES (?, ?)";
+
+            String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
+            System.out.println(user + " " + passe + " " + cc + " " + name);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, user);
-            preparedStatement.setString(2, pass);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, passe);
+            preparedStatement.setString(3, cc);
+            preparedStatement.setString(4, user);
+            preparedStatement.setString(5, "user");
             int resultSet = preparedStatement.executeUpdate();
 
             if (resultSet > 0)
@@ -120,6 +134,7 @@ public class BD {
 
             connection.close();
         } catch (SQLException e) {
+            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
         }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    private int TIMEOUT = 1000;
+    private int TIMEOUT = 10000;
     private final String[] args;
     private File localDirectory;
     private String BDFileName = "serverdatabase.db";
@@ -41,9 +41,13 @@ public class Server {
         RMIService = args[2];
 
         //TODO: Conexão com clientes via TCP
+
         ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, args, BDFileName);
 
+
         show = socketClient.serverTCPConnection();
+
+        //TODO: Fechar sockets dos clientes
         clients = socketClient.getClients();
         nClients = socketClient.getnClients();
 

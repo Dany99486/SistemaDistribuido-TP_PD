@@ -1,11 +1,9 @@
 package pt.isec.PD;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class Client {
@@ -18,6 +16,7 @@ public class Client {
     }
 
     public void client() {
+        String message = null;
         if (args.length != 2) {
             System.out.println("Sintaxe: java Cliente serverAddress serverUdpPort");
             return;
@@ -27,9 +26,10 @@ public class Client {
             Socket socket = new Socket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
 
             try (
-                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
             ) {
+
                 Scanner scanner = new Scanner(System.in);
 
                 System.out.println("Escolha uma opção:");
@@ -40,36 +40,59 @@ public class Client {
                 String action;
                 if (choice == 1) {
                     action = AUTENTICAR;
+                    scanner.nextLine();
+
+                    System.out.println("Digite o seu endereço de e-mail: ");
+                    String email = scanner.nextLine();
+                    System.out.println("Digite a sua senha: ");
+                    String password = scanner.nextLine();
+
+                     message = action + " " + email + " " + password;
+
+
+
+
                 } else if (choice == 2) {
                     action = REGISTAR;
+                    scanner.nextLine();
+
+                    System.out.println("Digite o seu nome: ");
+                    String nome = scanner.nextLine();
+                    System.out.println("Digite o numero do seu CC: ");
+                    String cc = scanner.nextLine();
+                    System.out.println("Digite o seu endereço de e-mail: ");
+                    String email = scanner.nextLine();
+                    System.out.println("Digite a sua senha: ");
+                    String password = scanner.nextLine();
+
+
+                    message = action + " " + email + " " + password + " " + cc + " " + nome;
                 } else {
                     System.out.println("Escolha inválida. A sair do programa...");
                     return;
                 }
 
-                scanner.nextLine();
 
-                System.out.println("Digite o seu endereço de e-mail: ");
-                String email = scanner.nextLine();
-                System.out.println("Digite a sua senha: ");
-                String password = scanner.nextLine();
-
-                String message = action + " " + email + " " + password;
-                out.println(message);
+                out.writeObject(message);
+                out.flush();
                 System.out.println("String enviada: " + message);
 
-                String response = in.readLine();
+                String response = (String) in.readObject();
+
                 System.out.println("Resposta do servidor: " + response);
 
-                if (response.contains("Erro"))
-                    throw new IOException("A fechar.");
+                if (response.contains("Erro")){
+                    System.out.println("Tente novamente");
+                    System.exit(0);
+                }
 
                 scanner.reset();
                 do {
-                    System.out.println("Edição dos dados de registo");
-                    System.out.println("Submissão de código");
-                    System.out.println("Consulta de presenças");
-                    System.out.println("Obtenção de um ficheiro csv");
+                    System.out.println();
+                    System.out.println("1-Edição dos dados de registo");
+                    System.out.println("2-Submissão de código");
+                    System.out.println("3-Consulta de presenças");
+                    System.out.println("4-Obtenção de um ficheiro csv");
 
                     scanner.nextLine();
 
@@ -77,6 +100,8 @@ public class Client {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.out.println("Erro, dados passados não são reconhecidos " + e);
             }
 
             socket.close();

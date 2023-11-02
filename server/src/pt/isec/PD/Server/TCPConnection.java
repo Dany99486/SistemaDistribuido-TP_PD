@@ -32,20 +32,17 @@ public class TCPConnection extends Thread {
                 ObjectOutputStream out = new ObjectOutputStream(toClientSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(toClientSocket.getInputStream())
         ) {
-            toClientSocket.setSoTimeout(TIMEOUT);
+            System.out.println("fa");
+            //toClientSocket.setSoTimeout(TIMEOUT);
+            System.out.println("fcew");
             //recebido = in.readLine();
             recebido = (String) in.readObject();
-
             if (recebido == null)
                 return; //EOF
 
             String[] aux = recebido.trim().split(" ");
 
-            //Print temporaria
-            System.out.println("[" + "+Thread." + currentThread().getName() + "]"
-                    + " Recebido do utilizador \"" + aux[1] + "\" de " +
-                    toClientSocket.getInetAddress().getHostAddress() + ":" +
-                    toClientSocket.getPort());
+
 
             if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
                 boolean verificaNaBDCliente = new BD().checkClientIfExists(aux[1], aux[2], args, BDFileName);
@@ -60,7 +57,7 @@ public class TCPConnection extends Thread {
                 //out.println(envia);
             }
             if (aux[0].equalsIgnoreCase(REGISTAR)) {
-                int registo = new BD().registClient(aux[1], aux[2], args, BDFileName);
+                int registo = new BD().registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
                 if (registo == 1)
                     envia = "Registado com sucesso";
                 else if (registo == 0)
@@ -75,8 +72,10 @@ public class TCPConnection extends Thread {
             out.writeObject(envia);
             out.flush();
         } catch (IOException e) {
+            System.out.println("Erro na comunicação com o cliente atual: " + e);
             msgShow = "\nErro na comunicação com o cliente atual: " + e;
         } catch (ClassNotFoundException e) {
+            System.out.println("Erro, dados passados não são reconhecidos " + e);
             msgShow = "\nErro, dados passados não são reconhecidos " + e;
         }
     }
