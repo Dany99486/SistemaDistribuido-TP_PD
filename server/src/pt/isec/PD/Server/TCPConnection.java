@@ -53,22 +53,24 @@ public class TCPConnection extends Thread {
                 if (verificaNaBDCliente) {
                     clients.add(toClientSocket);
                     nClients++;
+                    envia = "Logado com sucesso";
                 }
+                else
+                    envia = "Erro: Não foi possivel logar!";
                 //out.println(envia);
-                envia = "Logado com sucesso";
             }
             if (aux[0].equalsIgnoreCase(REGISTAR)) {
                 int registo = new BD().registClient(aux[1], aux[2], args, BDFileName);
                 if (registo == 1)
                     envia = "Registado com sucesso";
                 else if (registo == 0)
-                    envia = "Não foi registado, o utilizador já existe!";
+                    envia = "Erro: Não foi registado, o utilizador já existe!";
                 else if (registo == -1)
-                    envia = "Não foi possivel registar, erro de conexão";
+                    envia = "Erro: Não foi possivel registar, erro de conexão";
                 else if (registo == -2)
-                    envia = "Não foi possivel registar, erro interno";
+                    envia = "Erro: Não foi possivel registar, erro interno";
                 else
-                    envia = "Não foi possivel registar";
+                    envia = "Erro: Não foi possivel registar";
             }
             out.writeObject(envia);
             out.flush();
