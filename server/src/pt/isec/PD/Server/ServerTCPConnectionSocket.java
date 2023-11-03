@@ -26,7 +26,7 @@ public class ServerTCPConnectionSocket extends Thread {
             show += "TCP Server iniciado no porto " + socket.getLocalPort();
             while (true) {
                 //TODO: Aceita clientes
-                System.out.println("f");
+                System.out.println("Thread");
 
                 Socket toClientSocket = socket.accept();
                 TCPConnection tcp = new TCPConnection(clients, nClients, toClientSocket, TIMEOUT, args, BDFileName);

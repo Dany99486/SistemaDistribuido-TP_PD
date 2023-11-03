@@ -18,7 +18,7 @@ public class TCPConnection extends Thread {
     private int nClients;
     private String recebido, envia;
     private String msgShow;
-    protected String cc=" ";
+    protected String cc = null;
     private String role;
     private BD bd = new BD();
 
@@ -49,7 +49,7 @@ public class TCPConnection extends Thread {
                     boolean verificaNaBDCliente = bd.checkClientIfExists(aux[1], aux[2], args, BDFileName);
                     cc = bd.getCC();
                     role = bd.getRole();
-                    System.out.println("role: " + role);
+                    //System.out.println("role: " + role);
                     if (verificaNaBDCliente) {
                         clients.add(toClientSocket);
                         nClients++;
@@ -58,6 +58,8 @@ public class TCPConnection extends Thread {
                     else
                         envia = "Erro: Não foi possivel logar!";
                     //out.println(envia);
+                    if (role.equalsIgnoreCase(ADMIN))
+                        ;
                 }
                 if (aux[0].equalsIgnoreCase(REGISTAR)) {
                     int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);

@@ -41,9 +41,7 @@ public class Server {
         RMIService = args[2];
 
         //TODO: Conexão com clientes via TCP
-
         ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, args, BDFileName);
-
 
         show = socketClient.serverTCPConnection();
 
