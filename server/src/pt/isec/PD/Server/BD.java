@@ -7,14 +7,12 @@ public class BD {
     private final String ADMIN = "admin";
     private final String USER = "user";
     private String show;
+    private String role;
     private String cc;
 
     public String getRole() {
         return role;
     }
-
-    private String role;
-
 
     public String getCC() {
         return cc;
