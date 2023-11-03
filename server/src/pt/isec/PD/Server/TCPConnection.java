@@ -8,6 +8,8 @@ public class TCPConnection extends Thread {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private final String EDICAO = "EDICAO";
+    private final String ADMIN = "admin";
+    private final String USER = "user";
     private int TIMEOUT;
     private Socket toClientSocket;
     private String[] args;
@@ -43,13 +45,11 @@ public class TCPConnection extends Thread {
 
             String[] aux = recebido.trim().split(" ");
 
-
-
                 if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
                     boolean verificaNaBDCliente = bd.checkClientIfExists(aux[1], aux[2], args, BDFileName);
-                    cc= bd.getCC();
-                    role=bd.getRole();
-                    System.out.println("role:"+role);
+                    cc = bd.getCC();
+                    role = bd.getRole();
+                    System.out.println("role: " + role);
                     if (verificaNaBDCliente) {
                         clients.add(toClientSocket);
                         nClients++;
@@ -63,7 +63,7 @@ public class TCPConnection extends Thread {
                     int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
                     if (registo == 1) {
                         cc = aux[3];
-                        role="user";
+                        role = "user";
 
                         envia = "Registado com sucesso";
                     }else if (registo == 0)
@@ -76,7 +76,7 @@ public class TCPConnection extends Thread {
                         envia = "Erro: Não foi possivel registar";
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
-                    int registo = bd.EDITClient(aux[1], aux[2],cc, args, BDFileName);
+                    int registo = bd.editClient(aux[1], aux[2],cc, args, BDFileName);
                     if (registo == 1)
                         envia = "Editado com sucesso";
                     else if (registo == 0)

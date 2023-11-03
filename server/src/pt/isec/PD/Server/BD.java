@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.*;
 
 public class BD {
+    private final String ADMIN = "admin";
+    private final String USER = "user";
     private String show;
     private String cc;
 
@@ -82,7 +84,6 @@ public class BD {
     public boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         boolean exist = false;
-        String cartao = null;
         
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
@@ -99,10 +100,9 @@ public class BD {
             String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
             System.out.println(query);
             ResultSet resultSet = statement.executeQuery(query);
-            cc=resultSet.getString("cartaoCidadao");
-            role=resultSet.getString("role");
+            cc = resultSet.getString("cartaoCidadao");
+            role = resultSet.getString("role");
             exist = resultSet.next();
-
 
             connection.close();
         } catch (SQLException e) {
@@ -135,7 +135,7 @@ public class BD {
             preparedStatement.setString(2, passe);
             preparedStatement.setString(3, cc);
             preparedStatement.setString(4, user);
-            preparedStatement.setString(5, "user");
+            preparedStatement.setString(5, USER);
             int resultSet = preparedStatement.executeUpdate();
 
             if (resultSet > 0)
@@ -149,7 +149,7 @@ public class BD {
         return registed;
     }
 
-    public int EDITClient(String coluna, String alteracao,String cartaoCC, String[] args, String bdFileName) {
+    public int editClient(String coluna, String alteracao, String cartaoCC, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
 
