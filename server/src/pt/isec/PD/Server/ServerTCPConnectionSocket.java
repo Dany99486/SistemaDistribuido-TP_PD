@@ -39,6 +39,8 @@ public class ServerTCPConnectionSocket extends Thread {
         } catch (IOException e) {
             show += "\nOcorreu um erro ao nivel do socket de escuta: " + e;
         }
+        System.out.println("saiuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+
         return show;
     }
 

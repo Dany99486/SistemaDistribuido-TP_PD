@@ -10,6 +10,7 @@ public class Client {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private String[] args;
+    private String CC;
 
     public Client(String[] args) {
         this.args = args;
@@ -86,17 +87,82 @@ public class Client {
                     System.exit(0);
                 }
 
-                scanner.reset();
+
                 do {
+                    scanner.reset();
                     System.out.println();
                     System.out.println("1-Edição dos dados de registo");
                     System.out.println("2-Submissão de código");
                     System.out.println("3-Consulta de presenças");
                     System.out.println("4-Obtenção de um ficheiro csv");
+                    System.out.println("5-Logout");
+                    choice=scanner.nextInt();
 
-                    scanner.nextLine();
+                    switch (choice){
+                        case 1->{
+                            scanner.reset();
+                            System.out.println("Deseja alterar:");
+                            System.out.println("1-Nome");
+                            System.out.println("2-Email");
+                            System.out.println("3-Password");
+                            choice=scanner.nextInt();
+                            String alteracao;
+                            scanner.nextLine();
 
-                } while (!scanner.nextLine().equalsIgnoreCase("Logout"));
+                            switch (choice){
+                                case 1->{
+                                    System.out.println("Digite o seu novo nome: ");
+                                    alteracao=scanner.nextLine();
+                                    message="EDICAO nome "+alteracao;
+                                }
+                                case 2->{
+                                    scanner.reset();
+                                    System.out.println("Digite o seu novo endereço de e-mail: ");
+                                    alteracao=scanner.nextLine();
+                                    message="EDICAO email "+alteracao;
+
+                                }
+                                case 3->{
+                                    scanner.reset();
+                                    System.out.println("Digite a sua nova senha: ");
+                                    alteracao=scanner.nextLine();
+                                    message="EDICAO pass "+alteracao;
+
+                                }
+                            }
+
+                        }
+                        case 2->{
+                            scanner.reset();
+
+                        }
+                        case 3->{
+                            scanner.reset();
+
+                        }
+                        case 4->{
+                            scanner.reset();
+
+                        }
+                        case 5->{
+                            break;
+                        }
+                    }
+
+
+                    out.writeObject(message);
+                    out.flush();
+                    System.out.println("String enviada: " + message);
+
+                    response = (String) in.readObject();
+
+                    System.out.println("Resposta do servidor: " + response);
+
+                    if (response.contains("Erro")){
+                        System.out.println("Tente novamente");
+                        System.exit(0);
+                    }
+                } while (true);
 
             } catch (IOException e) {
                 e.printStackTrace();

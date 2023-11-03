@@ -7,6 +7,7 @@ import java.util.List;
 public class TCPConnection extends Thread {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
+    private final String EDICAO = "EDICAO";
     private int TIMEOUT;
     private Socket toClientSocket;
     private String[] args;
@@ -15,6 +16,8 @@ public class TCPConnection extends Thread {
     private int nClients;
     private String recebido, envia;
     private String msgShow;
+    protected String cc=" ";
+    private BD bd = new BD();
 
     public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
@@ -32,10 +35,7 @@ public class TCPConnection extends Thread {
                 ObjectOutputStream out = new ObjectOutputStream(toClientSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(toClientSocket.getInputStream())
         ) {
-            System.out.println("fa");
-            //toClientSocket.setSoTimeout(TIMEOUT);
-            System.out.println("fcew");
-            //recebido = in.readLine();
+            do {
             recebido = (String) in.readObject();
             if (recebido == null)
                 return; //EOF
@@ -44,33 +44,52 @@ public class TCPConnection extends Thread {
 
 
 
-            if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
-                boolean verificaNaBDCliente = new BD().checkClientIfExists(aux[1], aux[2], args, BDFileName);
-
-                if (verificaNaBDCliente) {
-                    clients.add(toClientSocket);
-                    nClients++;
-                    envia = "Logado com sucesso";
+                if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
+                    boolean verificaNaBDCliente = bd.checkClientIfExists(aux[1], aux[2], args, BDFileName);
+                    cc= bd.getCC();
+                    System.out.println("cc:"+cc);
+                    if (verificaNaBDCliente) {
+                        clients.add(toClientSocket);
+                        nClients++;
+                        envia = "Logado com sucesso";
+                    }
+                    else
+                        envia = "Erro: Não foi possivel logar!";
+                    //out.println(envia);
                 }
-                else
-                    envia = "Erro: Não foi possivel logar!";
-                //out.println(envia);
-            }
-            if (aux[0].equalsIgnoreCase(REGISTAR)) {
-                int registo = new BD().registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
-                if (registo == 1)
-                    envia = "Registado com sucesso";
-                else if (registo == 0)
-                    envia = "Erro: Não foi registado, o utilizador já existe!";
-                else if (registo == -1)
-                    envia = "Erro: Não foi possivel registar, erro de conexão";
-                else if (registo == -2)
-                    envia = "Erro: Não foi possivel registar, erro interno";
-                else
-                    envia = "Erro: Não foi possivel registar";
-            }
-            out.writeObject(envia);
-            out.flush();
+                if (aux[0].equalsIgnoreCase(REGISTAR)) {
+                    int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
+                    if (registo == 1) {
+                        cc = aux[3];
+                        System.out.println("cc:"+cc);
+                        envia = "Registado com sucesso";
+                    }else if (registo == 0)
+                        envia = "Erro: Não foi registado, o utilizador já existe!";
+                    else if (registo == -1)
+                        envia = "Erro: Não foi possivel registar, erro de conexão";
+                    else if (registo == -2)
+                        envia = "Erro: Não foi possivel registar, erro interno";
+                    else
+                        envia = "Erro: Não foi possivel registar";
+                }
+                if (aux[0].equalsIgnoreCase(EDICAO)) {
+                    System.out.println("vou editar");
+                    int registo = bd.EDITClient(aux[1], aux[2],cc, args, BDFileName);
+                    if (registo == 1)
+                        envia = "Editado com sucesso";
+                    else if (registo == 0)
+                        envia = "Erro: Não foi registado, o utilizador já existe!";
+                    else if (registo == -1)
+                        envia = "Erro: Não foi possivel registar, erro de conexão";
+                    else if (registo == -2)
+                        envia = "Erro: Não foi possivel registar, erro interno";
+                    else
+                        envia = "Erro: Não foi possivel registar";
+                }
+                out.writeObject(envia);
+                out.flush();
+            }while (true);
+
         } catch (IOException e) {
             System.out.println("Erro na comunicação com o cliente atual: " + e);
             msgShow = "\nErro na comunicação com o cliente atual: " + e;

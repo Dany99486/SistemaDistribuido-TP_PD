@@ -5,6 +5,11 @@ import java.sql.*;
 
 public class BD {
     private String show;
+    private String cc;
+
+    public String getCC() {
+        return cc;
+    }
     //TODO: Criar base de dados se nao existir
     public String createBDIfNotExists(String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
@@ -70,6 +75,7 @@ public class BD {
     public boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         boolean exist = false;
+        String cartao = null;
         
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
@@ -87,7 +93,7 @@ public class BD {
             String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
             System.out.println(query);
             ResultSet resultSet = statement.executeQuery(query);
-
+            cc=resultSet.getString("cartaoCidadao");
             System.out.println(resultSet.getString("nome"));
             System.out.println(resultSet.getString("pass"));
             exist = resultSet.next();
@@ -99,6 +105,7 @@ public class BD {
             System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
+
         return exist;
     }
 
@@ -127,6 +134,40 @@ public class BD {
             preparedStatement.setString(3, cc);
             preparedStatement.setString(4, user);
             preparedStatement.setString(5, "user");
+            int resultSet = preparedStatement.executeUpdate();
+
+            if (resultSet > 0)
+                registed = 1;
+
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            registed = -2;
+        }
+        return registed;
+    }
+
+    public int EDITClient(String coluna, String alteracao,String cartaoCC, String[] args, String bdFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
+        int registed = 0;
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return -1;
+            }
+
+            String query = "UPDATE utilizadores SET '"+coluna+"'='"+alteracao+"' WHERE cartaoCidadao='"+cartaoCC+"';";
+            System.out.println(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
             int resultSet = preparedStatement.executeUpdate();
 
             if (resultSet > 0)
