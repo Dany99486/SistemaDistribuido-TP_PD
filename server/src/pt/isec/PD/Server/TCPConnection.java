@@ -17,6 +17,7 @@ public class TCPConnection extends Thread {
     private String recebido, envia;
     private String msgShow;
     protected String cc=" ";
+    private String role;
     private BD bd = new BD();
 
     public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, String[] args, String BDFileName) {
@@ -47,7 +48,8 @@ public class TCPConnection extends Thread {
                 if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
                     boolean verificaNaBDCliente = bd.checkClientIfExists(aux[1], aux[2], args, BDFileName);
                     cc= bd.getCC();
-                    System.out.println("cc:"+cc);
+                    role=bd.getRole();
+                    System.out.println("role:"+role);
                     if (verificaNaBDCliente) {
                         clients.add(toClientSocket);
                         nClients++;
@@ -61,7 +63,8 @@ public class TCPConnection extends Thread {
                     int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
                     if (registo == 1) {
                         cc = aux[3];
-                        System.out.println("cc:"+cc);
+                        role="user";
+
                         envia = "Registado com sucesso";
                     }else if (registo == 0)
                         envia = "Erro: Não foi registado, o utilizador já existe!";
@@ -73,7 +76,6 @@ public class TCPConnection extends Thread {
                         envia = "Erro: Não foi possivel registar";
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
-                    System.out.println("vou editar");
                     int registo = bd.EDITClient(aux[1], aux[2],cc, args, BDFileName);
                     if (registo == 1)
                         envia = "Editado com sucesso";
@@ -91,10 +93,8 @@ public class TCPConnection extends Thread {
             }while (true);
 
         } catch (IOException e) {
-            System.out.println("Erro na comunicação com o cliente atual: " + e);
             msgShow = "\nErro na comunicação com o cliente atual: " + e;
         } catch (ClassNotFoundException e) {
-            System.out.println("Erro, dados passados não são reconhecidos " + e);
             msgShow = "\nErro, dados passados não são reconhecidos " + e;
         }
     }

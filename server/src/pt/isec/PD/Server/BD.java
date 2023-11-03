@@ -7,6 +7,13 @@ public class BD {
     private String show;
     private String cc;
 
+    public String getRole() {
+        return role;
+    }
+
+    private String role;
+
+
     public String getCC() {
         return cc;
     }
@@ -80,7 +87,6 @@ public class BD {
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
             show = url;
-            System.out.println(url);
             show += "\nConectando à base de dados...";
             Connection connection = DriverManager.getConnection(url);
             if (connection != null)
@@ -94,15 +100,12 @@ public class BD {
             System.out.println(query);
             ResultSet resultSet = statement.executeQuery(query);
             cc=resultSet.getString("cartaoCidadao");
-            System.out.println(resultSet.getString("nome"));
-            System.out.println(resultSet.getString("pass"));
+            role=resultSet.getString("role");
             exist = resultSet.next();
 
 
-            System.out.println(exist);
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
 
@@ -127,7 +130,6 @@ public class BD {
             }
 
             String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
-            System.out.println(user + " " + passe + " " + cc + " " + name);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, passe);
@@ -141,7 +143,6 @@ public class BD {
 
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
         }
@@ -175,7 +176,6 @@ public class BD {
 
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar à base de dados: " + e.getMessage());
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
         }
