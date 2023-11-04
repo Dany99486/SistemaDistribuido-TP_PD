@@ -52,7 +52,7 @@ public class BD {
                     "local TEXT, " +
                     "data TEXT, " +
                     "hora_inicio TEXT, " +
-                    "hora_fim TEXT" +
+                    "hora_fim TEXT," +
                     "codigo INTEGER" +
                     ")");
             show += "\nTabelas criadas com sucesso.";
