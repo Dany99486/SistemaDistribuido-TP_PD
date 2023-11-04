@@ -131,6 +131,8 @@ public class TCPConnection extends Thread {
                     if (aux[0].equalsIgnoreCase(EVENTO) & aux[1].equalsIgnoreCase(CONSULTA)) {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
+                        else
+                            envia = evento.consultaEvento(aux[2], args, BDFileName);
                     }
                 }
 

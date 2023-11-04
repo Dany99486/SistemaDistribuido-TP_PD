@@ -72,7 +72,6 @@ public class Evento {
 
             //Falta adicionar: Só pode ser alterado se nao existir presenças
             String query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"';";
-            System.out.println(query);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             int resultSet = preparedStatement.executeUpdate();
@@ -118,7 +117,6 @@ public class Evento {
             }
 
             query = "DELETE FROM eventos WHERE nome='"+nome+"';";
-            System.out.println(query);
             preparedStatement = connection.prepareStatement(query);
 
             int resultSet = preparedStatement.executeUpdate();
@@ -132,5 +130,48 @@ public class Evento {
             registed = -2;
         }
         return registed;
+    }
+
+    //TODO: Seleciona um registo atraves de um email de um utilizador
+    public String consultaEvento(String email, String[] args, String bdFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
+        StringBuilder resultado = null;
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return resultado.append("Erro de conexão com a base de dados").toString();
+            }
+
+            String query = "SELECT * FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON eventos.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE utilizadores.email = '"+email+"';";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()) {
+                String nome = result.getString("nome");
+                String local = result.getString("local");
+                String data = result.getString("data");
+                String hora_inicio = result.getString("hora_inicio");
+                String hora_fim = result.getString("hora_fim");
+                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                        .append(" Hora de fim: ").append(hora_fim).append("\n");
+            }
+
+            connection.close();
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            resultado.append("Erro ao conectar à base de dados");
+        }
+        return resultado.toString();
     }
 }
