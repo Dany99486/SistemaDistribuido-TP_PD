@@ -31,7 +31,6 @@ public class Client {
                     ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                     ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
             ) {
-
                 Scanner scanner = new Scanner(System.in);
 
                 System.out.println("Escolha uma opção:");
@@ -90,8 +89,12 @@ public class Client {
                     System.exit(0);
                 }
 
+                boolean invalid;
+
                 do {
+                    invalid = false;
                     scanner.reset();
+                    message = null;
                     System.out.println();
                     System.out.println("1-Edição dos dados de registo");
                     System.out.println("2-Submissão de código");
@@ -165,11 +168,15 @@ public class Client {
                             message = "LOGOUT";
                             break;
                         }
+                        default ->{
+                            System.out.println("Opção inválida");
+                            invalid = true;
+                        }
                     }
                     if (admin) {
                         switch (choice) {
                             case 6->{
-                                
+
                             }
                             case 7->{
 
@@ -198,20 +205,26 @@ public class Client {
                             case 15->{
 
                             }
+                            default -> {
+                                System.out.println("Opção inválida");
+                                invalid = true;
+                            }
                         }
                     }
 
-                    out.writeObject(message);
-                    out.flush();
-                    System.out.println("String enviada: " + message);
+                    if (!invalid) { //Não vale a pena enviar se a opção não exsitir do lado do servidor
+                        out.writeObject(message);
+                        out.flush();
+                        System.out.println("String enviada: " + message);
 
-                    response = (String) in.readObject();
+                        response = (String) in.readObject();
 
-                    System.out.println("Resposta do servidor: " + response);
+                        System.out.println("Resposta do servidor: " + response);
 
-                    if (response.contains("Erro")){
-                        System.out.println("Tente novamente");
-                        System.exit(0);
+                        if (response.contains("Erro")) {
+                            System.out.println("Tente novamente");
+                            System.exit(0);
+                        }
                     }
                 } while (true);
 
