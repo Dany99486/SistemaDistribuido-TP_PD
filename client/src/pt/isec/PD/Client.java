@@ -11,6 +11,7 @@ public class Client {
     private final String REGISTAR = "REGISTAR";
     private String[] args;
     private String CC;
+    private boolean admin = false;
 
     public Client(String[] args) {
         this.args = args;
@@ -73,12 +74,14 @@ public class Client {
                     return;
                 }
 
-
                 out.writeObject(message);
                 out.flush();
                 System.out.println("String enviada: " + message);
 
                 String response = (String) in.readObject();
+
+                if (response.contains("Admin bem-vindo"))
+                    admin = true;
 
                 System.out.println("Resposta do servidor: " + response);
 
@@ -86,7 +89,6 @@ public class Client {
                     System.out.println("Tente novamente");
                     System.exit(0);
                 }
-
 
                 do {
                     scanner.reset();
@@ -96,6 +98,21 @@ public class Client {
                     System.out.println("3-Consulta de presenças");
                     System.out.println("4-Obtenção de um ficheiro csv");
                     System.out.println("5-Logout");
+
+                    if (admin) {
+                        System.out.println("Privilégios de Admin:");
+                        System.out.println("6-Criação de um evento");
+                        System.out.println("7-Edição dos dados de um evento");
+                        System.out.println("8-Eliminação de um evento");
+                        System.out.println("9-Consulta dos eventos criados");
+                        System.out.println("10-Geração de um código para registo de presenças");
+                        System.out.println("11-Consulta das presenças registadas");
+                        System.out.println("12-Obtenção de um ficheiro csv (2)");
+                        System.out.println("13-Consulta dos eventos");
+                        System.out.println("14-Eliminação de presenças registadas");
+                        System.out.println("15-Inserção de presenças");
+                    }
+
                     choice=scanner.nextInt();
 
                     switch (choice){
@@ -145,10 +162,44 @@ public class Client {
 
                         }
                         case 5->{
+                            message = "LOGOUT";
                             break;
                         }
                     }
+                    if (admin) {
+                        switch (choice) {
+                            case 6->{
+                                
+                            }
+                            case 7->{
 
+                            }
+                            case 8->{
+
+                            }
+                            case 9->{
+
+                            }
+                            case 10->{
+
+                            }
+                            case 11->{
+
+                            }
+                            case 12->{
+
+                            }
+                            case 13->{
+
+                            }
+                            case 14->{
+
+                            }
+                            case 15->{
+
+                            }
+                        }
+                    }
 
                     out.writeObject(message);
                     out.flush();

@@ -58,7 +58,10 @@ public class TCPConnection extends Thread {
                     if (verificaNaBDCliente) {
                         clients.add(toClientSocket);
                         nClients++;
-                        envia = "Logado com sucesso";
+                        if (role.equalsIgnoreCase(ADMIN))
+                            envia = "Admin bem-vindo";
+                        else
+                            envia = "Logado com sucesso";
                     }
                     else
                         envia = "Erro: Não foi possivel logar!";
