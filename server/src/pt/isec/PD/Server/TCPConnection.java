@@ -80,50 +80,57 @@ public class TCPConnection extends Thread {
                     if (aux[0].equalsIgnoreCase(EVENTO)) {
                         if (aux.length != 4)
                             defaultRegistoReturn(-3);
-                        int hi = 0, hf = 0;
-                        boolean atualiza = true;
-                        try {
-                            hi = Integer.parseInt(aux[3]);
-                            hf = Integer.parseInt(aux[4]);
-                            if (hi < 0 || hf < 0) {
-                                atualiza = false;
-                                throw new Exception("Valores negativos");
+                        else {
+                            int hi = 0, hf = 0;
+                            boolean atualiza = true;
+                            try {
+                                hi = Integer.parseInt(aux[3]);
+                                hf = Integer.parseInt(aux[4]);
+                                if (hi < 0 || hf < 0) {
+                                    atualiza = false;
+                                    throw new Exception("Valores negativos");
+                                }
+                            } catch (Exception e) {
+                                msgShow = "\nErro de conversão de valores";
                             }
-                        } catch (Exception e) {
-                            msgShow = "\nErro de conversão de valores";
+                            if (atualiza) {
+                                int registo = evento.criaEvento(aux[1], aux[2], hi, hf, args, BDFileName);
+                                defaultRegistoReturn(registo);
+                            } else
+                                defaultRegistoReturn(-3);
                         }
-                        if (atualiza) {
-                            int registo = evento.criaEvento(aux[1], aux[2], hi, hf, args, BDFileName);
-                            defaultRegistoReturn(registo);
-                        } else
-                            defaultRegistoReturn(-3);
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(EDICAO)) {
                         if (aux.length != 5)
                             defaultRegistoReturn(-3);
-                        boolean atualiza = true;
-                        try {
-                            int x = Integer.parseInt(aux[3]);
-                            if (x < 0) {
-                                atualiza = false;
-                                throw new Exception("Valores negativos");
-                            }
-                        } catch (Exception e) {/*Não precisa dizer nada*/}
-                        if (atualiza) {
-                            //Evento - coluna, alteracao, nome do evento a atualizar
-                            int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName);
-                            defaultRegistoReturn(registo);
-                        } else
-                            defaultRegistoReturn(-3);
+                        else {
+                            boolean atualiza = true;
+                            try {
+                                int x = Integer.parseInt(aux[3]);
+                                if (x < 0) {
+                                    atualiza = false;
+                                    throw new Exception("Valores negativos");
+                                }
+                            } catch (Exception e) {/*Não precisa dizer nada*/}
+                            if (atualiza) {
+                                //Evento - coluna, alteracao, nome do evento a atualizar
+                                int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName);
+                                defaultRegistoReturn(registo);
+                            } else
+                                defaultRegistoReturn(-3);
+                        }
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) & aux[1].equalsIgnoreCase(APAGAR)) {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
-                        int registo = evento.eliminaEvento(aux[2], args, BDFileName);
-                        defaultRegistoReturn(registo);
+                        else {
+                            int registo = evento.eliminaEvento(aux[2], args, BDFileName);
+                            defaultRegistoReturn(registo);
+                        }
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) & aux[1].equalsIgnoreCase(CONSULTA)) {
-                        
+                        if (aux.length != 3)
+                            defaultRegistoReturn(-3);
                     }
                 }
 

@@ -70,6 +70,7 @@ public class Evento {
                 return -1;
             }
 
+            //Falta adicionar: Só pode ser alterado se nao existir presenças
             String query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"';";
             System.out.println(query);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
