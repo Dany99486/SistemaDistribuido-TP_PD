@@ -107,85 +107,99 @@ public class Client {
                         System.out.println("6-Criação de um evento");
                         System.out.println("7-Edição dos dados de um evento");
                         System.out.println("8-Eliminação de um evento");
-                        System.out.println("9-Consulta dos eventos criados");
+                        System.out.println("9-Consulta dos eventos criados"); //ModoFiltro
                         System.out.println("10-Geração de um código para registo de presenças");
                         System.out.println("11-Consulta das presenças registadas");
                         System.out.println("12-Obtenção de um ficheiro csv (2)");
-                        System.out.println("13-Consulta dos eventos");
+                        System.out.println("13-Consulta dos eventos"); //ModoEmail
                         System.out.println("14-Eliminação de presenças registadas");
                         System.out.println("15-Inserção de presenças");
                     }
 
                     choice=scanner.nextInt();
 
-                    switch (choice){
-                        case 1->{
-                            scanner.reset();
-                            System.out.println("Deseja alterar:");
-                            System.out.println("1-Nome");
-                            System.out.println("2-Email");
-                            System.out.println("3-Password");
-                            choice=scanner.nextInt();
-                            String alteracao;
-                            scanner.nextLine();
+                    if (choice > 5 && admin) {
+                        switch (choice) {
+                            case 1 -> {
+                                scanner.reset();
+                                System.out.println("Deseja alterar:");
+                                System.out.println("1-Nome");
+                                System.out.println("2-Email");
+                                System.out.println("3-Password");
+                                choice = scanner.nextInt();
+                                String alteracao;
+                                scanner.nextLine();
 
-                            switch (choice){
-                                case 1->{
-                                    System.out.println("Digite o seu novo nome: ");
-                                    alteracao=scanner.nextLine();
-                                    message="EDICAO nome "+alteracao;
-                                }
-                                case 2->{
-                                    scanner.reset();
-                                    System.out.println("Digite o seu novo endereço de e-mail: ");
-                                    alteracao=scanner.nextLine();
-                                    message="EDICAO email "+alteracao;
+                                switch (choice) {
+                                    case 1 -> {
+                                        System.out.println("Digite o seu novo nome: ");
+                                        alteracao = scanner.nextLine();
+                                        message = "EDICAO nome " + alteracao;
+                                    }
+                                    case 2 -> {
+                                        scanner.reset();
+                                        System.out.println("Digite o seu novo endereço de e-mail: ");
+                                        alteracao = scanner.nextLine();
+                                        message = "EDICAO email " + alteracao;
 
-                                }
-                                case 3->{
-                                    scanner.reset();
-                                    System.out.println("Digite a sua nova senha: ");
-                                    alteracao=scanner.nextLine();
-                                    message="EDICAO pass "+alteracao;
+                                    }
+                                    case 3 -> {
+                                        scanner.reset();
+                                        System.out.println("Digite a sua nova senha: ");
+                                        alteracao = scanner.nextLine();
+                                        message = "EDICAO pass " + alteracao;
 
+                                    }
                                 }
+
                             }
+                            case 2 -> {
+                                scanner.reset();
 
-                        }
-                        case 2->{
-                            scanner.reset();
+                            }
+                            case 3 -> {
+                                scanner.reset();
 
-                        }
-                        case 3->{
-                            scanner.reset();
+                            }
+                            case 4 -> {
+                                scanner.reset();
 
-                        }
-                        case 4->{
-                            scanner.reset();
-
-                        }
-                        case 5->{
-                            message = "LOGOUT";
-                            break;
-                        }
-                        default ->{
-                            System.out.println("Opção inválida");
-                            invalid = true;
+                            }
+                            case 5 -> {
+                                message = "LOGOUT";
+                                break;
+                            }
+                            default -> {
+                                System.out.println("Opção inválida");
+                                invalid = true;
+                            }
                         }
                     }
                     if (admin) {
+                        String[] aux = null;
                         switch (choice) {
                             case 6->{
-
+                                scanner.reset();
+                                System.out.println("<Nome> <Local> <hora inicio> <hora fim>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "EVENTO "+aux[0]+" "+aux[1]+" "+aux[2]+" "+aux[3];
                             }
                             case 7->{
-
+                                scanner.reset();
+                                System.out.println("<Campo da tabela> <alteracao nova> <nome evento>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "EVENTO EDICAO "+aux[0]+" "+aux[1]+" "+aux[2];
                             }
                             case 8->{
-
+                                scanner.reset();
+                                System.out.println("<Nome evento>");
+                                message = "EVENTO APAGAR "+scanner.nextLine().trim();
                             }
                             case 9->{
-
+                                scanner.reset();
+                                System.out.println("<Campo> <palavra a filtrar>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "EVENTO CONSULTA "+aux[0]+" "+aux[1];
                             }
                             case 10->{
 
@@ -197,7 +211,9 @@ public class Client {
 
                             }
                             case 13->{
-
+                                scanner.reset();
+                                System.out.println("<Email>");
+                                message = "EVENTO CONSULTA "+scanner.nextLine().trim();
                             }
                             case 14->{
 
