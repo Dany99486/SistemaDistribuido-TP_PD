@@ -1,4 +1,4 @@
-package pt.isec.PD;
+package pt.isec.PD.ServerBackup;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -36,5 +36,7 @@ public class ServerBackup {
             System.out.println("O diretório especificado não existe ou não é uma diretoria válida.");
         }
 
+        HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver();
+        heartbeatReceiver.start();
     }
 }

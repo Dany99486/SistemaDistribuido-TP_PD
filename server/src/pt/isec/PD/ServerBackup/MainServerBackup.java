@@ -1,9 +1,8 @@
-package pt.isec.PD;
+package pt.isec.PD.ServerBackup;
 
 import java.io.*;
-import pt.isec.PD.ServerBackup;
 
-public class Main {
+public class MainServerBackup {
 
     public static void main(String[] args) throws IOException {
         ServerBackup serverBackup = new ServerBackup(args);

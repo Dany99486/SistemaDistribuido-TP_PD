@@ -32,6 +32,9 @@ public class Server {
             return show;
         }
 
+        HeartbeatSender heartbeatReceiver = new HeartbeatSender(args[2], Integer.parseInt(args[3]), 1);
+        heartbeatReceiver.start();
+
         show = checkBDFolder();
         if (show != null)
             return null;
