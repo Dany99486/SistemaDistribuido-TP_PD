@@ -6,6 +6,7 @@ import java.util.List;
 
 public class TCPConnection extends Thread {
     private final String AUTENTICAR = "AUTENTICAR";
+    private final String LOGOUT = "LOGOUT";
     private final String REGISTAR = "REGISTAR";
     private final String EDICAO = "EDICAO";
     private final String APAGAR = "APAGAR";
@@ -75,6 +76,14 @@ public class TCPConnection extends Thread {
                     int registo = bd.editClient(aux[1], aux[2],cc, args, BDFileName);
                     defaultRegistoReturn(registo);
                 }
+                if (aux[0].equalsIgnoreCase(LOGOUT)) {
+                    boolean registo = clients.remove(toClientSocket);
+                    if (registo) {
+                        nClients--;
+                        envia = "Deixou a sessão";
+                    } else
+                        envia = "A sessão não foi terminada";
+                }
                 if (role.equalsIgnoreCase(ADMIN)) {
                     if (aux[0].equalsIgnoreCase(EVENTO)) {
                         if (aux.length != 4)
@@ -127,16 +136,19 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(registo);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA)) {
-                        if (aux.length != 3)
-                            defaultRegistoReturn(-3);
-                        else
-                            envia = evento.consultaEvento(aux[2], args, BDFileName);
+                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 3) {
+                        envia = evento.consultaEvento(aux[2], args, BDFileName);
                     }
+                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 4) {
+                        envia = evento.consultaEventoFiltro(aux[2].toLowerCase(), aux[3], args, BDFileName);
+                    }
+                    
                 }
 
                 out.writeObject(envia);
                 out.flush();
+
+                verificaConectados();
             }while (true);
 
         } catch (IOException e) {
@@ -160,6 +172,14 @@ public class TCPConnection extends Thread {
         else
             envia = "Erro: Não foi possivel registar";
     }
+
+    private void verificaConectados() {
+        for (Socket s : clients)
+            if (!s.isConnected())
+                if (clients.remove(s))
+                    nClients--;
+    }
+
     public List<Socket> getClients() {
         return clients;
     }
