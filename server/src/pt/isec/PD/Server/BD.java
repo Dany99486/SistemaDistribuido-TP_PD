@@ -17,6 +17,7 @@ public class BD {
     public String getCC() {
         return cc;
     }
+
     //TODO: Criar base de dados se nao existir
     public String createBDIfNotExists(String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
