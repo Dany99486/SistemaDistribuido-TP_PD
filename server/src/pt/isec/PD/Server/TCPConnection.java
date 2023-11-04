@@ -11,7 +11,6 @@ public class TCPConnection extends Thread {
     private final String APAGAR = "APAGAR";
     private final String CONSULTA = "CONSULTA";
     private final String EVENTO = "EVENTO";
-    private final String CONSULTA = "CONSULTA";
     private final String ADMIN = "admin";
     private final String USER = "user";
     private int TIMEOUT;
@@ -120,7 +119,7 @@ public class TCPConnection extends Thread {
                                 defaultRegistoReturn(-3);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) & aux[1].equalsIgnoreCase(APAGAR)) {
+                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(APAGAR)) {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
                         else {
@@ -128,7 +127,7 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(registo);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) & aux[1].equalsIgnoreCase(CONSULTA)) {
+                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA)) {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
                         else
