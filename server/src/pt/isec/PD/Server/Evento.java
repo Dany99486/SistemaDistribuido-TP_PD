@@ -71,7 +71,8 @@ public class Evento {
             }
 
             //Falta adicionar: Só pode ser alterado se nao existir presenças
-            String query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"';";
+            String query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"'" +
+                    "AND codigo = NULL;";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             int resultSet = preparedStatement.executeUpdate();
@@ -106,7 +107,7 @@ public class Evento {
 
             String query = "SELECT eventos.nome FROM eventos " +
                     "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.nome = '"+nome+"';";
+                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo = NULL;";
             System.out.println(query);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
