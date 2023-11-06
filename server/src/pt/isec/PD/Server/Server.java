@@ -16,12 +16,16 @@ public class Server {
     private String BDCanonicalFilePath = null;
     private String RMIService;
     private List<Socket> clients;
+    private BD bd;
+    private Evento evento;
     int nClients = 0;
     private String hertbeat;
 
     public Server(String[] a) {
         this.args = a;
         this.clients = new ArrayList<>();
+        this.bd = new BD();
+        this.evento = new Evento();
     }
 
     public String server() {
@@ -32,7 +36,9 @@ public class Server {
             return show;
         }
 
-        HeartbeatSender heartbeatReceiver = new HeartbeatSender(args[2], Integer.parseInt(args[3]), 1);
+        RMIService = args[2];
+
+        HeartbeatSender heartbeatReceiver = new HeartbeatSender(RMIService, Integer.parseInt(args[3]), 1);
         heartbeatReceiver.start();
 
         show = checkBDFolder();
@@ -41,16 +47,16 @@ public class Server {
 
         show = new BD().createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
 
-        RMIService = args[2];
-
         //TODO: Conexão com clientes via TCP
-        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, args, BDFileName);
+        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
 
         show = socketClient.serverTCPConnection();
 
         //TODO: Fechar sockets dos clientes
         clients = socketClient.getClients();
         nClients = socketClient.getnClients();
+        bd = socketClient.getBd();
+        evento = socketClient.getEvento();
 
         for (Socket s : clients) {
             try {

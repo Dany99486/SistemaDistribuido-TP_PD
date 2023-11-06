@@ -11,14 +11,19 @@ public class ServerTCPConnectionSocket extends Thread {
     private String[] args;
     private List<Socket> clients;
     private int nClients;
+    private BD bd;
+    private Evento evento;
 
-    public ServerTCPConnectionSocket(List<Socket> cs, int nc, int TIMEOUT, String[] args, String BDFileName) {
+    public ServerTCPConnectionSocket(List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.TIMEOUT = TIMEOUT;
         this.args = args;
         this.BDFileName = BDFileName;
         this.clients = cs;
         this.nClients = nc;
+        this.bd = bd;
+        this.evento = evento;
     }
+
     public String serverTCPConnection() {
         String show = null;
 
@@ -29,7 +34,7 @@ public class ServerTCPConnectionSocket extends Thread {
                 System.out.println("Thread");
 
                 Socket toClientSocket = socket.accept();
-                TCPConnection tcp = new TCPConnection(clients, nClients, toClientSocket, TIMEOUT, args, BDFileName);
+                TCPConnection tcp = new TCPConnection(clients, nClients, toClientSocket, TIMEOUT, bd, evento, args, BDFileName);
                 tcp.start();
                 clients = tcp.getClients();
                 nClients = tcp.getnClients();
@@ -50,5 +55,13 @@ public class ServerTCPConnectionSocket extends Thread {
 
     public int getnClients() {
         return nClients;
+    }
+
+    public BD getBd() {
+        return bd;
+    }
+
+    public Evento getEvento() {
+        return evento;
     }
 }

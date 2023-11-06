@@ -12,6 +12,9 @@ public class TCPConnection extends Thread {
     private final String APAGAR = "APAGAR";
     private final String CONSULTA = "CONSULTA";
     private final String EVENTO = "EVENTO";
+    private final String PRESENCAS = "PRESENCAS";
+    private final String GERAR = "GERAR";
+    private final String CSV = "CSV";
     private final String ADMIN = "admin";
     private final String USER = "user";
     private int TIMEOUT;
@@ -24,13 +27,15 @@ public class TCPConnection extends Thread {
     private String msgShow;
     protected String cc = null;
     private String role;
-    private BD bd = new BD();
-    private Evento evento = new Evento();
+    private BD bd;
+    private Evento evento;
 
-    public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, String[] args, String BDFileName) {
+    public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
         this.TIMEOUT = TIMEOUT;
         this.args = args;
+        this.bd = bd;
+        this.evento = evento;
         this.BDFileName= BDFileName;
         this.clients = cs;
         this.nClients = nc;
@@ -87,28 +92,14 @@ public class TCPConnection extends Thread {
                     } else
                         envia = "A sessão não foi terminada";
                 }
+
                 if (role.equalsIgnoreCase(ADMIN)) {
                     if (aux[0].equalsIgnoreCase(EVENTO)) {
-                        if (aux.length != 4)
+                        if (aux.length != 7)
                             defaultRegistoReturn(-3);
                         else {
-                            int hi = 0, hf = 0;
-                            boolean atualiza = true;
-                            try {
-                                hi = Integer.parseInt(aux[3]);
-                                hf = Integer.parseInt(aux[4]);
-                                if (hi < 0 || hf < 0) {
-                                    atualiza = false;
-                                    throw new Exception("Valores negativos");
-                                }
-                            } catch (Exception e) {
-                                msgShow = "\nErro de conversão de valores";
-                            }
-                            if (atualiza) {
-                                int registo = evento.criaEvento(aux[1], aux[2], hi, hf, args, BDFileName);
-                                defaultRegistoReturn(registo);
-                            } else
-                                defaultRegistoReturn(-3);
+                            int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName);
+                            defaultRegistoReturn(registo);
                         }
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(EDICAO)) {
@@ -145,7 +136,61 @@ public class TCPConnection extends Thread {
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 4) {
                         envia = evento.consultaEventoFiltro(aux[2].toLowerCase(), aux[3], args, BDFileName);
                     }
-                    
+                    if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 3) {
+                        int registo = evento.inserePresenca(aux[1], aux[2], args, BDFileName);
+                        defaultRegistoReturn(registo);
+                    }
+                    if (aux[0].equalsIgnoreCase(PRESENCAS) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 4) {
+                        int registo = evento.eliminaPresenca(aux[2], aux[3], args, BDFileName);
+                        defaultRegistoReturn(registo);
+                    }
+                    if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 2) {
+                        envia = evento.consultaPresenca(aux[1], args, BDFileName);
+                    }
+                    if (aux[0].equalsIgnoreCase(GERAR)) {
+                        if (aux.length != 2)
+                            defaultRegistoReturn(-3);
+                        else {
+                            int x = 0;
+                            boolean atualiza = true;
+                            try {
+                                x = Integer.parseInt(aux[1]);
+                                if (x < 0) {
+                                    atualiza = false;
+                                    throw new Exception("Valores negativos");
+                                }
+                            } catch (Exception e) {
+                                atualiza = false;
+                            }
+                            if (atualiza) {
+                                //Só precisa da validade, encontra depois um evento que existe com esta validade
+                                int registo = evento.geraCodigo(x, args, BDFileName);
+                                if (registo < 0)
+                                    defaultRegistoReturn(registo);
+                                else
+                                    envia = "Codigo de registo de presenças: " + registo;
+                            } else
+                                defaultRegistoReturn(-3);
+                        }
+                    }
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[1].equalsIgnoreCase(CSV)
+                            && aux[2].equalsIgnoreCase(EVENTO) && aux.length == 4) {
+                        int registo = evento.geraCSV2(aux[3], args, BDFileName);
+                        envia = evento.getCanonicalPathCSV();
+                        enviaFicheiro(registo);
+                    }
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[1].equalsIgnoreCase(CSV)
+                            && aux[2].equalsIgnoreCase(PRESENCAS) && aux.length == 4) {
+                        int registo = evento.geraCSV1(aux[3], args, BDFileName);
+                        envia = evento.getCanonicalPathCSV();
+                        enviaFicheiro(registo);
+                    }
+                } else { //cliente
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
+                        int registo = evento.geraCSV1(aux[2], args, BDFileName);
+                        envia = evento.getCanonicalPathCSV();
+                        enviaFicheiro(registo);
+                    }
                 }
 
                 out.writeObject(envia);
@@ -161,9 +206,19 @@ public class TCPConnection extends Thread {
         }
     }
 
+    private void enviaFicheiro(int registo) {
+        boolean enviaFile = false;
+        if (registo == 0)
+            enviaFile = new SendFile(toClientSocket, evento.getCanonicalPathCSV()).sendFile();
+        if (enviaFile)
+            envia = "Sucesso, ficheiro enviado";
+        else
+            envia = "Erro: Não foi possivel enviar o ficheiro";
+    }
+
     private void defaultRegistoReturn(int registo) {
         if (registo == 1)
-            envia = "Editado com sucesso";
+            envia = "Sucesso";
         else if (registo == 0)
             envia = "Erro: Não foi registado, o utilizador já existe!";
         else if (registo == -1)

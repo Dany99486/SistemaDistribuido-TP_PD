@@ -96,9 +96,11 @@ public class Client {
                     scanner.reset();
                     message = null;
                     System.out.println();
-                    System.out.println("1-Edição dos dados de registo");
-                    System.out.println("2-Submissão de código");
-                    System.out.println("3-Consulta de presenças");
+                    if (!admin) {
+                        System.out.println("1-Edição dos dados de registo");
+                        System.out.println("2-Submissão de código");
+                        System.out.println("3-Consulta de presenças");
+                    }
                     System.out.println("4-Obtenção de um ficheiro csv");
                     System.out.println("5-Logout");
 
@@ -118,7 +120,7 @@ public class Client {
 
                     choice=scanner.nextInt();
 
-                    if (choice > 5 && admin) {
+                    if (choice > 5 && !admin) {
                         switch (choice) {
                             case 1 -> {
                                 scanner.reset();
@@ -163,7 +165,8 @@ public class Client {
                             }
                             case 4 -> {
                                 scanner.reset();
-
+                                System.out.println("<Nome evento>");
+                                message = "EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 5 -> {
                                 message = "LOGOUT";
@@ -178,6 +181,11 @@ public class Client {
                     if (admin) {
                         String[] aux = null;
                         switch (choice) {
+                            case 4->{
+                                scanner.reset();
+                                System.out.println("<Nome evento>");
+                                message = "EVENTO CSV "+scanner.nextLine().trim();
+                            }
                             case 6->{
                                 scanner.reset();
                                 System.out.println("<Nome> <Local> <hora inicio> <hora fim>");
@@ -235,7 +243,15 @@ public class Client {
 
                         response = (String) in.readObject();
 
-                        System.out.println("Resposta do servidor: " + response);
+                        if (response.contains("csv")) {
+                            System.out.println("A receber ficheiro...");
+                            ReceiveFile receiveFile = new ReceiveFile(response, args);
+                            if (receiveFile.receiveFile())
+                                System.out.println("Ficheiro recebido com sucesso");
+                            else
+                                System.out.println("Erro ao receber ficheiro");
+                        } else
+                            System.out.println("Resposta do servidor: " + response);
 
                         if (response.contains("Erro")) {
                             System.out.println("Tente novamente");

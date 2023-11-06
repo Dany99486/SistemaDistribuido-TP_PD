@@ -82,7 +82,7 @@ public class BD {
     }
 
     //TODO: Verifica se utilizador existe
-    public boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
+    public synchronized boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         boolean exist = false;
         
@@ -114,7 +114,7 @@ public class BD {
     }
 
     //TODO: Regista utilizador se nao existir
-    public int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
+    public synchronized int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
@@ -150,7 +150,7 @@ public class BD {
         return registed;
     }
 
-    public int editClient(String coluna, String alteracao, String cartaoCC, String[] args, String bdFileName) {
+    public synchronized int editClient(String coluna, String alteracao, String cartaoCC, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
 
