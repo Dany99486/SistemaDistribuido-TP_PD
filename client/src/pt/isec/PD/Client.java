@@ -120,7 +120,7 @@ public class Client {
 
                     choice=scanner.nextInt();
 
-                    if (choice > 5 && !admin) {
+                    if (choice <= 5 && !admin) {
                         switch (choice) {
                             case 1 -> {
                                 scanner.reset();
@@ -143,25 +143,26 @@ public class Client {
                                         System.out.println("Digite o seu novo endereço de e-mail: ");
                                         alteracao = scanner.nextLine();
                                         message = "EDICAO email " + alteracao;
-
                                     }
                                     case 3 -> {
                                         scanner.reset();
                                         System.out.println("Digite a sua nova senha: ");
                                         alteracao = scanner.nextLine();
                                         message = "EDICAO pass " + alteracao;
-
                                     }
                                 }
-
                             }
                             case 2 -> {
                                 scanner.reset();
-
+                                System.out.println("<Código>");
                             }
                             case 3 -> {
                                 scanner.reset();
-
+                                System.out.println("<Filtro se existir>");
+                                if (scanner.hasNext())
+                                    message = "CONSULTA "+scanner.nextLine().trim();
+                                else
+                                    message = "CONSULTA "+" ";
                             }
                             case 4 -> {
                                 scanner.reset();
@@ -188,9 +189,9 @@ public class Client {
                             }
                             case 6->{
                                 scanner.reset();
-                                System.out.println("<Nome> <Local> <hora inicio> <hora fim>");
+                                System.out.println("<Nome> <data inicio> <data fim> <Local> <hora inicio> <hora fim>");
                                 aux = scanner.nextLine().trim().split(" ");
-                                message = "EVENTO "+aux[0]+" "+aux[1]+" "+aux[2]+" "+aux[3];
+                                message = "EVENTO "+aux[0]+" "+aux[1]+" "+aux[2]+" "+aux[3]+" "+aux[4]+" "+aux[5];
                             }
                             case 7->{
                                 scanner.reset();
@@ -210,13 +211,19 @@ public class Client {
                                 message = "EVENTO CONSULTA "+aux[0]+" "+aux[1];
                             }
                             case 10->{
-
+                                scanner.reset();
+                                System.out.println("<Tempo>");
+                                message = "GERAR "+scanner.nextLine().trim();
                             }
                             case 11->{
-
+                                scanner.reset();
+                                System.out.println("<Nome evento>");
+                                message = "EVENTO CONSULTA "+scanner.nextLine().trim();
                             }
                             case 12->{
-
+                                scanner.reset();
+                                System.out.println("<Nome utilizador>");
+                                message = "CONSULTA EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 13->{
                                 scanner.reset();
@@ -224,10 +231,16 @@ public class Client {
                                 message = "EVENTO CONSULTA "+scanner.nextLine().trim();
                             }
                             case 14->{
-
+                                scanner.reset();
+                                System.out.println("<Nome evento> <Email>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "PRESENCAS APAGAR "+aux[0]+" "+aux[1];
                             }
                             case 15->{
-
+                                scanner.reset();
+                                System.out.println("<Nome evento> <Email>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "PRESENCAS "+aux[0]+" "+aux[1];
                             }
                             default -> {
                                 System.out.println("Opção inválida");

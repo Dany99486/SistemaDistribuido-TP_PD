@@ -8,6 +8,7 @@ public class TCPConnection extends Thread {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String LOGOUT = "LOGOUT";
     private final String REGISTAR = "REGISTAR";
+    private final String CODIGO = "CODIGO";
     private final String EDICAO = "EDICAO";
     private final String APAGAR = "APAGAR";
     private final String CONSULTA = "CONSULTA";
@@ -190,6 +191,12 @@ public class TCPConnection extends Thread {
                         int registo = evento.geraCSV1(aux[2], args, BDFileName);
                         envia = evento.getCanonicalPathCSV();
                         enviaFicheiro(registo);
+                    }
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux.length <= 2) {
+                        envia = evento.consultaEventoCLienteFiltro(cc, aux[1], args, BDFileName);
+                    }
+                    if (aux[0].equalsIgnoreCase(CODIGO) && aux.length == 2) {
+                        envia = ;
                     }
                 }
 
