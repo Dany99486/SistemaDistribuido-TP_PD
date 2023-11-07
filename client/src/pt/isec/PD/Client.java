@@ -182,6 +182,7 @@ public class Client {
                     }
                     if (admin) {
                         String[] aux;
+                        scanner.nextLine();
                         switch (choice) {
                             case 4->{
                                 scanner.reset();
@@ -189,6 +190,7 @@ public class Client {
                                 message = "EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 6->{
+                                System.out.println("Digite os dados do evento:");
                                 scanner.reset();
                                 System.out.println("<Nome> <data inicio> <data fim> <Local> <hora inicio> <hora fim>");
                                 aux = scanner.nextLine().trim().split(" ");

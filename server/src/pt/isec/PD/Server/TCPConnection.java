@@ -95,15 +95,9 @@ public class TCPConnection extends Thread {
                 }
 
                 if (role.equalsIgnoreCase(ADMIN)) {
-                    if (aux[0].equalsIgnoreCase(EVENTO)) {
-                        if (aux.length != 7)
-                            defaultRegistoReturn(-3);
-                        else {
-                            int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName);
-                            defaultRegistoReturn(registo);
-                        }
-                    }
+
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(EDICAO)) {
+
                         if (aux.length != 5)
                             defaultRegistoReturn(-3);
                         else {
@@ -123,7 +117,7 @@ public class TCPConnection extends Thread {
                                 defaultRegistoReturn(-3);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(APAGAR)) {
+                    else if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(APAGAR)) {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
                         else {
@@ -131,11 +125,19 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(registo);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 3) {
+                    else if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 3) {
                         envia = evento.consultaEvento(aux[2], args, BDFileName);
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 4) {
+                    else if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 4) {
                         envia = evento.consultaEventoFiltro(aux[2].toLowerCase(), aux[3], args, BDFileName);
+                    }
+                    else if (aux[0].equalsIgnoreCase(EVENTO)) {
+                        if (aux.length != 7)
+                            defaultRegistoReturn(-3);
+                        else {
+                            int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName);
+                            defaultRegistoReturn(registo);
+                        }
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 3) {
                         int registo = evento.inserePresenca(aux[1], aux[2], args, BDFileName);

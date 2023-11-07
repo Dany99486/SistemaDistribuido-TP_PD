@@ -34,7 +34,7 @@ public class Evento {
             int mes = Calendar.MONTH;
             int ano = Calendar.YEAR;*/
 
-            String[] data = data_inicio.trim().split("/");
+            String[] data =     data_inicio.trim().split("/");
             int diaInicio = Integer.parseInt(data[0]);
             int mesInicio = Integer.parseInt(data[1]);
             int anoInicio = Integer.parseInt(data[2]);
@@ -85,7 +85,7 @@ public class Evento {
     public synchronized int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
-
+        System.out.println("AQUI");
         try {
             show = url;
             show += "\nConectando à base de dados...";
@@ -100,7 +100,7 @@ public class Evento {
 
             String query = "SELECT eventos.nome FROM eventos " +
                     "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo = NULL;";
+                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo IS NULL;";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
@@ -109,11 +109,11 @@ public class Evento {
                 return registed;
             }
             query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"'" +
-                    "AND codigo = NULL;";
+                    "AND codigo IS NULL;";
             preparedStatement = connection.prepareStatement(query);
 
             int resultSet = preparedStatement.executeUpdate();
-
+            System.out.println(resultSet);
             if (resultSet > 0)
                 registed = 1;
 
@@ -144,7 +144,7 @@ public class Evento {
 
             String query = "SELECT eventos.nome FROM eventos " +
                     "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo = NULL;";
+                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo IS NULL;";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
@@ -209,6 +209,7 @@ public class Evento {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
         }
+        System.out.println(resultado.toString());
         return resultado.toString();
     }
 
@@ -311,6 +312,7 @@ public class Evento {
     public synchronized int inserePresenca(String evento, String email, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
+        System.out.println("entrou");
 
         try {
             show = url;
@@ -324,33 +326,41 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT idEvento, cartaoCidado FROM eventos, utilizadores " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.email = '"+email+"' AND eventos.nome = '"+evento+"';";
+            int idEvento = 0;
+            String idCC = "";
+            boolean novaPresenca = false;
+
+            //TODO:======================
+            String query = "SELECT idEvento FROM eventos WHERE nome = '"+evento+"';";
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
-            int idEvento = 0, idCC = 0;
-            boolean novaPresenca = false;
+            if (!result.next())
+                return registed;
+            idEvento = result.getInt("idEvento");
 
-            while (result.next()) {
-                idEvento = result.getInt("idEvento");
-                idCC = result.getInt("idCC");
-                novaPresenca = true;
-            }
+            query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '"+email+"';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
 
-            if (novaPresenca) {
-                query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
-                preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setInt(1, idEvento);
-                preparedStatement.setInt(2, idCC);
 
-                int resultSet = preparedStatement.executeUpdate();
+            if (!result.next())
+                return registed;
 
-                if (resultSet > 0)
-                    registed = 1;
-            }
+            idCC = result.getString("cartaoCidadao");
+
+
+            query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idEvento);
+            preparedStatement.setString(2, idCC);
+
+            int resultSet = preparedStatement.executeUpdate();
+
+            if (resultSet > 0)
+                registed = 1;
+
 
             connection.close();
         } catch (SQLException e) {
@@ -377,30 +387,39 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT idEvento, cartaoCidado FROM eventos, utilizadores " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.email = '"+email+"' AND eventos.nome = '"+evento+"';";
+            int idEvento = 0;
+            String idCC = "";
+            boolean novaPresenca = false;
+
+            //TODO:======================
+            String query = "SELECT idEvento FROM eventos WHERE nome = '"+evento+"';";
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
-            int idEvento = 0, idCC = 0;
-            boolean apagaPresenca = false;
+            if (!result.next())
+                return registed;
+            idEvento = result.getInt("idEvento");
 
-            while (result.next()) {
-                idEvento = result.getInt("idEvento");
-                idCC = result.getInt("idCC");
-                apagaPresenca = true;
-            }
+            query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '"+email+"';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
 
-            if (apagaPresenca) {
+
+            if (!result.next())
+                return registed;
+
+            idCC = result.getString("cartaoCidadao");
+
+
+
                 query = "DELETE FROM presencas WHERE idEvento = '"+idEvento+"' AND idCC = '"+idCC+"'";
                 preparedStatement = connection.prepareStatement(query);
                 int resultSet = preparedStatement.executeUpdate();
 
                 if (resultSet > 0)
                     registed = 1;
-            }
+
 
             connection.close();
         } catch (SQLException e) {
@@ -413,6 +432,7 @@ public class Evento {
     //TODO: Consulta presenças de num evento
     public synchronized String consultaPresenca(String evento, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        System.out.println("eaef");
         StringBuilder resultado = new StringBuilder();
 
         try {
