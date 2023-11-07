@@ -196,7 +196,13 @@ public class TCPConnection extends Thread {
                         envia = evento.consultaEventoCLienteFiltro(cc, aux[1], args, BDFileName);
                     }
                     if (aux[0].equalsIgnoreCase(CODIGO) && aux.length == 2) {
-                        envia = ;
+                        int x = 0;
+                        try {
+                            x = Integer.parseInt(aux[1]);
+                        } catch (Exception e) {
+                            defaultRegistoReturn(-3);
+                        }
+                        envia = evento.insereCodigo(cc, x, args, BDFileName);
                     }
                 }
 

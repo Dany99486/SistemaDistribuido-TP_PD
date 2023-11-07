@@ -155,6 +155,7 @@ public class Client {
                             case 2 -> {
                                 scanner.reset();
                                 System.out.println("<Código>");
+                                message = "CODIGO " + scanner.nextLine().trim();
                             }
                             case 3 -> {
                                 scanner.reset();
@@ -180,7 +181,7 @@ public class Client {
                         }
                     }
                     if (admin) {
-                        String[] aux = null;
+                        String[] aux;
                         switch (choice) {
                             case 4->{
                                 scanner.reset();

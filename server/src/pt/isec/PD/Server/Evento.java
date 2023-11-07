@@ -648,7 +648,92 @@ public class Evento {
         return 0;
     }
 
-    
+    //TODO: Inserir código de presenças num evento, pelo cliente
+    public synchronized String insereCodigo(String cc, int code, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return "Erro de conexão com a base de dados";
+            }
+
+            String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE utilizadores.cartaoCidado = '"+cc+"'" +
+                    "AND eventos.codigo = '"+code+"';";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (result.first()) {
+                connection.close();
+                return "Está inscrito em um evento";
+            }
+
+            query = "SELECT data, idEvento, hora_inicio, hora_fim, code_validade FROM eventos " +
+                    "WHERE codigo = '"+code+"';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
+
+            String dataInicio, dataFim, horaInicio, horaFim;
+            int idEvent = 0;
+            boolean regista = false;
+
+            while (result.next()) {
+                idEvent = result.getInt("idEvento");
+                String data = result.getString("data");
+                dataInicio = data.split(" - ")[0];
+                dataFim = data.split(" - ")[1];
+                horaInicio = result.getString("hora_inicio");
+                horaFim = result.getString("hora_fim");
+                String validadeT = result.getString("code_validade");
+
+                if (Integer.parseInt(validadeT) > 0) {
+                    String[] dataA = dataInicio.trim().split("/");
+                    int diaInicio = Integer.parseInt(dataA[0]);
+                    int mesInicio = Integer.parseInt(dataA[1]);
+                    int anoInicio = Integer.parseInt(dataA[2]);
+                    dataA = dataFim.trim().split("/");
+                    int diaFim = Integer.parseInt(dataA[0]);
+                    int mesFim = Integer.parseInt(dataA[1]);
+                    int anoFim = Integer.parseInt(dataA[2]);
+
+                    if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
+                        if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
+                            if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
+                                if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
+                                    regista = true;
+                }
+                if (regista)
+                    break;
+            }
+
+            query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idEvent);
+            preparedStatement.setString(2, cc);
+
+            int resultSet = preparedStatement.executeUpdate();
+
+            if (resultSet != 0) {
+                connection.close();
+                return "Não foi inserida a presença";
+            }
+
+            connection.close();
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            return "Erro ao conectar à base de dados";
+        }
+        return "Inserido com sucesso";
+    }
 
     public String getCanonicalPathCSV() {
         return canocialPath;
