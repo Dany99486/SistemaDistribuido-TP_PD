@@ -167,7 +167,7 @@ public class Client {
                             }
                             case 4 -> {
                                 scanner.reset();
-                                System.out.println("<Nome evento>");
+                                System.out.println("<Nome evento>"); //Gera CSV1
                                 message = "EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 5 -> {
@@ -186,7 +186,7 @@ public class Client {
                         switch (choice) {
                             case 4->{
                                 scanner.reset();
-                                System.out.println("<Nome evento>");
+                                System.out.println("<Nome evento>"); //Gera CSV1
                                 message = "EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 6->{
@@ -225,8 +225,8 @@ public class Client {
                             }
                             case 12->{
                                 scanner.reset();
-                                System.out.println("<Nome utilizador>");
-                                message = "CONSULTA EVENTO CSV2 "+scanner.nextLine().trim();
+                                System.out.println("<Nome utilizador>"); //Gera CSV2
+                                message = "EVENTO CSV2 "+scanner.nextLine().trim();
                             }
                             case 13->{
                                 scanner.reset();

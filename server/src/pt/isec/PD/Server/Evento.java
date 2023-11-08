@@ -602,6 +602,7 @@ public class Evento {
     public synchronized int geraCSV2(String evento, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         StringBuilder resultado = new StringBuilder();
+        System.out.println("GERACSV2");
 
         try {
             show = url;
@@ -615,7 +616,7 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT utilizadores.nome, cartaoCidado, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+            String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                     "WHERE eventos.nome = '"+evento+"';";
@@ -662,6 +663,7 @@ public class Evento {
     public synchronized int geraCSV1(String utilizador, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         StringBuilder resultado = new StringBuilder();
+        System.out.println("GERACSV1");
 
         try {
             show = url;
@@ -675,7 +677,7 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT utilizadores.nome, cartaoCidado, email, local, data, hora_inicio FROM eventos, utilizadores, presencas " +
+            String query = "SELECT utilizadores.nome, cartaoCidadao, email, local, data, hora_inicio FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                     "WHERE utilizadores.nome = '"+utilizador+"';";
@@ -734,7 +736,7 @@ public class Evento {
             String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.cartaoCidado = '"+cc+"'" +
+                    "WHERE utilizadores.cartaoCidadao = '"+cc+"'" +
                     "AND eventos.codigo = '"+code+"';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
