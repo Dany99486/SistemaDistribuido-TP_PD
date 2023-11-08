@@ -187,7 +187,7 @@ public class Client {
                             case 4->{
                                 scanner.reset();
                                 System.out.println("<Nome evento>");
-                                message = "EVENTO CSV2 "+scanner.nextLine().trim();
+                                message = "EVENTO CSV "+scanner.nextLine().trim();
                             }
                             case 6->{
                                 System.out.println("Digite os dados do evento:");
@@ -226,7 +226,7 @@ public class Client {
                             case 12->{
                                 scanner.reset();
                                 System.out.println("<Nome utilizador>");
-                                message = "EVENTO CSV "+scanner.nextLine().trim();
+                                message = "CONSULTA EVENTO CSV2 "+scanner.nextLine().trim();
                             }
                             case 13->{
                                 scanner.reset();

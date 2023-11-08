@@ -181,18 +181,20 @@ public class TCPConnection extends Thread {
                                 defaultRegistoReturn(-3);
                         }
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV2) && aux.length == 3) {
-                        int registo = evento.geraCSV2(aux[2], args, BDFileName);
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[2].equalsIgnoreCase(CSV2)
+                            && aux[1].equalsIgnoreCase(EVENTO) && aux.length == 4) {
+                        int registo = evento.geraCSV2(aux[3], args, BDFileName);
                         //envia = evento.getCanonicalPathCSV();
                         enviaFicheiro(registo);
                     }
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
-                        int registo = evento.geraCSV1(aux[2], args, BDFileName);
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[2].equalsIgnoreCase(CSV)
+                            && aux[1].equalsIgnoreCase(PRESENCAS) && aux.length == 4) {
+                        int registo = evento.geraCSV1(aux[3], args, BDFileName);
                         envia = evento.getCanonicalPathCSV();
                         enviaFicheiro(registo);
                     }
                 } else { //cliente
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
+                    if (aux[0].equalsIgnoreCase(CONSULTA) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
                         int registo = evento.geraCSV1(aux[2], args, BDFileName);
                         envia = evento.getCanonicalPathCSV();
                         enviaFicheiro(registo);

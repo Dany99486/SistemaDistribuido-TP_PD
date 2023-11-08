@@ -492,7 +492,7 @@ public class Evento {
                 return resultado.append("Erro de conexão com a base de dados").toString();
             }
 
-            String query = "SELECT codigo, idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+            String query = "SELECT codigo, idEvento, cartaoCidado, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                     "WHERE eventos.nome = '"+evento+"';";
@@ -615,10 +615,10 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT u.nome, u.cartaoCidadao, e.data, e.local, u.email, e.hora_inicio, e.hora_fim FROM eventos e " +
-                    "JOIN presencas p ON e.idEvento = p.idEvento " +
-                    "JOIN utilizadores u ON p.idCC = u.cartaoCidadao " +
-                    "WHERE e.nome = '"+evento+"';";
+            String query = "SELECT utilizadores.nome, cartaoCidado, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE eventos.nome = '"+evento+"';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
@@ -630,38 +630,21 @@ public class Evento {
                 String nome = result.getString("nome");
                 String cc = result.getString("cartaoCidado");
                 String email = result.getString("email");
-                System.out.println("Local: " + local + "; Data: " + data + "; Hora de inicio: " + horainicio + "; Hora de fim: " + horafim + "; Nome: " + nome + "; Número de identificação: " + cc + "; Email: " + email + ";");
-                /*
-                resultado.append("Local: ").append(local).append(";").append(" Data: ").append(data).append(",")
-                        .append(" Hora de inicio: ").append(horainicio).append(",").append(" Hora de fim: ").append(horafim).append(",")
-                        .append(",").append(" Nome: ").append(",").append(" Número de identificação: ").append(",").append(" Email: ").append(",")
-                        .append(nome).append(" ").append(cc).append(" ").append(email);*/
-                resultado.append("\"Local\";\"Data\";");
-                resultado.append(local + ";" + data + ";");
-                resultado.append("\"Hora de inicio\";\"Hora de fim\";");
-                resultado.append(horainicio + ";" + horafim + ";");
-                resultado.append("\"Nome\";\"Número de identificação\";\"Email\";");
-                resultado.append(nome + ";" + cc + ";" + email);
-                resultado.append("\r\n");
+                resultado.append("Local: ").append(local).append("\n").append(" Data: ").append(data).append("\n")
+                        .append(" Hora de inicio: ").append(horainicio).append("\n").append(" Hora de fim: ").append(horafim).append("\n")
+                        .append("\n").append(" Nome: ").append(" Número de identificação: ").append(" Email: ").append("\n")
+                        .append(nome).append(" ").append(cc).append(" ").append(email).append("\n");
             }
-
-            System.out.println(resultado);
 
             connection.close();
 
             //Gerar arquivo CSV
             try {
-                // Obtenha o caminho canônico do arquivo de saída
-                File file = new File("resources/presencas.txt");
-                String canonical = file.getCanonicalPath();
-
-                // Crie um FileWriter para escrever o conteúdo no arquivo
-                FileWriter writer = new FileWriter(canonical);
-
-                writer.write(resultado.toString());
-                writer.close();
-                canocialPath = canonical;
-                System.out.println(canocialPath);
+                File file = new File("presencas.csv");
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(resultado.toString());
+                fileWriter.close();
+                canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
                 //canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
             } catch (IOException e) {
                 System.out.println(e);
@@ -692,7 +675,7 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT utilizadores.nome, cartaoCidadao, email, local, data, hora_inicio FROM eventos, utilizadores, presencas " +
+            String query = "SELECT utilizadores.nome, cartaoCidado, email, local, data, hora_inicio FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                     "WHERE utilizadores.nome = '"+utilizador+"';";
@@ -751,7 +734,7 @@ public class Evento {
             String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.cartaoCidadao = '"+cc+"'" +
+                    "WHERE utilizadores.cartaoCidado = '"+cc+"'" +
                     "AND eventos.codigo = '"+code+"';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
