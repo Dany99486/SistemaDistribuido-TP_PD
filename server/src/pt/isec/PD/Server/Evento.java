@@ -3,8 +3,6 @@ package pt.isec.PD.Server;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
 
@@ -218,7 +216,7 @@ public class Evento {
     public String consultaEvento(String name, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
-
+        System.out.println("AQUI");
         try {
             show = url;
             show += "\nConectando à base de dados...";
@@ -231,22 +229,22 @@ public class Evento {
                 return resultado.append("Erro de conexão com a base de dados").toString();
             }
 
-            String query = "SELECT * FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+            String query = "SELECT * FROM utilizadores " +
+                    "JOIN presencas ON utilizadores.cartaoCidadao = presencas.idCC " +
+                    "JOIN eventos ON presencas.idEvento = eventos.idEvento " +
                     "WHERE eventos.nome = '" + name + "';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
             while (result.next()) {
                 String nome = result.getString("nome");
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String hora_inicio = result.getString("hora_inicio");
-                String hora_fim = result.getString("hora_fim");
-                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
-                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                        .append(" Hora de fim: ").append(hora_fim).append("\n");
+                String CC = result.getString("cartaoCidadao");
+                String email = result.getString("email");
+
+                resultado.append("Nome: ").append(nome).append(" CC: ").append(CC)
+                        .append(" Email: ").append(email).append("\n");
+
+
             }
 
             connection.close();
@@ -327,7 +325,7 @@ public class Evento {
             }
 
             String query = "SELECT * FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    //"JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "WHERE eventos.'"+campo+"' = '"+filtro+"';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
@@ -535,7 +533,7 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT data, idEvento FROM eventos ";
+            String query = "SELECT * FROM eventos; ";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
@@ -598,6 +596,97 @@ public class Evento {
         return codigo;
     }
 
+
+    public synchronized int geraCSVClient(String campo, String param, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        StringBuilder resultado = new StringBuilder();
+        System.out.println("GERACSVClient");
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return -1;
+            }
+
+            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE eventos.nome = '"+evento+"';";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();*/
+
+            String query="SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
+                    "WHERE "+ campo +"='"+param+"';";
+            System.out.println(query+"\n\n");
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (!result.next())
+                return -1;
+
+            String nome = result.getString("nome");
+            resultado.append("\"Designação\";\"").append(nome).append("\"\n");
+            String local = result.getString("local");
+            resultado.append("\"Local\";\"").append(local).append("\"\n");
+            String data = result.getString("data");
+            resultado.append("\"Data\";\"").append(data).append("\"\n");
+            String horainicio = result.getString("hora_inicio");
+            resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
+            String horafim = result.getString("hora_fim");
+            resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
+
+
+            System.out.println(resultado);
+            System.out.println("\n\n\n");
+
+            query="SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE eventos.'"+campo+"' = '" + param + "';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
+
+            resultado.append("\n\n");
+            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+
+            System.out.println(resultado);
+            System.out.println("\n\n\n");
+            while (result.next()) {
+                String nomeUser = result.getString("nome");
+                String cc = result.getString("cartaoCidadao");
+                String email = result.getString("email");
+
+                resultado.append("\""+nomeUser+"\";\""+cc+"\";\""+email+"\"\n");
+            }
+            System.out.println("ficheiro:");
+            System.out.println(resultado.toString());
+            connection.close();
+
+            //Gerar arquivo CSV
+            try {
+                File file = new File("files/CSVClientfile.csv");
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(resultado.toString());
+                fileWriter.close();
+
+                //canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
+            } catch (IOException e) {
+                System.out.println(e);
+                return -2;
+            }
+
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            return -2;
+        }
+        return 0;
+    }
     //TODO: Gera CSV presenças de um determinado evento
     public synchronized int geraCSV2(String evento, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
@@ -616,36 +705,67 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                     "WHERE eventos.nome = '"+evento+"';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();*/
+
+            String query="SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
+                    "WHERE nome = '"+evento+"';";
+            System.out.println(query+"\n\n");
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
-            while (result.next()) {
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String horainicio = result.getString("hora_inicio");
-                String horafim = result.getString("hora_fim");
-                String nome = result.getString("nome");
-                String cc = result.getString("cartaoCidado");
-                String email = result.getString("email");
-                resultado.append("Local: ").append(local).append("\n").append(" Data: ").append(data).append("\n")
-                        .append(" Hora de inicio: ").append(horainicio).append("\n").append(" Hora de fim: ").append(horafim).append("\n")
-                        .append("\n").append(" Nome: ").append(" Número de identificação: ").append(" Email: ").append("\n")
-                        .append(nome).append(" ").append(cc).append(" ").append(email).append("\n");
-            }
+            if (!result.next())
+                return -1;
 
+            String nome = result.getString("nome");
+            resultado.append("\"Designação\";\"").append(nome).append("\"\n");
+            String local = result.getString("local");
+            resultado.append("\"Local\";\"").append(local).append("\"\n");
+            String data = result.getString("data");
+            resultado.append("\"Data\";\"").append(data).append("\"\n");
+            String horainicio = result.getString("hora_inicio");
+            resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
+            String horafim = result.getString("hora_fim");
+            resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
+
+
+            System.out.println(resultado);
+            System.out.println("\n\n\n");
+
+            query="SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE eventos.nome = '" + evento + "';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
+
+            resultado.append("\n\n");
+            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+
+            System.out.println(resultado);
+            System.out.println("\n\n\n");
+            while (result.next()) {
+                String nomeUser = result.getString("nome");
+                String cc = result.getString("cartaoCidadao");
+                String email = result.getString("email");
+
+                resultado.append("\""+nomeUser+"\";\""+cc+"\";\""+email+"\"\n");
+            }
+            System.out.println("ficheiro:");
+            System.out.println(resultado.toString());
             connection.close();
 
             //Gerar arquivo CSV
             try {
-                File file = new File("presencas.csv");
+                File file = new File("files/CSVfile.csv");
                 FileWriter fileWriter = new FileWriter(file);
                 fileWriter.write(resultado.toString());
                 fileWriter.close();
-                canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
+
                 //canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
             } catch (IOException e) {
                 System.out.println(e);
@@ -677,36 +797,63 @@ public class Evento {
                 return -1;
             }
 
-            String query = "SELECT utilizadores.nome, cartaoCidadao, email, local, data, hora_inicio FROM eventos, utilizadores, presencas " +
+            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.nome = '"+utilizador+"';";
+                    "WHERE eventos.nome = '"+evento+"';";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();*/
+
+            String query="SELECT nome, cartaoCidadao, email FROM utilizadores " +
+                    "WHERE email = '"+utilizador+"';";
+            System.out.println(query+"\n\n");
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
+            if (!result.next())
+                return -1;
+
+            String nome = result.getString("nome");
+            String cc = result.getString("cartaoCidadao");
+            String email = result.getString("email");
+
+            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+            resultado.append("\""+nome+"\";\""+cc+"\";\""+email+"\"\n");
+            System.out.println(resultado);
+
+            query="SELECT eventos.nome, eventos.local , eventos.data, eventos.hora_inicio FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE utilizadores.email = '" + utilizador + "';";
+            preparedStatement = connection.prepareStatement(query);
+            result = preparedStatement.executeQuery();
+
+            resultado.append("\n\n");
+            resultado.append("\"Designação\";\"Local\";\"Data\";\"Hora Início\"\n");
+
+
             while (result.next()) {
-                String nome = result.getString("nome");
-                String cc = result.getString("cartaoCidado");
-                String email = result.getString("email");
+                String nomeevento = result.getString("nome");
                 String local = result.getString("local");
                 String data = result.getString("data");
                 String horainicio = result.getString("hora_inicio");
-                resultado.append(" Nome: ").append(" Número de identificação: ").append(" Email: ").append("\n")
-                        .append(nome).append(" ").append(email).append(" ").append(cc).append("\n")
-                        .append(" Local: ").append(" Data: ").append(" Hora de inicio: ").append("\n")
-                        .append(local).append(" ").append(data).append(" ").append(horainicio).append("\n");
-            }
 
+                resultado.append("\"").append(nomeevento).append("\";\"").append(local).append("\";\"").append(data).append("\";\"").append(horainicio).append("\"\n");
+            }
+            System.out.println("ficheiro:");
+            System.out.println(resultado.toString());
             connection.close();
 
             //Gerar arquivo CSV
             try {
-                File file = new File("presencas.csv");
+                File file = new File("files/CSV1file.csv");
                 FileWriter fileWriter = new FileWriter(file);
                 fileWriter.write(resultado.toString());
                 fileWriter.close();
-                canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
+
+                //canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
             } catch (IOException e) {
+                System.out.println(e);
                 return -2;
             }
 

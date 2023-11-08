@@ -128,7 +128,7 @@ public class TCPConnection extends Thread {
                         }
                     }
                     else if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(EMAIL) && aux.length == 3) {
-                        envia = evento.consultaEventoEmail(aux[2], args, BDFileName);
+                        envia = evento.consultaEventoEmail(aux[2], args, BDFileName); //
                     }
                     else if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CONSULTA) && aux.length == 3) {
                         envia = evento.consultaEvento(aux[2], args, BDFileName);
@@ -183,19 +183,21 @@ public class TCPConnection extends Thread {
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV2) && aux.length == 3) {
                         int registo = evento.geraCSV2(aux[2], args, BDFileName);
+                        System.out.println("cria csv2");
                         //envia = evento.getCanonicalPathCSV();
-                        enviaFicheiro(registo);
+                        enviaFicheiro(registo,"CSVfile.csv");
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
                         int registo = evento.geraCSV1(aux[2], args, BDFileName);
-                        envia = evento.getCanonicalPathCSV();
-                        enviaFicheiro(registo);
+                        //envia = evento.getCanonicalPathCSV();
+                        enviaFicheiro(registo,"CSV1file.csv");
                     }
                 } else { //cliente
-                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
-                        int registo = evento.geraCSV1(aux[2], args, BDFileName);
-                        envia = evento.getCanonicalPathCSV();
-                        enviaFicheiro(registo);
+                    if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 4) {
+                        System.out.println("cria csv cliente");
+                        int registo = evento.geraCSVClient(aux[2],aux[3], args, BDFileName);
+                        //envia = evento.getCanonicalPathCSV();
+                        enviaFicheiro(registo,"CSVClientfile.csv");
                     }
                     if (aux[0].equalsIgnoreCase(CONSULTA) && aux.length <= 2) {
                         envia = evento.consultaEventoCLienteFiltro(cc, aux[1], args, BDFileName);
@@ -224,10 +226,10 @@ public class TCPConnection extends Thread {
         }
     }
 
-    private void enviaFicheiro(int registo) {
+    private void enviaFicheiro(int registo,String fileName) {
         boolean enviaFile = false;
         if (registo == 0)
-            enviaFile = new SendFile(toClientSocket, evento.getCanonicalPathCSV()).sendFile();
+            enviaFile = new SendFile(toClientSocket).sendFile(fileName);
         if (enviaFile)
             envia = "Sucesso, ficheiro enviado";
         else

@@ -18,6 +18,7 @@ public class Client {
     }
 
     public void client() {
+        String filename = null;
         String message = null;
         if (args.length != 2) {
             System.out.println("Sintaxe: java Cliente serverAddress serverUdpPort");
@@ -100,8 +101,8 @@ public class Client {
                         System.out.println("1-Edição dos dados de registo");
                         System.out.println("2-Submissão de código");
                         System.out.println("3-Consulta de presenças");
+                        System.out.println("4-Obtenção de um ficheiro csv");//csvCliente
                     }
-                    System.out.println("4-Obtenção de um ficheiro csv");
                     System.out.println("5-Logout");
 
                     if (admin) {
@@ -112,10 +113,11 @@ public class Client {
                         System.out.println("9-Consulta dos eventos criados"); //ModoFiltro
                         System.out.println("10-Geração de um código para registo de presenças");
                         System.out.println("11-Consulta das presenças registadas");
-                        System.out.println("12-Obtenção de um ficheiro csv (2)");
+                        System.out.println("12-Obtenção de um ficheiro csv dos participantes (2)");
                         System.out.println("13-Consulta dos eventos"); //ModoEmail
                         System.out.println("14-Eliminação de presenças registadas");
                         System.out.println("15-Inserção de presenças");
+                        System.out.println("16-Obtenção de um ficheiro csv dos eventos do utilizador (3)");
                     }
 
                     choice=scanner.nextInt();
@@ -166,9 +168,12 @@ public class Client {
                                     message = "CONSULTA "+" ";
                             }
                             case 4 -> {
+                                filename= "CSVClientfile.csv";
+                                Scanner scanneraux=new Scanner(System.in);
                                 scanner.reset();
-                                System.out.println("<Nome evento>"); //Gera CSV1
-                                message = "EVENTO CSV "+scanner.nextLine().trim();
+                                System.out.println("<Campo> <palavra a filtrar>");//CSVClient
+                                String[] aux = scanneraux.nextLine().trim().split(" ");
+                                message = "EVENTO CSV "+aux[0]+" "+aux[1];
                             }
                             case 5 -> {
                                 message = "LOGOUT";
@@ -184,11 +189,7 @@ public class Client {
                         String[] aux;
                         scanner.nextLine();
                         switch (choice) {
-                            case 4->{
-                                scanner.reset();
-                                System.out.println("<Nome evento>"); //Gera CSV1
-                                message = "EVENTO CSV "+scanner.nextLine().trim();
-                            }
+
                             case 6->{
                                 System.out.println("Digite os dados do evento:");
                                 scanner.reset();
@@ -224,8 +225,9 @@ public class Client {
                                 message = "EVENTO CONSULTA "+scanner.nextLine().trim();
                             }
                             case 12->{
+                                filename= "CSVfile.csv";
                                 scanner.reset();
-                                System.out.println("<Nome utilizador>"); //Gera CSV2
+                                System.out.println("<Nome evento>"); //Gera CSV2
                                 message = "EVENTO CSV2 "+scanner.nextLine().trim();
                             }
                             case 13->{
@@ -245,6 +247,13 @@ public class Client {
                                 aux = scanner.nextLine().trim().split(" ");
                                 message = "PRESENCAS "+aux[0]+" "+aux[1];
                             }
+                            case 16->{
+                                System.out.println();
+                                filename= "CSV1file.csv";
+                                scanner.reset();
+                                System.out.println("<Email>"); //Gera CSV1
+                                message = "EVENTO CSV "+scanner.nextLine().trim();
+                            }
                             default -> {
                                 System.out.println("Opção inválida");
                                 invalid = true;
@@ -256,13 +265,13 @@ public class Client {
                         out.writeObject(message);
                         out.flush();
                         System.out.println("String enviada: " + message);
+                        if (!(choice==12||choice==4||choice==16))
+                            response = (String) in.readObject();
 
-                        response = (String) in.readObject();
-
-                        if (response.contains("csv")) {
+                        if (choice==12||choice==4||choice==16) {
                             System.out.println("A receber ficheiro...");
-                            ReceiveFile receiveFile = new ReceiveFile(response, args);
-                            if (receiveFile.receiveFile())
+                            ReceiveFile receiveFile = new ReceiveFile(socket);
+                            if (receiveFile.receiveFile(filename))//TODO: Mudar nome do ficheiro
                                 System.out.println("Ficheiro recebido com sucesso");
                             else
                                 System.out.println("Erro ao receber ficheiro");
