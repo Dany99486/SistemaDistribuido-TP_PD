@@ -226,12 +226,12 @@ public class Client {
                             case 12->{
                                 scanner.reset();
                                 System.out.println("<Nome utilizador>");
-                                message = "CONSULTA EVENTO CSV "+scanner.nextLine().trim();
+                                message = "CONSULTA EVENTO CSV2 "+scanner.nextLine().trim();
                             }
                             case 13->{
                                 scanner.reset();
                                 System.out.println("<Email>");
-                                message = "EVENTO CONSULTA "+scanner.nextLine().trim();
+                                message = "EVENTO EMAIL "+scanner.nextLine().trim();
                             }
                             case 14->{
                                 scanner.reset();

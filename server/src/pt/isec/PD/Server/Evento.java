@@ -3,6 +3,8 @@ package pt.isec.PD.Server;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
 
@@ -170,7 +172,7 @@ public class Evento {
     }
 
     //TODO: Seleciona um evento atraves de um email de um utilizador
-    public synchronized String consultaEvento(String email, String[] args, String bdFileName) {
+    public synchronized String consultaEventoEmail(String email, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
 
@@ -189,7 +191,50 @@ public class Evento {
             String query = "SELECT * FROM eventos " +
                     "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                     "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.email = '"+email+"';";
+                    "WHERE utilizadores.email = '" + email + "';";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()) {
+                String nome = result.getString("nome");
+                String local = result.getString("local");
+                String data = result.getString("data");
+                String hora_inicio = result.getString("hora_inicio");
+                String hora_fim = result.getString("hora_fim");
+                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                        .append(" Hora de fim: ").append(hora_fim).append("\n");
+            }
+
+            connection.close();
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            resultado.append("Erro ao conectar à base de dados");
+        }
+        System.out.println(resultado.toString());
+        return resultado.toString();
+    }
+
+    public String consultaEvento(String name, String[] args, String bdFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
+        StringBuilder resultado = new StringBuilder();
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+
+            Connection connection = DriverManager.getConnection(url);
+            if (connection != null)
+                show += "\nConexão com a base de dados estabelecida com sucesso.";
+            else {
+                show += "\nConexão com a base de dados não foi estabelecida.";
+                return resultado.append("Erro de conexão com a base de dados").toString();
+            }
+
+            String query = "SELECT * FROM eventos " +
+                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                    "WHERE eventos.nome = '" + name + "';";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
@@ -600,7 +645,9 @@ public class Evento {
                 fileWriter.write(resultado.toString());
                 fileWriter.close();
                 canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
+                //canocialPath = file.getCanonicalPath() + File.separator + "presencas.csv";
             } catch (IOException e) {
+                System.out.println(e);
                 return -2;
             }
 
@@ -758,4 +805,5 @@ public class Evento {
     public String getCanonicalPathCSV() {
         return canocialPath;
     }
+
 }
