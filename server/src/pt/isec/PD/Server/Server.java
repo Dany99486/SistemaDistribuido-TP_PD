@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
+
     private int TIMEOUT = 10000;
     private final String[] args;
     private File localDirectory;
@@ -20,12 +21,17 @@ public class Server {
     private Evento evento;
     int nClients = 0;
     private String hertbeat;
+    private SharedDatabaseLock lock;
 
     public Server(String[] a) {
         this.args = a;
         this.clients = new ArrayList<>();
-        this.bd = new BD();
-        this.evento = new Evento();
+        lock = new SharedDatabaseLock();
+        this.bd = new BD(lock);
+        this.evento = new Evento(lock);
+    }
+    public class SharedDatabaseLock {
+        // Um objeto de bloqueio compartilhado para sincronização
     }
 
     public String server() {
@@ -45,7 +51,7 @@ public class Server {
         if (show != null)
             return null;
 
-        show = new BD().createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
+        show = new BD(new SharedDatabaseLock()).createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
 
         //TODO: Conexão com clientes via TCP
         ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, bd, evento, args, BDFileName);

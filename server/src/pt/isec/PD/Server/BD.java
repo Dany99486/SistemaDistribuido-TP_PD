@@ -9,6 +9,12 @@ public class BD {
     private String show;
     private String role;
     private String cc;
+    private final Server.SharedDatabaseLock lock;
+
+    public BD(Server.SharedDatabaseLock lock) {
+        this.lock = lock;
+    }
+
 
     public String getRole() {
         return role;
@@ -20,7 +26,9 @@ public class BD {
 
     //TODO: Criar base de dados se nao existir
     public String createBDIfNotExists(String[] args, String BDFileName) {
+
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+
 
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
@@ -82,7 +90,7 @@ public class BD {
     }
 
     //TODO: Verifica se utilizador existe
-    public synchronized boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
+    public boolean checkClientIfExists(String user, String pass, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         boolean exist = false;
         
@@ -90,22 +98,25 @@ public class BD {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
             show = url;
             show += "\nConectando à base de dados...";
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return false;
-            }
-            Statement statement = connection.createStatement();
-            String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
-            System.out.println(query);
-            ResultSet resultSet = statement.executeQuery(query);
-            cc = resultSet.getString("cartaoCidadao");
-            role = resultSet.getString("role");
-            exist = resultSet.next();
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return false;
+                }
+                Statement statement = connection.createStatement();
+                String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
+                System.out.println(query);
+                ResultSet resultSet = statement.executeQuery(query);
+                cc = resultSet.getString("cartaoCidadao");
+                role = resultSet.getString("role");
+                exist = resultSet.next();
 
-            connection.close();
+
+                connection.close();
+            }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
@@ -114,35 +125,36 @@ public class BD {
     }
 
     //TODO: Regista utilizador se nao existir
-    public synchronized int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
+    public int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return -1;
+                }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
+                String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, passe);
+                preparedStatement.setString(3, cc);
+                preparedStatement.setString(4, user);
+                preparedStatement.setString(5, USER);
+                int resultSet = preparedStatement.executeUpdate();
+
+                if (resultSet > 0)
+                    registed = 1;
+
+                connection.close();
             }
-
-            String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, passe);
-            preparedStatement.setString(3, cc);
-            preparedStatement.setString(4, user);
-            preparedStatement.setString(5, USER);
-            int resultSet = preparedStatement.executeUpdate();
-
-            if (resultSet > 0)
-                registed = 1;
-
-            connection.close();
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -157,25 +169,26 @@ public class BD {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    String query = "UPDATE utilizadores SET '" + coluna + "'='" + alteracao + "' WHERE cartaoCidadao='" + cartaoCC + "';";
+                    System.out.println(query);
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            String query = "UPDATE utilizadores SET '"+coluna+"'='"+alteracao+"' WHERE cartaoCidadao='"+cartaoCC+"';";
-            System.out.println(query);
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    int resultSet = preparedStatement.executeUpdate();
 
-            int resultSet = preparedStatement.executeUpdate();
+                    if (resultSet > 0)
+                        registed = 1;
 
-            if (resultSet > 0)
-                registed = 1;
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;

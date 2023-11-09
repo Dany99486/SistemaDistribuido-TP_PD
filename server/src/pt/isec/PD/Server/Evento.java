@@ -9,71 +9,78 @@ import java.util.Calendar;
 public class Evento {
     private String canocialPath;
     private String show;
+    private final Server.SharedDatabaseLock lock;
+
+    public Evento(Server.SharedDatabaseLock lock) {
+        this.lock = lock;
+    }
+
 
     //TODO: Regista um evento
-    public synchronized int criaEvento(String nome, String data_inicio, String data_fim, String local, String horaInicio, String horaFim, String[] args, String BDFileName) {
+    public  int criaEvento(String nome, String data_inicio, String data_fim, String local, String horaInicio, String horaFim, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
+                /*
+                int hora = Calendar.HOUR_OF_DAY;
+                int minuto = Calendar.MINUTE;
+                int segundo = Calendar.SECOND;
+                int dia = Calendar.DAY_OF_MONTH;
+                int mes = Calendar.MONTH;
+                int ano = Calendar.YEAR;*/
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
-            /*
-            int hora = Calendar.HOUR_OF_DAY;
-            int minuto = Calendar.MINUTE;
-            int segundo = Calendar.SECOND;
-            int dia = Calendar.DAY_OF_MONTH;
-            int mes = Calendar.MONTH;
-            int ano = Calendar.YEAR;*/
+                    String[] data = data_inicio.trim().split("/");
+                    int diaInicio = Integer.parseInt(data[0]);
+                    int mesInicio = Integer.parseInt(data[1]);
+                    int anoInicio = Integer.parseInt(data[2]);
+                    data = data_fim.trim().split("/");
+                    int diaFim = Integer.parseInt(data[0]);
+                    int mesFim = Integer.parseInt(data[1]);
+                    int anoFim = Integer.parseInt(data[2]);
 
-            String[] data =     data_inicio.trim().split("/");
-            int diaInicio = Integer.parseInt(data[0]);
-            int mesInicio = Integer.parseInt(data[1]);
-            int anoInicio = Integer.parseInt(data[2]);
-            data = data_fim.trim().split("/");
-            int diaFim = Integer.parseInt(data[0]);
-            int mesFim = Integer.parseInt(data[1]);
-            int anoFim = Integer.parseInt(data[2]);
+                    String[] aux = horaInicio.trim().split(":");
+                    int horaI = Integer.parseInt(aux[0]);
+                    int minutoI = Integer.parseInt(aux[1]);
+                    aux = horaFim.trim().split(":");
+                    int horaF = Integer.parseInt(aux[0]);
+                    int minutoF = Integer.parseInt(aux[1]);
 
-            String[] aux = horaInicio.trim().split(":");
-            int horaI = Integer.parseInt(aux[0]);
-            int minutoI = Integer.parseInt(aux[1]);
-            aux = horaFim.trim().split(":");
-            int horaF = Integer.parseInt(aux[0]);
-            int minutoF = Integer.parseInt(aux[1]);
+                    //Converter hora para minutos
+                    int horaBegin = horaI * 60 + minutoI;
+                    int horaEnd = horaF * 60 + minutoF;
 
-            //Converter hora para minutos
-            int horaBegin = horaI * 60 + minutoI;
-            int horaEnd = horaF * 60 + minutoF;
+                    int validade = horaBegin - horaEnd;
 
-            int validade = horaBegin - horaEnd;
+                    //String data_realizada = hora + ":" + minuto + ":" + segundo + " de " + dia + " de " + mes + " de " + ano;
 
-            //String data_realizada = hora + ":" + minuto + ":" + segundo + " de " + dia + " de " + mes + " de " + ano;
+                    String data_realizada = diaInicio + "/" + mesInicio + "/" + anoInicio + " - " + diaFim + "/" + mesFim + "/" + anoFim;
 
-            String data_realizada = diaInicio + "/" + mesInicio + "/" + anoInicio + " - " + diaFim + "/" + mesFim + "/" + anoFim;
+                    String query = "INSERT INTO eventos (nome,local,data,hora_inicio,hora_fim,code_validade) VALUES (?,?,?,?,?,?);";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setString(1, nome);
+                    preparedStatement.setString(2, local);
+                    preparedStatement.setString(3, data_realizada);
+                    preparedStatement.setString(4, horaInicio);
+                    preparedStatement.setString(5, horaFim);
+                    preparedStatement.setString(6, String.valueOf(validade));
+                    int resultSet = preparedStatement.executeUpdate();
 
-            String query = "INSERT INTO eventos (nome,local,data,hora_inicio,hora_fim,code_validade) VALUES (?,?,?,?,?,?);";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, nome);
-            preparedStatement.setString(2, local);
-            preparedStatement.setString(3, data_realizada);
-            preparedStatement.setString(4, horaInicio);
-            preparedStatement.setString(5, horaFim);
-            preparedStatement.setString(6, String.valueOf(validade));
-            int resultSet = preparedStatement.executeUpdate();
+                    if (resultSet > 0)
+                        registed = 1;
 
-            if (resultSet > 0)
-                registed = 1;
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -82,42 +89,43 @@ public class Evento {
     }
 
     //TODO: Edição de um evento
-    public synchronized int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName) {
+    public int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
         System.out.println("AQUI");
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    String query = "SELECT eventos.nome FROM eventos " +
+                            "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT eventos.nome FROM eventos " +
-                    "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo IS NULL;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next()) {
+                        connection.close();
+                        return registed;
+                    }
+                    query = "UPDATE eventos SET '" + coluna + "'='" + alteracao + "' WHERE nome='" + nome + "'" +
+                            "AND codigo IS NULL;";
+                    preparedStatement = connection.prepareStatement(query);
 
-            if (!result.next()) {
-                connection.close();
-                return registed;
-            }
-            query = "UPDATE eventos SET '"+coluna+"'='"+alteracao+"' WHERE nome='"+nome+"'" +
-                    "AND codigo IS NULL;";
-            preparedStatement = connection.prepareStatement(query);
+                    int resultSet = preparedStatement.executeUpdate();
+                    System.out.println(resultSet);
+                    if (resultSet > 0)
+                        registed = 1;
 
-            int resultSet = preparedStatement.executeUpdate();
-            System.out.println(resultSet);
-            if (resultSet > 0)
-                registed = 1;
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -126,42 +134,43 @@ public class Evento {
     }
 
     //TODO: Elimina um evento se não existirem presenças
-    public synchronized int eliminaEvento(String nome, String[] args, String bdFileName) {
+    public  int eliminaEvento(String nome, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    String query = "SELECT eventos.nome FROM eventos " +
+                            "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT eventos.nome FROM eventos " +
-                    "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.nome = '"+nome+"' AND eventos.codigo IS NULL;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next()) {
+                        connection.close();
+                        return registed;
+                    }
 
-            if (!result.next()) {
-                connection.close();
-                return registed;
-            }
+                    query = "DELETE FROM eventos WHERE nome='" + nome + "';";
+                    preparedStatement = connection.prepareStatement(query);
 
-            query = "DELETE FROM eventos WHERE nome='"+nome+"';";
-            preparedStatement = connection.prepareStatement(query);
+                    int resultSet = preparedStatement.executeUpdate();
 
-            int resultSet = preparedStatement.executeUpdate();
+                    if (resultSet > 0)
+                        registed = 1;
 
-            if (resultSet > 0)
-                registed = 1;
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -170,41 +179,42 @@ public class Evento {
     }
 
     //TODO: Seleciona um evento atraves de um email de um utilizador
-    public synchronized String consultaEventoEmail(String email, String[] args, String bdFileName) {
+    public  String consultaEventoEmail(String email, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return resultado.append("Erro de conexão com a base de dados").toString();
+                }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return resultado.append("Erro de conexão com a base de dados").toString();
+                String query = "SELECT * FROM eventos " +
+                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                        "WHERE utilizadores.email = '" + email + "';";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();
+
+                while (result.next()) {
+                    String nome = result.getString("nome");
+                    String local = result.getString("local");
+                    String data = result.getString("data");
+                    String hora_inicio = result.getString("hora_inicio");
+                    String hora_fim = result.getString("hora_fim");
+                    resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                            .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                            .append(" Hora de fim: ").append(hora_fim).append("\n");
+                }
+
+                connection.close();
             }
-
-            String query = "SELECT * FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.email = '" + email + "';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
-
-            while (result.next()) {
-                String nome = result.getString("nome");
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String hora_inicio = result.getString("hora_inicio");
-                String hora_fim = result.getString("hora_fim");
-                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
-                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                        .append(" Hora de fim: ").append(hora_fim).append("\n");
-            }
-
-            connection.close();
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
@@ -220,34 +230,35 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return resultado.append("Erro de conexão com a base de dados").toString();
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return resultado.append("Erro de conexão com a base de dados").toString();
-            }
+                    String query = "SELECT * FROM utilizadores " +
+                            "JOIN presencas ON utilizadores.cartaoCidadao = presencas.idCC " +
+                            "JOIN eventos ON presencas.idEvento = eventos.idEvento " +
+                            "WHERE eventos.nome = '" + name + "';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT * FROM utilizadores " +
-                    "JOIN presencas ON utilizadores.cartaoCidadao = presencas.idCC " +
-                    "JOIN eventos ON presencas.idEvento = eventos.idEvento " +
-                    "WHERE eventos.nome = '" + name + "';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    while (result.next()) {
+                        String nome = result.getString("nome");
+                        String CC = result.getString("cartaoCidadao");
+                        String email = result.getString("email");
 
-            while (result.next()) {
-                String nome = result.getString("nome");
-                String CC = result.getString("cartaoCidadao");
-                String email = result.getString("email");
-
-                resultado.append("Nome: ").append(nome).append(" CC: ").append(CC)
-                        .append(" Email: ").append(email).append("\n");
+                        resultado.append("Nome: ").append(nome).append(" CC: ").append(CC)
+                                .append(" Email: ").append(email).append("\n");
 
 
-            }
+                    }
 
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
@@ -257,49 +268,50 @@ public class Evento {
     }
 
     //TODO: Seleciona um evento atraves de um email de um utilizador, e com filtro
-    public synchronized String consultaEventoCLienteFiltro(String cc, String filtro, String[] args, String bdFileName) {
+    public  String consultaEventoCLienteFiltro(String cc, String filtro, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return resultado.append("Erro de conexão com a base de dados").toString();
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return resultado.append("Erro de conexão com a base de dados").toString();
-            }
+                    String query;
+                    if (filtro.isBlank()) {
+                        query = "SELECT * FROM eventos " +
+                                "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                                "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                                "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
+                    } else {
+                        query = "SELECT " + filtro + " FROM eventos " +
+                                "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                                "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                                "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
+                    }
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query;
-            if (filtro.isBlank()) {
-                query = "SELECT * FROM eventos " +
-                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                        "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
-            } else {
-                query = "SELECT " + filtro + " FROM eventos " +
-                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                        "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
-            }
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    while (result.next()) {
+                        String nome = result.getString("nome");
+                        String local = result.getString("local");
+                        String data = result.getString("data");
+                        String hora_inicio = result.getString("hora_inicio");
+                        String hora_fim = result.getString("hora_fim");
+                        resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                                .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                                .append(" Hora de fim: ").append(hora_fim).append("\n");
+                    }
 
-            while (result.next()) {
-                String nome = result.getString("nome");
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String hora_inicio = result.getString("hora_inicio");
-                String hora_fim = result.getString("hora_fim");
-                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
-                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                        .append(" Hora de fim: ").append(hora_fim).append("\n");
-            }
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
@@ -308,40 +320,41 @@ public class Evento {
     }
 
     //TODO: Seleciona um evento com filtro
-    public synchronized String consultaEventoFiltro(String campo, String filtro, String[] args, String bdFileName) {
+    public String consultaEventoFiltro(String campo, String filtro, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return resultado.append("Erro de conexão com a base de dados").toString();
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return resultado.append("Erro de conexão com a base de dados").toString();
-            }
+                    String query = "SELECT * FROM eventos " +
+                            //"JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "WHERE eventos.'" + campo + "' = '" + filtro + "';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT * FROM eventos " +
-                    //"JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "WHERE eventos.'"+campo+"' = '"+filtro+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    while (result.next()) {
+                        String nome = result.getString("nome");
+                        String local = result.getString("local");
+                        String data = result.getString("data");
+                        String hora_inicio = result.getString("hora_inicio");
+                        String hora_fim = result.getString("hora_fim");
+                        resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                                .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                                .append(" Hora de fim: ").append(hora_fim).append("\n");
+                    }
 
-            while (result.next()) {
-                String nome = result.getString("nome");
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String hora_inicio = result.getString("hora_inicio");
-                String hora_fim = result.getString("hora_fim");
-                resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
-                        .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                        .append(" Hora de fim: ").append(hora_fim).append("\n");
-            }
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
@@ -352,7 +365,7 @@ public class Evento {
     //---Presenças---
 
     //TODO: Regista presenças num evento
-    public synchronized int inserePresenca(String evento, String email, String[] args, String BDFileName) {
+    public int inserePresenca(String evento, String email, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
         System.out.println("entrou");
@@ -360,52 +373,53 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    int idEvento = 0;
+                    String idCC = "";
+                    boolean novaPresenca = false;
 
-            int idEvento = 0;
-            String idCC = "";
-            boolean novaPresenca = false;
+                    //TODO:======================
+                    String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
 
-            //TODO:======================
-            String query = "SELECT idEvento FROM eventos WHERE nome = '"+evento+"';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next())
+                        return registed;
+                    idEvento = result.getInt("idEvento");
 
-            if (!result.next())
-                return registed;
-            idEvento = result.getInt("idEvento");
-
-            query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '"+email+"';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
-
-
-            if (!result.next())
-                return registed;
-
-            idCC = result.getString("cartaoCidadao");
+                    query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '" + email + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
 
-            query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, idEvento);
-            preparedStatement.setString(2, idCC);
+                    if (!result.next())
+                        return registed;
 
-            int resultSet = preparedStatement.executeUpdate();
-
-            if (resultSet > 0)
-                registed = 1;
+                    idCC = result.getString("cartaoCidadao");
 
 
-            connection.close();
+                    query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+                    preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setInt(1, idEvento);
+                    preparedStatement.setString(2, idCC);
+
+                    int resultSet = preparedStatement.executeUpdate();
+
+                    if (resultSet > 0)
+                        registed = 1;
+
+
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -414,57 +428,57 @@ public class Evento {
     }
 
     //TODO: Elimina presenças de num evento
-    public synchronized int eliminaPresenca(String evento, String email, String[] args, String BDFileName) {
+    public  int eliminaPresenca(String evento, String email, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    int idEvento = 0;
+                    String idCC = "";
+                    boolean novaPresenca = false;
 
-            int idEvento = 0;
-            String idCC = "";
-            boolean novaPresenca = false;
+                    //TODO:======================
+                    String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
 
-            //TODO:======================
-            String query = "SELECT idEvento FROM eventos WHERE nome = '"+evento+"';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next())
+                        return registed;
+                    idEvento = result.getInt("idEvento");
 
-            if (!result.next())
-                return registed;
-            idEvento = result.getInt("idEvento");
-
-            query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '"+email+"';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
-
-
-            if (!result.next())
-                return registed;
-
-            idCC = result.getString("cartaoCidadao");
+                    query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '" + email + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
 
+                    if (!result.next())
+                        return registed;
 
-                query = "DELETE FROM presencas WHERE idEvento = '"+idEvento+"' AND idCC = '"+idCC+"'";
-                preparedStatement = connection.prepareStatement(query);
-                int resultSet = preparedStatement.executeUpdate();
-
-                if (resultSet > 0)
-                    registed = 1;
+                    idCC = result.getString("cartaoCidadao");
 
 
-            connection.close();
+                    query = "DELETE FROM presencas WHERE idEvento = '" + idEvento + "' AND idCC = '" + idCC + "'";
+                    preparedStatement = connection.prepareStatement(query);
+                    int resultSet = preparedStatement.executeUpdate();
+
+                    if (resultSet > 0)
+                        registed = 1;
+
+
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -473,7 +487,7 @@ public class Evento {
     }
 
     //TODO: Consulta presenças de num evento
-    public synchronized String consultaPresenca(String evento, String[] args, String BDFileName) {
+    public  String consultaPresenca(String evento, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         System.out.println("eaef");
         StringBuilder resultado = new StringBuilder();
@@ -481,34 +495,35 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return resultado.append("Erro de conexão com a base de dados").toString();
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return resultado.append("Erro de conexão com a base de dados").toString();
-            }
+                    String query = "SELECT codigo, idEvento, cartaoCidado, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                            "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                            "WHERE eventos.nome = '" + evento + "';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT codigo, idEvento, cartaoCidado, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.nome = '"+evento+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    while (result.next()) {
+                        String codigo = result.getString("codigo");
+                        String idEvento = result.getString("idEvento");
+                        String cartaoCidadao = result.getString("cartaoCidadao");
+                        String hora_inicio = result.getString("hora_inicio");
+                        String hora_fim = result.getString("hora_fim");
+                        resultado.append("Codigo: ").append(codigo).append(" idEvento: ").append(idEvento)
+                                .append(" CC: ").append(cartaoCidadao).append(" Hora de inicio: ").append(hora_inicio)
+                                .append(" Hora de fim: ").append(hora_fim).append("\n");
+                    }
 
-            while (result.next()) {
-                String codigo = result.getString("codigo");
-                String idEvento = result.getString("idEvento");
-                String cartaoCidadao = result.getString("cartaoCidadao");
-                String hora_inicio = result.getString("hora_inicio");
-                String hora_fim = result.getString("hora_fim");
-                resultado.append("Codigo: ").append(codigo).append(" idEvento: ").append(idEvento)
-                        .append(" CC: ").append(cartaoCidadao).append(" Hora de inicio: ").append(hora_inicio)
-                        .append(" Hora de fim: ").append(hora_fim).append("\n");
-            }
-
-            connection.close();
+                    connection.close();
+                }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             resultado.append("Erro ao conectar à base de dados");
@@ -517,78 +532,79 @@ public class Evento {
     }
 
     //TODO: Gera código de presenças de num evento
-    public synchronized int geraCodigo(int validade, String[] args, String BDFileName) {
+    public  int geraCodigo(int validade, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int codigo;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                    String query = "SELECT * FROM eventos; ";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT * FROM eventos; ";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    String dataInicio, dataFim, horaInicio, horaFim;
+                    int idEvent = 0;
+                    boolean encontrou = false;
 
-            String dataInicio, dataFim, horaInicio, horaFim;
-            int idEvent = 0;
-            boolean encontrou = false;
+                    while (result.next()) {
+                        String data = result.getString("data");
+                        dataInicio = data.split(" - ")[0];
+                        dataFim = data.split(" - ")[1];
+                        horaInicio = result.getString("hora_inicio");
+                        horaFim = result.getString("hora_fim");
+                        idEvent = result.getInt("idEvento");
+                        String validadeT = result.getString("code_validade");
 
-            while (result.next()) {
-                String data = result.getString("data");
-                dataInicio = data.split(" - ")[0];
-                dataFim = data.split(" - ")[1];
-                horaInicio = result.getString("hora_inicio");
-                horaFim = result.getString("hora_fim");
-                idEvent = result.getInt("idEvento");
-                String validadeT = result.getString("code_validade");
+                        if (Integer.parseInt(validadeT) > validade) {
+                            String[] dataA = dataInicio.trim().split("/");
+                            int diaInicio = Integer.parseInt(dataA[0]);
+                            int mesInicio = Integer.parseInt(dataA[1]);
+                            int anoInicio = Integer.parseInt(dataA[2]);
+                            dataA = dataFim.trim().split("/");
+                            int diaFim = Integer.parseInt(dataA[0]);
+                            int mesFim = Integer.parseInt(dataA[1]);
+                            int anoFim = Integer.parseInt(dataA[2]);
 
-                if (Integer.parseInt(validadeT) > validade) {
-                    String[] dataA = dataInicio.trim().split("/");
-                    int diaInicio = Integer.parseInt(dataA[0]);
-                    int mesInicio = Integer.parseInt(dataA[1]);
-                    int anoInicio = Integer.parseInt(dataA[2]);
-                    dataA = dataFim.trim().split("/");
-                    int diaFim = Integer.parseInt(dataA[0]);
-                    int mesFim = Integer.parseInt(dataA[1]);
-                    int anoFim = Integer.parseInt(dataA[2]);
+                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
+                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
+                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
+                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
+                                            encontrou = true;
+                        }
+                        if (encontrou)
+                            break;
+                    }
 
-                    if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
-                        if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
-                            if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
-                                if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
-                                    encontrou = true;
+                    query = "SELECT idEvento FROM eventos " +
+                            "WHERE eventos.idEvento = '" + idEvent + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
+
+                    if (!result.next()) {
+                        connection.close();
+                        return -2;
+                    }
+
+                    //Gera código de presenças
+                    codigo = (int) (Math.random() * 1000000);
+                    query = "UPDATE eventos SET codigo = '" + codigo + "' WHERE idEvento = '" + idEvent + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    int resultSet = preparedStatement.executeUpdate();
+                    if (resultSet <= 0)
+                        return -2;
+
+                    connection.close();
                 }
-                if (encontrou)
-                    break;
-            }
-
-            query = "SELECT idEvento FROM eventos " +
-                    "WHERE eventos.idEvento = '"+idEvent+"';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
-
-            if (!result.next()) {
-                connection.close();
-                return -2;
-            }
-
-            //Gera código de presenças
-            codigo = (int) (Math.random() * 1000000);
-            query = "UPDATE eventos SET codigo = '"+codigo+"' WHERE idEvento = '"+idEvent+"';";
-            preparedStatement = connection.prepareStatement(query);
-            int resultSet = preparedStatement.executeUpdate();
-            if (resultSet <= 0)
-                return -2;
-
-            connection.close();
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             return -2;
@@ -597,7 +613,7 @@ public class Evento {
     }
 
 
-    public synchronized int geraCSVClient(String campo, String param, String[] args, String BDFileName) {
+    public  int geraCSVClient(String campo, String param, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         StringBuilder resultado = new StringBuilder();
         System.out.println("GERACSVClient");
@@ -605,68 +621,69 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                        "WHERE eventos.nome = '"+evento+"';";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();*/
 
-            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.nome = '"+evento+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();*/
+                    String query = "SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
+                            "WHERE " + campo + "='" + param + "';";
+                    System.out.println(query + "\n\n");
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query="SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
-                    "WHERE "+ campo +"='"+param+"';";
-            System.out.println(query+"\n\n");
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next())
+                        return -1;
 
-            if (!result.next())
-                return -1;
-
-            String nome = result.getString("nome");
-            resultado.append("\"Designação\";\"").append(nome).append("\"\n");
-            String local = result.getString("local");
-            resultado.append("\"Local\";\"").append(local).append("\"\n");
-            String data = result.getString("data");
-            resultado.append("\"Data\";\"").append(data).append("\"\n");
-            String horainicio = result.getString("hora_inicio");
-            resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
-            String horafim = result.getString("hora_fim");
-            resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
+                    String nome = result.getString("nome");
+                    resultado.append("\"Designação\";\"").append(nome).append("\"\n");
+                    String local = result.getString("local");
+                    resultado.append("\"Local\";\"").append(local).append("\"\n");
+                    String data = result.getString("data");
+                    resultado.append("\"Data\";\"").append(data).append("\"\n");
+                    String horainicio = result.getString("hora_inicio");
+                    resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
+                    String horafim = result.getString("hora_fim");
+                    resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
 
 
-            System.out.println(resultado);
-            System.out.println("\n\n\n");
+                    System.out.println(resultado);
+                    System.out.println("\n\n\n");
 
-            query="SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.'"+campo+"' = '" + param + "';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
+                    query = "SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
+                            "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                            "WHERE eventos.'" + campo + "' = '" + param + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
-            resultado.append("\n\n");
-            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+                    resultado.append("\n\n");
+                    resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
 
-            System.out.println(resultado);
-            System.out.println("\n\n\n");
-            while (result.next()) {
-                String nomeUser = result.getString("nome");
-                String cc = result.getString("cartaoCidadao");
-                String email = result.getString("email");
+                    System.out.println(resultado);
+                    System.out.println("\n\n\n");
+                    while (result.next()) {
+                        String nomeUser = result.getString("nome");
+                        String cc = result.getString("cartaoCidadao");
+                        String email = result.getString("email");
 
-                resultado.append("\""+nomeUser+"\";\""+cc+"\";\""+email+"\"\n");
-            }
-            System.out.println("ficheiro:");
-            System.out.println(resultado.toString());
-            connection.close();
+                        resultado.append("\"" + nomeUser + "\";\"" + cc + "\";\"" + email + "\"\n");
+                    }
+                    System.out.println("ficheiro:");
+                    System.out.println(resultado.toString());
+                    connection.close();
+                }
 
             //Gerar arquivo CSV
             try {
@@ -688,7 +705,7 @@ public class Evento {
         return 0;
     }
     //TODO: Gera CSV presenças de um determinado evento
-    public synchronized int geraCSV2(String evento, String[] args, String BDFileName) {
+    public  int geraCSV2(String evento, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         StringBuilder resultado = new StringBuilder();
         System.out.println("GERACSV2");
@@ -696,68 +713,69 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                        "WHERE eventos.nome = '"+evento+"';";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();*/
 
-            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.nome = '"+evento+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();*/
+                    String query = "SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
+                            "WHERE nome = '" + evento + "';";
+                    System.out.println(query + "\n\n");
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query="SELECT nome, local, data, hora_inicio, hora_fim FROM eventos " +
-                    "WHERE nome = '"+evento+"';";
-            System.out.println(query+"\n\n");
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next())
+                        return -1;
 
-            if (!result.next())
-                return -1;
-
-            String nome = result.getString("nome");
-            resultado.append("\"Designação\";\"").append(nome).append("\"\n");
-            String local = result.getString("local");
-            resultado.append("\"Local\";\"").append(local).append("\"\n");
-            String data = result.getString("data");
-            resultado.append("\"Data\";\"").append(data).append("\"\n");
-            String horainicio = result.getString("hora_inicio");
-            resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
-            String horafim = result.getString("hora_fim");
-            resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
+                    String nome = result.getString("nome");
+                    resultado.append("\"Designação\";\"").append(nome).append("\"\n");
+                    String local = result.getString("local");
+                    resultado.append("\"Local\";\"").append(local).append("\"\n");
+                    String data = result.getString("data");
+                    resultado.append("\"Data\";\"").append(data).append("\"\n");
+                    String horainicio = result.getString("hora_inicio");
+                    resultado.append("\"Hora Início\";\"").append(horainicio).append("\"\n");
+                    String horafim = result.getString("hora_fim");
+                    resultado.append("\"Hora fim\";\"").append(horafim).append("\"\n");
 
 
-            System.out.println(resultado);
-            System.out.println("\n\n\n");
+                    System.out.println(resultado);
+                    System.out.println("\n\n\n");
 
-            query="SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.nome = '" + evento + "';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
+                    query = "SELECT utilizadores.nome, utilizadores.cartaoCidadao ,utilizadores.email FROM eventos " +
+                            "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                            "WHERE eventos.nome = '" + evento + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
-            resultado.append("\n\n");
-            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+                    resultado.append("\n\n");
+                    resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
 
-            System.out.println(resultado);
-            System.out.println("\n\n\n");
-            while (result.next()) {
-                String nomeUser = result.getString("nome");
-                String cc = result.getString("cartaoCidadao");
-                String email = result.getString("email");
+                    System.out.println(resultado);
+                    System.out.println("\n\n\n");
+                    while (result.next()) {
+                        String nomeUser = result.getString("nome");
+                        String cc = result.getString("cartaoCidadao");
+                        String email = result.getString("email");
 
-                resultado.append("\""+nomeUser+"\";\""+cc+"\";\""+email+"\"\n");
-            }
-            System.out.println("ficheiro:");
-            System.out.println(resultado.toString());
-            connection.close();
+                        resultado.append("\"" + nomeUser + "\";\"" + cc + "\";\"" + email + "\"\n");
+                    }
+                    System.out.println("ficheiro:");
+                    System.out.println(resultado.toString());
+                    connection.close();
+                }
 
             //Gerar arquivo CSV
             try {
@@ -780,7 +798,7 @@ public class Evento {
     }
 
     //TODO: Gera CSV presenças de um determinado evento
-    public synchronized int geraCSV1(String utilizador, String[] args, String BDFileName) {
+    public  int geraCSV1(String utilizador, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         StringBuilder resultado = new StringBuilder();
         System.out.println("GERACSV1");
@@ -788,61 +806,62 @@ public class Evento {
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return -1;
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return -1;
-            }
+                /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                        "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                        "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                        "WHERE eventos.nome = '"+evento+"';";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();*/
 
-            /*String query = "SELECT utilizadores.nome, cartaoCidadao, data, local, email, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE eventos.nome = '"+evento+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();*/
+                    String query = "SELECT nome, cartaoCidadao, email FROM utilizadores " +
+                            "WHERE email = '" + utilizador + "';";
+                    System.out.println(query + "\n\n");
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query="SELECT nome, cartaoCidadao, email FROM utilizadores " +
-                    "WHERE email = '"+utilizador+"';";
-            System.out.println(query+"\n\n");
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (!result.next())
+                        return -1;
 
-            if (!result.next())
-                return -1;
+                    String nome = result.getString("nome");
+                    String cc = result.getString("cartaoCidadao");
+                    String email = result.getString("email");
 
-            String nome = result.getString("nome");
-            String cc = result.getString("cartaoCidadao");
-            String email = result.getString("email");
+                    resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
+                    resultado.append("\"" + nome + "\";\"" + cc + "\";\"" + email + "\"\n");
+                    System.out.println(resultado);
 
-            resultado.append("\"Nome\";\"Número identificação\";\"Email\"\n");
-            resultado.append("\""+nome+"\";\""+cc+"\";\""+email+"\"\n");
-            System.out.println(resultado);
+                    query = "SELECT eventos.nome, eventos.local , eventos.data, eventos.hora_inicio FROM eventos " +
+                            "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                            "WHERE utilizadores.email = '" + utilizador + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
-            query="SELECT eventos.nome, eventos.local , eventos.data, eventos.hora_inicio FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.email = '" + utilizador + "';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
-
-            resultado.append("\n\n");
-            resultado.append("\"Designação\";\"Local\";\"Data\";\"Hora Início\"\n");
+                    resultado.append("\n\n");
+                    resultado.append("\"Designação\";\"Local\";\"Data\";\"Hora Início\"\n");
 
 
-            while (result.next()) {
-                String nomeevento = result.getString("nome");
-                String local = result.getString("local");
-                String data = result.getString("data");
-                String horainicio = result.getString("hora_inicio");
+                    while (result.next()) {
+                        String nomeevento = result.getString("nome");
+                        String local = result.getString("local");
+                        String data = result.getString("data");
+                        String horainicio = result.getString("hora_inicio");
 
-                resultado.append("\"").append(nomeevento).append("\";\"").append(local).append("\";\"").append(data).append("\";\"").append(horainicio).append("\"\n");
-            }
-            System.out.println("ficheiro:");
-            System.out.println(resultado.toString());
-            connection.close();
+                        resultado.append("\"").append(nomeevento).append("\";\"").append(local).append("\";\"").append(data).append("\";\"").append(horainicio).append("\"\n");
+                    }
+                    System.out.println("ficheiro:");
+                    System.out.println(resultado.toString());
+                    connection.close();
+                }
 
             //Gerar arquivo CSV
             try {
@@ -865,85 +884,86 @@ public class Evento {
     }
 
     //TODO: Inserir código de presenças num evento, pelo cliente
-    public synchronized String insereCodigo(String cc, int code, String[] args, String BDFileName) {
+    public  String insereCodigo(String cc, int code, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
 
         try {
             show = url;
             show += "\nConectando à base de dados...";
+                synchronized (lock) {
+                    Connection connection = DriverManager.getConnection(url);
+                    if (connection != null)
+                        show += "\nConexão com a base de dados estabelecida com sucesso.";
+                    else {
+                        show += "\nConexão com a base de dados não foi estabelecida.";
+                        return "Erro de conexão com a base de dados";
+                    }
 
-            Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                show += "\nConexão com a base de dados estabelecida com sucesso.";
-            else {
-                show += "\nConexão com a base de dados não foi estabelecida.";
-                return "Erro de conexão com a base de dados";
-            }
+                    String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
+                            "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                            "WHERE utilizadores.cartaoCidadao = '" + cc + "'" +
+                            "AND eventos.codigo = '" + code + "';";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet result = preparedStatement.executeQuery();
 
-            String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
-                    "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                    "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                    "WHERE utilizadores.cartaoCidadao = '"+cc+"'" +
-                    "AND eventos.codigo = '"+code+"';";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet result = preparedStatement.executeQuery();
+                    if (result.first()) {
+                        connection.close();
+                        return "Está inscrito em um evento";
+                    }
 
-            if (result.first()) {
-                connection.close();
-                return "Está inscrito em um evento";
-            }
+                    query = "SELECT data, idEvento, hora_inicio, hora_fim, code_validade FROM eventos " +
+                            "WHERE codigo = '" + code + "';";
+                    preparedStatement = connection.prepareStatement(query);
+                    result = preparedStatement.executeQuery();
 
-            query = "SELECT data, idEvento, hora_inicio, hora_fim, code_validade FROM eventos " +
-                    "WHERE codigo = '"+code+"';";
-            preparedStatement = connection.prepareStatement(query);
-            result = preparedStatement.executeQuery();
+                    String dataInicio, dataFim, horaInicio, horaFim;
+                    int idEvent = 0;
+                    boolean regista = false;
 
-            String dataInicio, dataFim, horaInicio, horaFim;
-            int idEvent = 0;
-            boolean regista = false;
+                    while (result.next()) {
+                        idEvent = result.getInt("idEvento");
+                        String data = result.getString("data");
+                        dataInicio = data.split(" - ")[0];
+                        dataFim = data.split(" - ")[1];
+                        horaInicio = result.getString("hora_inicio");
+                        horaFim = result.getString("hora_fim");
+                        String validadeT = result.getString("code_validade");
 
-            while (result.next()) {
-                idEvent = result.getInt("idEvento");
-                String data = result.getString("data");
-                dataInicio = data.split(" - ")[0];
-                dataFim = data.split(" - ")[1];
-                horaInicio = result.getString("hora_inicio");
-                horaFim = result.getString("hora_fim");
-                String validadeT = result.getString("code_validade");
+                        if (Integer.parseInt(validadeT) > 0) {
+                            String[] dataA = dataInicio.trim().split("/");
+                            int diaInicio = Integer.parseInt(dataA[0]);
+                            int mesInicio = Integer.parseInt(dataA[1]);
+                            int anoInicio = Integer.parseInt(dataA[2]);
+                            dataA = dataFim.trim().split("/");
+                            int diaFim = Integer.parseInt(dataA[0]);
+                            int mesFim = Integer.parseInt(dataA[1]);
+                            int anoFim = Integer.parseInt(dataA[2]);
 
-                if (Integer.parseInt(validadeT) > 0) {
-                    String[] dataA = dataInicio.trim().split("/");
-                    int diaInicio = Integer.parseInt(dataA[0]);
-                    int mesInicio = Integer.parseInt(dataA[1]);
-                    int anoInicio = Integer.parseInt(dataA[2]);
-                    dataA = dataFim.trim().split("/");
-                    int diaFim = Integer.parseInt(dataA[0]);
-                    int mesFim = Integer.parseInt(dataA[1]);
-                    int anoFim = Integer.parseInt(dataA[2]);
+                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
+                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
+                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
+                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
+                                            regista = true;
+                        }
+                        if (regista)
+                            break;
+                    }
 
-                    if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
-                        if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
-                            if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
-                                if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
-                                    regista = true;
+                    query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+                    preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setInt(1, idEvent);
+                    preparedStatement.setString(2, cc);
+
+                    int resultSet = preparedStatement.executeUpdate();
+
+                    if (resultSet != 0) {
+                        connection.close();
+                        return "Não foi inserida a presença";
+                    }
+
+                    connection.close();
                 }
-                if (regista)
-                    break;
-            }
-
-            query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, idEvent);
-            preparedStatement.setString(2, cc);
-
-            int resultSet = preparedStatement.executeUpdate();
-
-            if (resultSet != 0) {
-                connection.close();
-                return "Não foi inserida a presença";
-            }
-
-            connection.close();
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             return "Erro ao conectar à base de dados";
