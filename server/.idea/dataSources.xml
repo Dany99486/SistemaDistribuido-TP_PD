@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="serverdatabase" uuid="ccd4921c-9e7d-4105-ad20-44c52b668981">
+    <data-source source="LOCAL" name="serverdatabase" uuid="8acfef7c-279c-47f4-a49d-2c5971fd8f7f">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Danie\Documents\GitHub\SistemaDistribuido-TP_PD\server\resources\serverdatabase.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\ISEC\3_ano\PD\TrabalhoPratico\SistemaDistribuido-TP_PD\server\resources\serverdatabase.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.43.0/org/xerial/sqlite-jdbc/3.43.0.0/sqlite-jdbc-3.43.0.0.jar</url>
+        </library>
         <library>
           <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.43.0/org/xerial/sqlite-jdbc/3.43.0.0/sqlite-jdbc-3.43.0.0.jar</url>
         </library>

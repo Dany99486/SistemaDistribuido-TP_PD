@@ -285,7 +285,7 @@ public class Evento {
                     }
 
                     String query;
-                    if (filtro.isBlank()) {
+                    if (filtro.isBlank() || filtro.equalsIgnoreCase("sem_filtro")) {
                         query = "SELECT * FROM eventos " +
                                 "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                                 "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
@@ -884,7 +884,7 @@ public class Evento {
     }
 
     //TODO: Inserir código de presenças num evento, pelo cliente
-    public  String insereCodigo(String cc, int code, String[] args, String BDFileName) {
+    public String insereCodigo(String cc, int code, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
 
         try {
@@ -899,7 +899,7 @@ public class Evento {
                         return "Erro de conexão com a base de dados";
                     }
 
-                    String query = "SELECT data, hora_inicio, hora_fim, code_validade FROM eventos " +
+                    String query = "SELECT * FROM eventos " +
                             "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                             "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                             "WHERE utilizadores.cartaoCidadao = '" + cc + "'" +

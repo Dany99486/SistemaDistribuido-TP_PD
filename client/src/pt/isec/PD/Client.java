@@ -157,22 +157,27 @@ public class Client {
                             case 2 -> {
                                 scanner.reset();
                                 System.out.println("<Código>");
-                                message = "CODIGO " + scanner.nextLine().trim();
+                                String[] aux = scanner.next().trim().split(" ");
+                                scanner.nextLine();
+                                message = "CODIGO " + aux[0];
                             }
                             case 3 -> {
                                 scanner.reset();
                                 System.out.println("<Filtro se existir>");
-                                if (scanner.hasNext())
-                                    message = "CONSULTA "+scanner.nextLine().trim();
+                                String[] aux = scanner.next().trim().split(" ");
+                                scanner.nextLine();
+                                if (aux[0].equalsIgnoreCase("nenhum"))
+                                    message = "CONSULTA sem_filtro";
                                 else
-                                    message = "CONSULTA "+" ";
+                                    message = "CONSULTA " + aux[0];
                             }
                             case 4 -> {
-                                filename= "CSVClientfile.csv";
-                                Scanner scanneraux=new Scanner(System.in);
+                                filename = "CSVClientfile.csv";
+                                Scanner scanneraux = new Scanner(System.in);
                                 scanner.reset();
                                 System.out.println("<Campo> <palavra a filtrar>");//CSVClient
-                                String[] aux = scanneraux.nextLine().trim().split(" ");
+                                String[] aux = scanneraux.next().trim().split(" ");
+                                scanner.nextLine();
                                 message = "EVENTO CSV "+aux[0]+" "+aux[1];
                             }
                             case 5 -> {
@@ -185,11 +190,14 @@ public class Client {
                             }
                         }
                     }
-                    if (admin) {
+                    if (choice >= 5 && admin) {
                         String[] aux;
                         scanner.nextLine();
                         switch (choice) {
-
+                            case 5 -> {
+                                message = "LOGOUT";
+                                break;
+                            }
                             case 6->{
                                 System.out.println("Digite os dados do evento:");
                                 scanner.reset();
@@ -206,7 +214,8 @@ public class Client {
                             case 8->{
                                 scanner.reset();
                                 System.out.println("<Nome evento>");
-                                message = "EVENTO APAGAR "+scanner.nextLine().trim();
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "EVENTO APAGAR "+ aux[0];
                             }
                             case 9->{
                                 scanner.reset();
@@ -283,7 +292,7 @@ public class Client {
                             System.exit(0);
                         }
                     }
-                } while (true);
+                } while (!message.equalsIgnoreCase("LOGOUT"));
 
             } catch (IOException e) {
                 e.printStackTrace();
