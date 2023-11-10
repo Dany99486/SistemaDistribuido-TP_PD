@@ -907,7 +907,7 @@ public class Evento {
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
-                    if (result.first()) {
+                    if (result.next()) {
                         connection.close();
                         return "Está inscrito em um evento";
                     }
@@ -950,17 +950,20 @@ public class Evento {
                             break;
                     }
 
-                    query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
-                    preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.setInt(1, idEvent);
-                    preparedStatement.setString(2, cc);
+                    if (regista) {
+                        query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+                        preparedStatement = connection.prepareStatement(query);
+                        preparedStatement.setInt(1, idEvent);
+                        preparedStatement.setString(2, cc);
 
-                    int resultSet = preparedStatement.executeUpdate();
+                        int resultSet = preparedStatement.executeUpdate();
 
-                    if (resultSet != 0) {
-                        connection.close();
-                        return "Não foi inserida a presença";
-                    }
+                        if (resultSet <= 0) {
+                            connection.close();
+                            return "Não foi inserida a presença";
+                        }
+                    } else
+                        return "O código já está inválido";
 
                     connection.close();
                 }
