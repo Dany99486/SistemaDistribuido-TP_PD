@@ -271,7 +271,7 @@ public class Evento {
     public  String consultaEventoCLienteFiltro(String cc, String filtro, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
-
+        System.out.println("AQUI");
         try {
             show = url;
             show += "\nConectando à base de dados...";
@@ -291,23 +291,32 @@ public class Evento {
                                 "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                                 "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
                     } else {
-                        query = "SELECT " + filtro + " FROM eventos " +
+                        query = "SELECT eventos." + filtro + " FROM eventos " +
                                 "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                                 "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                                "WHERE utilizadores.cartaoCidadao = '" + cc + "';";
+                                "WHERE utilizadores.cartaoCidadao='" + cc + "';";
                     }
+                    System.out.println(query);
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
                     while (result.next()) {
-                        String nome = result.getString("nome");
-                        String local = result.getString("local");
-                        String data = result.getString("data");
-                        String hora_inicio = result.getString("hora_inicio");
-                        String hora_fim = result.getString("hora_fim");
-                        resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
-                                .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                                .append(" Hora de fim: ").append(hora_fim).append("\n");
+                        if (filtro.isBlank() || filtro.equalsIgnoreCase("sem_filtro")) {
+
+                            String nome = result.getString("nome");
+                            String local = result.getString("local");
+                            String data = result.getString("data");
+                            String hora_inicio = result.getString("hora_inicio");
+                            String hora_fim = result.getString("hora_fim");
+                            resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
+                                    .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
+                                    .append(" Hora de fim: ").append(hora_fim).append("\n");
+                        } else {
+                            String aux = result.getString(filtro);
+                            resultado.append(filtro).append(": ").append(aux).append("\n");
+                        }
+
+                        System.out.println(resultado.toString());
                     }
 
                     connection.close();
