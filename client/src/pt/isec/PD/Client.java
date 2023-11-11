@@ -40,19 +40,23 @@ public class Client {
                 int choice = scanner.nextInt();
 
                 String action;
+                //Espaço de 10 segundos para o cliente se autenticar
                 if (choice == 1) {
                     action = AUTENTICAR;
                     scanner.nextLine();
+
+                    message = action;
+
+                    System.out.println("A autenticar ...");
+                    out.writeObject(message);
+                    out.flush();
 
                     System.out.println("Digite o seu endereço de e-mail: ");
                     String email = scanner.nextLine();
                     System.out.println("Digite a sua senha: ");
                     String password = scanner.nextLine();
 
-                     message = action + " " + email + " " + password;
-
-
-
+                    message = email + " " + password;
 
                 } else if (choice == 2) {
                     action = REGISTAR;
@@ -66,7 +70,6 @@ public class Client {
                     String email = scanner.nextLine();
                     System.out.println("Digite a sua senha: ");
                     String password = scanner.nextLine();
-
 
                     message = action + " " + email + " " + password + " " + cc + " " + nome;
                 } else {
@@ -271,10 +274,17 @@ public class Client {
                         }
                     }
 
-                    if (!invalid) { //Não vale a pena enviar se a opção não exsitir do lado do servidor
+                    if (!invalid) { //Não vale a pena enviar se a opção não existir do lado do servidor
+
+                        if (response.equalsIgnoreCase("Erro: Timeout")) {
+                            System.out.println("Tente novamente, timeout excedido");
+                            System.exit(0);
+                        }
+
                         out.writeObject(message);
                         out.flush();
                         System.out.println("String enviada: " + message);
+
                         if (!(choice==12||choice==4||choice==16))
                             response = (String) in.readObject();
 

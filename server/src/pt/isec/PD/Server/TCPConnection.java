@@ -32,6 +32,7 @@ public class TCPConnection extends Thread {
     private String role;
     private BD bd;
     private Evento evento;
+    private boolean open = true;
 
     public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
@@ -59,7 +60,26 @@ public class TCPConnection extends Thread {
                 String[] aux = recebido.trim().split(" ");
 
                 if (aux[0].equalsIgnoreCase(AUTENTICAR)) {
-                    boolean verificaNaBDCliente = bd.checkClientIfExists(aux[1], aux[2], args, BDFileName);
+                    //Antes de realizar o login
+                    Verifica10s verifica10s = new Verifica10s(TIMEOUT);
+                    verifica10s.start();
+
+                    //Recebe o login
+                    recebido = (String) in.readObject();
+                    String[] aux2 = recebido.trim().split(" ");
+
+                    if (verifica10s.isTimeout()) {
+                        envia = "Erro: Timeout";
+                        out.writeObject(envia);
+                        out.flush();
+                        toClientSocket.close();
+                        verificaConectados();
+                        open = false;
+                        return;
+                    }
+
+                    //Realizar
+                    boolean verificaNaBDCliente = bd.checkClientIfExists(aux2[0], aux2[1], args, BDFileName);
                     cc = bd.getCC();
                     role = bd.getRole();
                     //System.out.println("role: " + role);
@@ -216,7 +236,7 @@ public class TCPConnection extends Thread {
                 out.flush();
 
                 verificaConectados();
-            }while (true);
+            }while (open);
 
         } catch (IOException e) {
             msgShow = "\nErro na comunicação com o cliente atual: " + e;

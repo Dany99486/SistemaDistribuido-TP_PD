@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-
-    private int TIMEOUT = 10000;
+    private int TIMEOUT = 1000;
     private final String[] args;
     private File localDirectory;
     private String BDFileName = "serverdatabase.db";
@@ -26,7 +25,7 @@ public class Server {
     public Server(String[] a) {
         this.args = a;
         this.clients = new ArrayList<>();
-        lock = new SharedDatabaseLock();
+        this.lock = new SharedDatabaseLock();
         this.bd = new BD(lock);
         this.evento = new Evento(lock);
     }
