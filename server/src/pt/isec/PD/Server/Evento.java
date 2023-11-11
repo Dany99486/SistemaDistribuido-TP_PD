@@ -541,7 +541,7 @@ public class Evento {
     }
 
     //TODO: Gera código de presenças de num evento
-    public  int geraCodigo(int validade, String[] args, String BDFileName) {
+    public int geraCodigo(String evento, int validade, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int codigo;
 
@@ -557,7 +557,7 @@ public class Evento {
                         return -1;
                     }
 
-                    String query = "SELECT * FROM eventos; ";
+                    String query = "SELECT * FROM eventos WHERE nome = '" + evento + "';";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -592,6 +592,12 @@ public class Evento {
                         }
                         if (encontrou)
                             break;
+                    }
+
+                    if (!encontrou) {
+                        connection.close();
+                        System.out.println("O evento, " + evento + " não existe");
+                        return -2;
                     }
 
                     query = "SELECT idEvento FROM eventos " +

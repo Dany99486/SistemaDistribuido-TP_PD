@@ -225,8 +225,9 @@ public class Client {
                             }
                             case 10->{
                                 scanner.reset();
-                                System.out.println("<Tempo>");
-                                message = "GERAR "+scanner.nextLine().trim();
+                                System.out.println("<Nome Evento> <Tempo>");
+                                aux = scanner.nextLine().trim().split(" ");
+                                message = "GERAR "+aux[0]+" "+aux[1];
                             }
                             case 11->{
                                 scanner.reset();

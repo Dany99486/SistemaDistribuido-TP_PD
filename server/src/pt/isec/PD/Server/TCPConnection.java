@@ -156,15 +156,14 @@ public class TCPConnection extends Thread {
                         envia = evento.consultaPresenca(aux[1], args, BDFileName);
                     }
                     if (aux[0].equalsIgnoreCase(GERAR)) {
-                        if (aux.length != 2)
+                        if (aux.length != 3)
                             defaultRegistoReturn(-3);
                         else {
                             int x = 0;
                             boolean atualiza = true;
                             try {
-                                x = Integer.parseInt(aux[1]);
+                                x = Integer.parseInt(aux[2]);
                                 if (x < 0) {
-                                    atualiza = false;
                                     throw new Exception("Valores negativos");
                                 }
                             } catch (Exception e) {
@@ -172,7 +171,7 @@ public class TCPConnection extends Thread {
                             }
                             if (atualiza) {
                                 //Só precisa da validade, encontra depois um evento que existe com esta validade
-                                int registo = evento.geraCodigo(x, args, BDFileName);
+                                int registo = evento.geraCodigo(aux[1], x, args, BDFileName);
                                 if (registo < 0)
                                     defaultRegistoReturn(registo);
                                 else
