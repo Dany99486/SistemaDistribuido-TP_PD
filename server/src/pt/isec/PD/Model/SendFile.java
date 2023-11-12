@@ -1,4 +1,4 @@
-package pt.isec.PD.Server;
+package pt.isec.PD.Model;
 
 import java.io.*;
 import java.net.Socket;

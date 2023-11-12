@@ -1,13 +1,11 @@
-package pt.isec.PD.Server;
+package pt.isec.PD.Model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import pt.isec.PD.ServerBackup.Heartbeat;
 
 public class HeartbeatSender extends Thread {
     private final String multicastAddress = "230.44.44.44";

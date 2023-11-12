@@ -1,10 +1,7 @@
-package pt.isec.PD.Server;
+package pt.isec.PD.Model;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package pt.isec.PD.UI;
 
-import pt.isec.PD.Server.Server;
+import pt.isec.PD.Model.Server;
 
 public class ServerUI {
     private final Server server;

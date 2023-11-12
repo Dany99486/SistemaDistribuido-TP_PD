@@ -1,6 +1,6 @@
-package pt.isec.PD.ServerBackup;
+package pt.isec.PD.Model;
 
-import java.io.*;
+import java.io.IOException;
 
 public class MainServerBackup {
 

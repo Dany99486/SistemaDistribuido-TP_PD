@@ -1,4 +1,4 @@
-package pt.isec.PD.Server;
+package pt.isec.PD.Model;
 
 public class Verifica10s extends Thread {
     private final int TIMEOUT;

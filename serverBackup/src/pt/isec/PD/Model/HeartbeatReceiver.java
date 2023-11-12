@@ -1,13 +1,11 @@
-package pt.isec.PD.ServerBackup;
+package pt.isec.PD.Model;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import pt.isec.PD.ServerBackup.Heartbeat;
 
 public class HeartbeatReceiver extends Thread {
     public void run() {

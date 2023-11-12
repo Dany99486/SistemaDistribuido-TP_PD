@@ -1,10 +1,6 @@
-package pt.isec.PD.ServerBackup;
+package pt.isec.PD.Model;
 
-import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.Calendar;
-import java.util.Scanner;
+import java.io.File;
 
 public class ServerBackup {
     private String[] args;
