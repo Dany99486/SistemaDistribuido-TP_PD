@@ -27,6 +27,7 @@ public class ServerBackup {
                 System.out.println("A diretoria está vazia.");
             } else {
                 System.out.println("A diretoria não está vazia. Ela contém " + files.length + " arquivo(s) ou subdiretório(s).");
+                System.exit(-1);
             }
         } else {
             System.out.println("O diretório especificado não existe ou não é uma diretoria válida.");
