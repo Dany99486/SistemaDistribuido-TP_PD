@@ -1,7 +1,14 @@
 package pt.isec.PD.Model;
 
+import pt.isec.PD.RMI.GetRemoteBDObserverInterface;
+import pt.isec.PD.RMI.GetRemoteService;
+
 import java.io.*;
 import java.net.Socket;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +18,9 @@ public class Server {
     private File localDirectory;
     private String BDFileName = "serverdatabase.db";
     private String BDCanonicalFilePath = null;
-    private String RMIService;
+    private String RMIServiceName,RMIPort;
+
+    List<GetRemoteBDObserverInterface> observers;
     private List<Socket> clients;
     private BD bd;
     private Evento evento;
@@ -21,6 +30,7 @@ public class Server {
 
     public Server(String[] a) {
         this.args = a;
+        this.observers = new ArrayList<>();
         this.clients = new ArrayList<>();
         this.lock = new SharedDatabaseLock();
         this.bd = new BD(lock);
@@ -38,9 +48,10 @@ public class Server {
             return show;
         }
 
-        RMIService = args[2];
+        RMIServiceName = args[2];
+        RMIPort = args[3];
 
-        HeartbeatSender heartbeatReceiver = new HeartbeatSender(RMIService, Integer.parseInt(args[3]), 1);
+        HeartbeatSender heartbeatReceiver = new HeartbeatSender(RMIServiceName, Integer.parseInt(args[3]), 1);
         heartbeatReceiver.start();
 
         show = checkBDFolder();
@@ -48,6 +59,13 @@ public class Server {
             return null;
 
         show = new BD(new SharedDatabaseLock()).createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
+
+        //TODO: RMI
+        System.setProperty("java.rmi.server.hostname", "localhost");
+        launchRMI();
+
+
+
 
         //TODO: Conexão com clientes via TCP
         ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
@@ -71,6 +89,55 @@ public class Server {
         }
         return show;
     }
+
+    private void launchRMI(){
+        try{
+
+            try{
+
+                System.out.println("Tentativa de lancamento do registry no porto " +
+                        Registry.REGISTRY_PORT + "...");
+
+                LocateRegistry.createRegistry(Integer.parseInt(RMIPort));
+
+                System.out.println("Registry lancado!");
+
+            }catch(RemoteException e){
+                System.out.println("Registry provavelmente ja' em execucao!");
+            }
+
+            /*
+             * Cria o servico.
+             */
+            GetRemoteService fileService = new GetRemoteService(localDirectory);
+
+            System.out.println("Servico GetRemoteFile criado e em execucao ("+fileService.getRef().remoteToString()+"...");
+
+            /*
+             * Regista o servico no rmiregistry local para que os clientes possam localiza'-lo, ou seja,
+             * obter a sua referencia remota (endereco IP, porto de escuta, etc.).
+             */
+
+            Naming.bind("rmi://localhost:"+RMIPort+"/" + RMIServiceName, fileService);
+
+            System.out.println("Servico " + RMIServiceName + " registado no registry...");
+
+            /*
+             * Para terminar um servico RMI do tipo UnicastRemoteObject:
+             *
+             *  UnicastRemoteObject.unexportObject(fileService, true).
+             */
+
+        }catch(RemoteException e){
+            System.out.println("Erro remoto - " + e);
+            System.exit(1);
+        }catch(Exception e){
+            System.out.println("Erro - " + e);
+            System.exit(1);
+        }
+
+    }
+
 
     private String checkBDFolder() {
         String show = null;

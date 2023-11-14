@@ -1,7 +1,11 @@
 package pt.isec.PD.Model;
 
+import pt.isec.PD.RMI.GetRemoteBDObserverInterface;
+
 import java.io.*;
 import java.net.Socket;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TCPConnection extends Thread {
@@ -33,6 +37,7 @@ public class TCPConnection extends Thread {
     private BD bd;
     private Evento evento;
     private boolean open = true;
+    List<GetRemoteBDObserverInterface> observers;
 
     public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
@@ -278,6 +283,26 @@ public class TCPConnection extends Thread {
                     System.out.println("Cliente desconectado");
                 }
             }
+        }
+    }
+
+    //TODO:Colocar este método em todos os if's que alteram a base de dados
+    protected void notifyObservers(String msg){
+        int i;
+
+        List<GetRemoteBDObserverInterface> observersToRemove = new ArrayList<>();
+
+        for (GetRemoteBDObserverInterface observer : observers) {
+            try {
+                observer.notifyNewOperationConcluded(msg);
+            } catch (RemoteException ex) {
+                observersToRemove.add(observer);
+                System.out.println("- um observador (observador inacessivel)");
+
+            }
+        }
+        synchronized (observers){
+            observers.removeAll(observersToRemove);
         }
     }
 

@@ -63,8 +63,8 @@ public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBD
     }
 
     @Override
-    public void getFile(String fileName, GetRemoteBDBackupInterface backupRef) throws IOException {
-        byte [] fileChunk = new byte[MAX_CHUNCK_SIZE];
+    public void getFile(String fileName) throws IOException {
+        /*byte [] fileChunk = new byte[MAX_CHUNCK_SIZE];
         int nbytes;
 
         fileName = fileName.trim();
@@ -87,7 +87,7 @@ public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBD
         }catch(IOException e){
             System.out.println("Ocorreu a exceção de E/S: \n\t" + e);
             throw new IOException(fileName, e.getCause());
-        }
+        }*/
     }
 
     @Override

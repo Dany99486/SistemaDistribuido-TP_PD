@@ -27,7 +27,7 @@ public class HeartbeatSender extends Thread {
 
             while (true) {
                 // Envie o heartbeat
-                Heartbeat heartbeat = new Heartbeat("NomeRegistoRMI", registryPort, databaseVersion);
+                Heartbeat heartbeat = new Heartbeat(nameRMI, registryPort, databaseVersion);
                 try (ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                      ObjectOutputStream out = new ObjectOutputStream(buffer)) {
                     out.writeObject(heartbeat);
