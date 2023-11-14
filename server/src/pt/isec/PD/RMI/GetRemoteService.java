@@ -2,7 +2,6 @@ package pt.isec.PD.RMI;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.rmi.RemoteException;
@@ -12,11 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBDServiceInterface {
-    public static final String SERVICE_NAME = "server-bd-pd";
     public static final int MAX_CHUNCK_SIZE = 10000;
-
     protected File localDirectory;
-
     List<GetRemoteBDObserverInterface> observers = new ArrayList<>();
 
     public GetRemoteService(File localDirectory) throws RemoteException {
@@ -110,7 +106,7 @@ public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBD
         }
     }
 
-    protected void notifyObservers(String msg) {
+    public void notifyObservers(String msg) {
         List<GetRemoteBDObserverInterface> observersToRemove = new ArrayList<>();
 
         for (GetRemoteBDObserverInterface observer : observers) {

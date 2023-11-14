@@ -1,6 +1,5 @@
 package pt.isec.PD.Model;
 
-import pt.isec.PD.RMI.GetRemoteBDObserverInterface;
 import pt.isec.PD.RMI.GetRemoteService;
 
 import java.io.*;
@@ -19,18 +18,16 @@ public class Server {
     private String BDFileName = "serverdatabase.db";
     private String BDCanonicalFilePath = null;
     private String RMIServiceName,RMIPort;
-
-    List<GetRemoteBDObserverInterface> observers;
     private List<Socket> clients;
     private BD bd;
     private Evento evento;
     int nClients = 0;
     private String hertbeat;
     private SharedDatabaseLock lock;
+    private GetRemoteService fileService;
 
     public Server(String[] a) {
         this.args = a;
-        this.observers = new ArrayList<>();
         this.clients = new ArrayList<>();
         this.lock = new SharedDatabaseLock();
         this.bd = new BD(lock);
@@ -58,17 +55,14 @@ public class Server {
         if (show != null)
             return null;
 
-        show = new BD(new SharedDatabaseLock()).createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se nao existir
+        show = new BD(new SharedDatabaseLock()).createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se não existir
 
         //TODO: RMI
         System.setProperty("java.rmi.server.hostname", "localhost");
         launchRMI();
 
-
-
-
         //TODO: Conexão com clientes via TCP
-        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
+        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(fileService, clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
 
         show = socketClient.serverTCPConnection();
 
@@ -91,9 +85,9 @@ public class Server {
     }
 
     private void launchRMI(){
-        try{
+        try {
 
-            try{
+            try {
 
                 System.out.println("Tentativa de lancamento do registry no porto " +
                         Registry.REGISTRY_PORT + "...");
@@ -102,19 +96,22 @@ public class Server {
 
                 System.out.println("Registry lancado!");
 
-            }catch(RemoteException e){
+            } catch(RemoteException e) {
                 System.out.println("Registry provavelmente ja' em execucao!");
             }
 
             /*
              * Cria o servico.
              */
-            GetRemoteService fileService = new GetRemoteService(localDirectory);
+            fileService = new GetRemoteService(localDirectory);
+
+            //Envia o objeto para o TCPConnection
+
 
             System.out.println("Servico GetRemoteFile criado e em execucao ("+fileService.getRef().remoteToString()+"...");
 
             /*
-             * Regista o servico no rmiregistry local para que os clientes possam localiza'-lo, ou seja,
+             * Regista o servico no rmiregistry local para que os clientes possam localizá-lo, ou seja,
              * obter a sua referencia remota (endereco IP, porto de escuta, etc.).
              */
 
@@ -128,10 +125,10 @@ public class Server {
              *  UnicastRemoteObject.unexportObject(fileService, true).
              */
 
-        }catch(RemoteException e){
+        } catch(RemoteException e) {
             System.out.println("Erro remoto - " + e);
             System.exit(1);
-        }catch(Exception e){
+        } catch(Exception e) {
             System.out.println("Erro - " + e);
             System.exit(1);
         }

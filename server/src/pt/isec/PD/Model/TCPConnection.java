@@ -1,6 +1,7 @@
 package pt.isec.PD.Model;
 
 import pt.isec.PD.RMI.GetRemoteBDObserverInterface;
+import pt.isec.PD.RMI.GetRemoteService;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,9 +38,9 @@ public class TCPConnection extends Thread {
     private BD bd;
     private Evento evento;
     private boolean open = true;
-    List<GetRemoteBDObserverInterface> observers;
+    private GetRemoteService fileService;
 
-    public TCPConnection(List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
+    public TCPConnection(GetRemoteService fileService, List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
         this.TIMEOUT = TIMEOUT;
         this.args = args;
@@ -48,6 +49,7 @@ public class TCPConnection extends Thread {
         this.BDFileName= BDFileName;
         this.clients = cs;
         this.nClients = nc;
+        this.fileService = fileService;
     }
 
     @Override
@@ -139,6 +141,7 @@ public class TCPConnection extends Thread {
                             if (atualiza) {
                                 //Evento - coluna, alteracao, nome do evento a atualizar
                                 int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName);
+                                notifyObservers(2);
                                 defaultRegistoReturn(registo);
                             } else
                                 defaultRegistoReturn(-3);
@@ -149,6 +152,7 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(-3);
                         else {
                             int registo = evento.eliminaEvento(aux[2], args, BDFileName);
+                            notifyObservers(3);
                             defaultRegistoReturn(registo);
                         }
                     }
@@ -166,15 +170,18 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(-3);
                         else {
                             int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName);
+                            notifyObservers(0);
                             defaultRegistoReturn(registo);
                         }
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 3) {
                         int registo = evento.inserePresenca(aux[1], aux[2], args, BDFileName);
+                        notifyObservers(1);
                         defaultRegistoReturn(registo);
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 4) {
                         int registo = evento.eliminaPresenca(aux[2], aux[3], args, BDFileName);
+                        notifyObservers(3);
                         defaultRegistoReturn(registo);
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 2) {
@@ -199,8 +206,10 @@ public class TCPConnection extends Thread {
                                 int registo = evento.geraCodigo(aux[1], x, args, BDFileName);
                                 if (registo < 0)
                                     defaultRegistoReturn(registo);
-                                else
+                                else {
+                                    notifyObservers(0);
                                     envia = "Codigo de registo de presenças: " + registo;
+                                }
                             } else
                                 defaultRegistoReturn(-3);
                         }
@@ -233,6 +242,7 @@ public class TCPConnection extends Thread {
                         } catch (Exception e) {
                             defaultRegistoReturn(-3);
                         }
+                        notifyObservers(0);
                         envia = evento.insereCodigo(cc, x, args, BDFileName);
                     }
                 }
@@ -286,24 +296,9 @@ public class TCPConnection extends Thread {
         }
     }
 
-    //TODO:Colocar este método em todos os if's que alteram a base de dados
-    protected void notifyObservers(String msg){
-        int i;
-
-        List<GetRemoteBDObserverInterface> observersToRemove = new ArrayList<>();
-
-        for (GetRemoteBDObserverInterface observer : observers) {
-            try {
-                observer.notifyNewOperationConcluded(msg);
-            } catch (RemoteException ex) {
-                observersToRemove.add(observer);
-                System.out.println("- um observador (observador inacessivel)");
-
-            }
-        }
-        synchronized (observers){
-            observers.removeAll(observersToRemove);
-        }
+    private void notifyObservers(int i) {
+        String[] msg = { "A Base de Dados foi atualizada (update table)", "A Base de Dados foi alterada (edit table)", "A Base de Dados foi alterada (new entry in table)", "A Base de Dados foi atualizada (delete from table)" };
+        fileService.notifyObservers(msg[i]);
     }
 
     public List<Socket> getClients() {

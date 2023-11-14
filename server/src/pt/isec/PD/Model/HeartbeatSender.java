@@ -51,7 +51,7 @@ public class HeartbeatSender extends Thread {
     }
 
     public static void main(String[] args) {
-        String username = "name";
+        //String username = "name";
         int registryPort = Integer.parseInt(args[3]);
         String nameRMI = args[2];
         int databaseVersion = 1;

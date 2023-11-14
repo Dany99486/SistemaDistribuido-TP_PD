@@ -1,5 +1,7 @@
 package pt.isec.PD.Model;
 
+import pt.isec.PD.RMI.GetRemoteService;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,8 +15,9 @@ public class ServerTCPConnectionSocket extends Thread {
     private int nClients;
     private BD bd;
     private Evento evento;
+    private GetRemoteService fileService;
 
-    public ServerTCPConnectionSocket(List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
+    public ServerTCPConnectionSocket(GetRemoteService fileService, List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.TIMEOUT = TIMEOUT;
         this.args = args;
         this.BDFileName = BDFileName;
@@ -22,6 +25,7 @@ public class ServerTCPConnectionSocket extends Thread {
         this.nClients = nc;
         this.bd = bd;
         this.evento = evento;
+        this.fileService = fileService;
     }
 
     public String serverTCPConnection() {
@@ -34,7 +38,7 @@ public class ServerTCPConnectionSocket extends Thread {
                 System.out.println("Thread");
 
                 Socket toClientSocket = socket.accept();
-                TCPConnection tcp = new TCPConnection(clients, nClients, toClientSocket, TIMEOUT, bd, evento, args, BDFileName);
+                TCPConnection tcp = new TCPConnection(fileService, clients, nClients, toClientSocket, TIMEOUT, bd, evento, args, BDFileName);
                 tcp.start();
                 clients = tcp.getClients();
                 nClients = tcp.getnClients();
@@ -44,7 +48,7 @@ public class ServerTCPConnectionSocket extends Thread {
         } catch (IOException e) {
             show += "\nOcorreu um erro ao nivel do socket de escuta: " + e;
         }
-        System.out.println("saiuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+        System.out.println("Saiu - Thread");
 
         return show;
     }
@@ -64,4 +68,5 @@ public class ServerTCPConnectionSocket extends Thread {
     public Evento getEvento() {
         return evento;
     }
+
 }
