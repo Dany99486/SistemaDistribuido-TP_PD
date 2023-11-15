@@ -58,16 +58,48 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
+            System.out.println(response);
 
-            if (response.contains("Admin bem-vindo"))
+            if (response.contains("Admin bem-vindo")) {
                 admin = true;
-
-            autenticar = response;
-
-            if (response.contains("Erro")) {
+                autenticar = response;
+            } else if (response.contains("Logado com sucesso")) {
+                admin = false;
+                autenticar = response;
+            } else {
                 error = "Tente novamente";
             }
+
         } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean registar( String nome, String cc, String email, String password) {
+        String message = null;
+        try (
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+        ) {
+            if (nome.isEmpty() || cc.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                error = "Preencha todos os campos!";
+            } else {
+                //TODO: Enviar para o servidor
+
+                autenticar = "A registar...";
+
+                message = REGISTAR + " " + email + " " + password + " " + cc + " " + nome;
+            }
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
         }
         return true;

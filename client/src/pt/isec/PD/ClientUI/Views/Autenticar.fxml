@@ -34,7 +34,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="lblAutenticar" layoutX="49.0" layoutY="197.0" prefHeight="17.0" prefWidth="81.0" />
+            <Label fx:id="lblAutenticar" layoutX="49.0" layoutY="197.0" prefHeight="17.0" prefWidth="150" />
       </children>
     </AnchorPane>
   </children>
