@@ -108,11 +108,13 @@ public class TCPConnection extends Thread {
                         cc = aux[3];
                         role = "user";
                     }
+                    notifyObservers(2);
                     defaultRegistoReturn(registo);
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
                     int registo = bd.editClient(aux[1], aux[2],cc, args, BDFileName);
                     defaultRegistoReturn(registo);
+                    notifyObservers(0);
                 }
                 if (aux[0].equalsIgnoreCase(LOGOUT)) {
                     boolean registo = clients.remove(toClientSocket);

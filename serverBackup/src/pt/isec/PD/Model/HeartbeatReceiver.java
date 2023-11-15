@@ -83,6 +83,8 @@ public class HeartbeatReceiver extends Thread {
             GetRemoteBDObserver observer = new GetRemoteBDObserver();
             System.out.println("Observer registado no servidor RMI");
 
+            getRemoteFileService.addObserver(observer);
+
             System.out.println("<Enter> para terminar...");
             System.out.println();
             System.in.read();

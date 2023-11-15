@@ -89,6 +89,7 @@ public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBD
     @Override
     public void addObserver(GetRemoteBDObserverInterface observer) throws RemoteException {
         synchronized (observers) {
+            System.out.println("Adicionando observador");
             if (!observers.contains(observer)) {
                 observers.add(observer);
                 System.out.println("Existe mais um observador");
@@ -107,6 +108,7 @@ public class GetRemoteService extends UnicastRemoteObject implements GetRemoteBD
     }
 
     public void notifyObservers(String msg) {
+        System.out.println("Notificando observadores...");
         List<GetRemoteBDObserverInterface> observersToRemove = new ArrayList<>();
 
         for (GetRemoteBDObserverInterface observer : observers) {
