@@ -10,8 +10,8 @@ public class Main {
     public static final int TIMEOUT = 10000;
 
     public static void main(String[] args) throws IOException {
-        Client client = new Client(args);
-        client.client();
-        //Application.launch(MainJFX.class,args);
+        //Client client = new Client(args);
+        //client.client();
+        Application.launch(MainJFX.class,args);
     }
 }

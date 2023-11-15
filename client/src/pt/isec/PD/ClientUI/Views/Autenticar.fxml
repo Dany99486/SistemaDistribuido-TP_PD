@@ -31,7 +31,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameField" layoutX="320.0" layoutY="78.0" promptText="Email" />
+            <TextField fx:id="emailField" layoutX="320.0" layoutY="78.0" promptText="Email" />
             <PasswordField fx:id="passwordField" layoutX="320.0" layoutY="131.0" promptText="Password" />
             <Button fx:id="loginButton" layoutX="341.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="25.0" prefWidth="106.0" style="-fx-background-color: #a9a9a9;" text="Login" textFill="WHITE" />
             <Label fx:id="lblError" alignment="CENTER_RIGHT" layoutX="215.0" layoutY="213.0" prefHeight="22.0" prefWidth="270.0" textFill="RED" visible="false">
