@@ -1,6 +1,6 @@
 package pt.isec.PD.Model;
 
-import pt.isec.PD.RMI.GetRemoteService;
+import pt.isec.PD.RMI.GetRemoteBDService;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,9 +15,9 @@ public class ServerTCPConnectionSocket extends Thread {
     private int nClients;
     private BD bd;
     private Evento evento;
-    private GetRemoteService fileService;
+    private GetRemoteBDService fileService;
 
-    public ServerTCPConnectionSocket(GetRemoteService fileService, List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
+    public ServerTCPConnectionSocket(GetRemoteBDService fileService, List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.TIMEOUT = TIMEOUT;
         this.args = args;
         this.BDFileName = BDFileName;

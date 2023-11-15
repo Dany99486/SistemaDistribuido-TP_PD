@@ -3,9 +3,7 @@ package pt.isec.PD.Model;
 import pt.isec.PD.RMI.GetRemoteBDObserver;
 import pt.isec.PD.RMI.GetRemoteBDServiceInterface;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.*;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -18,6 +16,11 @@ public class HeartbeatReceiver extends Thread {
     private int count = 0;
     private String RMIRegistryName;
     private int RMIRegistryPort;
+    private File localDirectory;
+
+    public HeartbeatReceiver(File directoryPath) {
+        this.localDirectory = directoryPath;
+    }
 
     public void run() {
         System.out.println("Heartbeat Receiver started");
@@ -56,7 +59,16 @@ public class HeartbeatReceiver extends Thread {
                         RMIRegistryPort = heartbeat.getRegistryPort();
                         System.out.println("Database Version: " + heartbeat.getDatabaseVersion());
                         if (count == 0) {
-                            launchRMIReceiver();
+                            String localFilePath;
+                            try{
+                                localFilePath = new File(localDirectory.getPath()+File.separator+"serverdatabase.db").getCanonicalPath();
+                            }catch(IOException ex){
+                                System.out.println("Erro E/S - " + ex);
+                                return;
+                            }
+                            launchRMIReceiver(localFilePath);
+
+
                         }
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -70,8 +82,9 @@ public class HeartbeatReceiver extends Thread {
 
 
     }
-    private void launchRMIReceiver() {
-        try {
+    private void launchRMIReceiver(String path) {
+        try(FileOutputStream localFileOutputStream = new FileOutputStream(path)) {
+
             System.out.println("Launching RMI Receiver");
             String objectUrl = "rmi://localhost:"+RMIRegistryPort + "/"+RMIRegistryName;
             GetRemoteBDServiceInterface getRemoteFileService = (GetRemoteBDServiceInterface) Naming.lookup(objectUrl);
@@ -81,8 +94,9 @@ public class HeartbeatReceiver extends Thread {
 
             System.out.println("RMI Receiver launched");
             GetRemoteBDObserver observer = new GetRemoteBDObserver();
+            observer.setFout(localFileOutputStream);
             System.out.println("Observer registado no servidor RMI");
-
+            getRemoteFileService.getFile("serverdatabase.db", observer);
             getRemoteFileService.addObserver(observer);
 
             System.out.println("<Enter> para terminar...");

@@ -33,7 +33,7 @@ public class ServerBackup {
             System.out.println("O diretório especificado não existe ou não é uma diretoria válida.");
         }
 
-        HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver();
+        HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver(directory);
         heartbeatReceiver.start();
         //TODO: RMI
     }

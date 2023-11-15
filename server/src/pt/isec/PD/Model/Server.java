@@ -1,6 +1,6 @@
 package pt.isec.PD.Model;
 
-import pt.isec.PD.RMI.GetRemoteService;
+import pt.isec.PD.RMI.GetRemoteBDService;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,7 +24,7 @@ public class Server {
     int nClients = 0;
     private String hertbeat;
     private SharedDatabaseLock lock;
-    private GetRemoteService fileService;
+    private GetRemoteBDService fileService;
 
     public Server(String[] a) {
         this.args = a;
@@ -103,7 +103,10 @@ public class Server {
             /*
              * Cria o servico.
              */
-            fileService = new GetRemoteService(localDirectory);
+            fileService = new GetRemoteBDService(localDirectory);
+
+
+
 
             //Envia o objeto para o TCPConnection
 
