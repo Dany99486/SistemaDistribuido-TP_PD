@@ -8,29 +8,25 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
-public class AutenticarController {
+import static pt.isec.PD.ClientUI.MainJFX.controller;
+
+public class AutenticarController extends MenuInicialController {
     public Label lblError;
     public Button loginButton;
     @FXML
     public TextField emailField;
     @FXML
     public PasswordField passwordField;
+    public Label lblAutenticar;
 
-    public void initialize(){
+    public void initialize() {
         loginButton = new Button();
     }
 
     @FXML
     public void handleLogin() throws IOException {
-        String email = emailField.getText();
-        String password = passwordField.getText();
-
-        if(email.isEmpty() || password.isEmpty()){
-            lblError.setText("Preencha todos os campos!");
-        }
-
-        //TODO: Enviar para o servidor
+        controller.autenticar(emailField.toString(), passwordField.toString());
+        lblError.setText(controller.getError());
+        lblAutenticar.setText(controller.getAutenticar());
     }
-
-
 }

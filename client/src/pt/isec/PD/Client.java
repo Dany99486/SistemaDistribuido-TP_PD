@@ -3,14 +3,12 @@ package pt.isec.PD;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.Scanner;
 
 public class Client {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private String[] args;
-    private String CC;
     private boolean admin = false;
 
     public Client(String[] args) {
@@ -88,7 +86,7 @@ public class Client {
 
                 System.out.println("Resposta do servidor: " + response);
 
-                if (response.contains("Erro")){
+                if (response.contains("Erro")) {
                     System.out.println("Tente novamente");
                     System.exit(0);
                 }
@@ -285,10 +283,10 @@ public class Client {
                         out.flush();
                         System.out.println("String enviada: " + message);
 
-                        if (!(choice==12||choice==4||choice==16))
+                        if (!(choice==12 || choice==4 || choice==16))
                             response = (String) in.readObject();
 
-                        if (choice==12||choice==4||choice==16) {
+                        if (choice==12 || choice==4 || choice==16) {
                             System.out.println("A receber ficheiro...");
                             ReceiveFile receiveFile = new ReceiveFile(socket);
                             if (receiveFile.receiveFile(filename))//TODO: Mudar nome do ficheiro
