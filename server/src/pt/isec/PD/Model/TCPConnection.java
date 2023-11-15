@@ -100,8 +100,6 @@ public class TCPConnection extends Thread {
                     }
                     else {
                         envia = "Nao foi possivel logar";
-                        out.writeObject(envia);
-                        out.flush();
                     }
                     //out.println(envia);
                 }
