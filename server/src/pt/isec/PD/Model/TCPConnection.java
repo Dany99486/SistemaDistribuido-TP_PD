@@ -95,8 +95,9 @@ public class TCPConnection extends Thread {
                         else
                             envia = "Logado com sucesso";
                     }
-                    else
-                        envia = "Erro: Não foi possivel logar!";
+                    else {
+                        envia = "Nao foi possivel logar";
+                    }
                     //out.println(envia);
                 }
                 if (aux[0].equalsIgnoreCase(REGISTAR)) {

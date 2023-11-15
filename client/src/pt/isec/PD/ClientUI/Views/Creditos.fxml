@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label layoutX="253.0" layoutY="39.0" text="Créditos" textFill="#007f7f">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+        <Label layoutX="100.0" layoutY="100.0" text="Desenvolvido por:" textFill="#007f7f">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="140.0" layoutY="140.0" text="Daniel Bravo - 2021137795" textFill="#000000">
+            <font>
+                <Font name="System Regular" size="16.0" />
+            </font>
+        </Label>
+        <Label layoutX="140.0" layoutY="170.0" text="Flávio Rodrigues - 2020..." textFill="#000000">
+            <font>
+                <Font name="System Regular" size="16.0" />
+            </font>
+        </Label>
+        <Label layoutX="140.0" layoutY="200.0" text="Ricardo Tavares - 2021144652" textFill="#000000">
+            <font>
+                <Font name="System Regular" size="16.0" />
+            </font>
+        </Label>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="362.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Imgs/Isec.png" />
+         </image>
+      </ImageView>
+    </children>
+</AnchorPane>

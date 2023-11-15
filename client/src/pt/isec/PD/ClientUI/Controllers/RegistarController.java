@@ -1,35 +1,39 @@
 package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class AutenticarController extends MenuInicialController {
+public class RegistarController {
     public Label lblError;
     public Button loginButton;
+    @FXML
+    public TextField nomeField;
+    @FXML
+    public TextField CCField;
     @FXML
     public TextField emailField;
     @FXML
     public PasswordField passwordField;
-    public Label lblAutenticar;
+    public Label lblRegistar;
 
     public void initialize() {
         loginButton = new Button();
     }
 
     @FXML
-    public void handleLogin() throws IOException {
-        controller.autenticar(emailField.getText(), passwordField.getText());
+    public void handleRegistar() throws IOException {
+        controller.registar(nomeField.getText(), CCField.getText(), emailField.getText(), passwordField.getText());
         if(controller.getError() != null) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
         }
-        lblAutenticar.setText(controller.getAutenticar());
+        lblRegistar.setText(controller.getAutenticar());
     }
 }
