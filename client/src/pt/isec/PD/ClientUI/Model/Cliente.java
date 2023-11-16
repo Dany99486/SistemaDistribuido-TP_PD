@@ -13,6 +13,8 @@ public class Cliente {
     private Socket socket;
     private String error;
     private String autenticar;
+    private String editado;
+    private String nome, email, password; //Usar para os campos de edicao de registo
     private boolean admin = false;
 
     public Cliente(String[] args) {
@@ -73,11 +75,12 @@ public class Cliente {
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
+            return false;
         }
         return true;
     }
 
-    public boolean registar( String nome, String cc, String email, String password) {
+    public boolean registar(String nome, String cc, String email, String password) {
         String message = null;
         try (
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -98,9 +101,90 @@ public class Cliente {
             String response = (String) in.readObject();
             System.out.println(response);
 
+            autenticar = response;
+
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean pedeDadosParaRegisto() {
+        String message;
+        try (
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+        ) {
+            message = "DADOS";
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            String[] dados = response.split(" ");
+
+            nome = dados[0];
+            email = dados[1];
+            password = dados[2];
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean editaRegistoConta(String nome, String email, String password) {
+        String message;
+        try (
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+        ) {
+            //Pedir dados primeiro
+            //Depois enviar os dados
+            String aux = null;
+            if (!nome.isEmpty() || !nome.isBlank())
+                if (!nome.equals(this.nome))
+                    aux = "nome " + nome;
+            if (!email.isEmpty() || !email.isBlank())
+                if (!email.equals(this.email))
+                    aux = "email " + email;
+            if (!password.isEmpty() || !password.isBlank())
+                if (!password.equals(this.password))
+                    aux = "password " + password;
+
+            if (aux == null)
+                return false;
+
+            message = "EDICAO  " + aux;
+
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            editado = response;
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean logout() {
+        try (
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
+        ) {
+            out.writeObject("LOGOUT");
+            out.flush();
+        } catch (IOException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -115,5 +199,13 @@ public class Cliente {
 
     public String getAutenticar() {
         return autenticar;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

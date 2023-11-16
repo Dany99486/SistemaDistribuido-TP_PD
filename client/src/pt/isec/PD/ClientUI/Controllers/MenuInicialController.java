@@ -94,4 +94,23 @@ public class MenuInicialController {
         // Exiba o palco
         stage.show();
     }
+
+    @FXML
+    public void handleToEditaDados() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/EditaDados.fxml"));
+        Parent root = loader.load();
+
+        // Crie a cena usando a raiz carregada do FXML
+        Scene scene = new Scene(root);
+
+        // Obtenha o palco da aplicação do botão ou de outra maneira adequada
+        Stage stage = (Stage) btnAutenticar.getScene().getWindow();
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Defina a nova cena no palco
+        stage.setScene(scene);
+
+        // Exiba o palco
+        stage.show();
+    }
 }

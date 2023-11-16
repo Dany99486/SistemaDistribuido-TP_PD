@@ -21,6 +21,14 @@ public class Manager {
         return cliente.autenticar(email, password);
     }
 
+    public boolean pedeDadosRegisto() {
+        return cliente.pedeDadosParaRegisto();
+    }
+
+    public boolean registaDados(String n, String e, String p) {
+        return cliente.editaRegistoConta(n, e, p);
+    }
+
     public String getError() {
         return cliente.getError();
     }
@@ -31,6 +39,18 @@ public class Manager {
 
     public boolean isAdmin() {
         return cliente.isAdmin();
+    }
+
+    public String getNome() {
+        return cliente.getNome();
+    }
+
+    public String getEmail() {
+        return cliente.getEmail();
+    }
+
+    public boolean logout() {
+        return cliente.logout();
     }
 
     public void registar(String nomeFieldText, String cc, String emailFieldText, String passwordFieldText) {

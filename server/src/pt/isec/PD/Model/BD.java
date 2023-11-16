@@ -195,4 +195,37 @@ public class BD {
         }
         return registed;
     }
+
+
+    //TODO: Devolve os dados do cliente
+    public String devolveDados(String x, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+
+        try {
+            // Estabelece a conexão com a base de dados ou cria uma nova se não existir
+            show = url;
+            show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return null;
+                }
+                Statement statement = connection.createStatement();
+                String query = "SELECT * FROM utilizadores WHERE cartaoCidadao='" + x + "';";
+                System.out.println(query);
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next()) {
+                    connection.close();
+                    return resultSet.getString("nome") + " " + resultSet.getString("email") + " " + resultSet.getString("pass");
+                }
+                connection.close();
+            }
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+        }
+        return null;
+    }
 }

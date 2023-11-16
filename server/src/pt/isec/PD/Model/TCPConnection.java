@@ -4,9 +4,11 @@ import pt.isec.PD.RMI.GetRemoteBDService;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
 
 public class TCPConnection extends Thread {
+    private final String DADOS = "DADOS";
     private final String AUTENTICAR = "AUTENTICAR";
     private final String LOGOUT = "LOGOUT";
     private final String REGISTAR = "REGISTAR";
@@ -110,7 +112,7 @@ public class TCPConnection extends Thread {
                     defaultRegistoReturn(registo);
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
-                    int registo = bd.editClient(aux[1], aux[2],cc, args, BDFileName);
+                    int registo = bd.editClient(aux[1], aux[2], cc, args, BDFileName);
                     defaultRegistoReturn(registo);
                     notifyObservers(0);
                 }
@@ -121,6 +123,9 @@ public class TCPConnection extends Thread {
                         envia = "Deixou a sessão";
                     } else
                         envia = "A sessão não foi terminada";
+                }
+                if (aux[0].equalsIgnoreCase(DADOS)) {
+                    envia = bd.devolveDados(cc, args, BDFileName);
                 }
 
                 if (role.equalsIgnoreCase(ADMIN)) {

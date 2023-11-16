@@ -4,8 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -15,29 +13,27 @@ import java.io.IOException;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class AutenticarController extends MenuInicialController {
+public class EditaDados extends MenuInicialController {
+    public TextField Nome;
+    public TextField Email;
+    public TextField Password;
     public Label lblError;
-    public Button loginButton;
-    @FXML
-    public TextField emailField;
-    @FXML
-    public PasswordField passwordField;
-    public Label lblAutenticar;
 
     public void initialize() {
-        loginButton = new Button();
+        controller.pedeDadosRegisto();
+        //Apos pedir vamos atribuir valores
+        Nome.setText(controller.getNome());
+        Email.setText(controller.getEmail());
     }
 
-    @FXML
-    public void handleLogin() throws IOException, InterruptedException {
-        controller.autenticar(emailField.getText(), passwordField.getText());
-        if(controller.getError() != null) {
-            lblError.setText(controller.getError());
-            lblError.setVisible(true);
+    public void edita() throws InterruptedException, IOException {
+        if (!controller.registaDados(Nome.getText(), Email.getText(), Password.getText()))
+            lblError.setText("Campos inválidos");
+        else {
+            lblError.setText("Dados guardados");
+            Thread.sleep(1000);
+            handleToClienteMenu();
         }
-        lblAutenticar.setText(controller.getAutenticar());
-        Thread.sleep(1000);
-        handleToClienteMenu();
     }
 
     @FXML
@@ -49,7 +45,7 @@ public class AutenticarController extends MenuInicialController {
         Scene scene = new Scene(root);
 
         // Obtenha o palco da aplicação do botão ou de outra maneira adequada
-        Stage stage = (Stage) lblAutenticar.getScene().getWindow();
+        Stage stage = (Stage) lblError.getScene().getWindow();
         stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Defina a nova cena no palco
