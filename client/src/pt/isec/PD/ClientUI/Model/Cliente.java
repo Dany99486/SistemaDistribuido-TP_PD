@@ -17,6 +17,9 @@ public class Cliente {
     private String nome, email, password; //Usar para os campos de edicao de registo
     private boolean admin = false;
 
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+
     public Cliente(String[] args) {
         this.args = args;
     }
@@ -31,6 +34,12 @@ public class Cliente {
         }
         try {
             socket = new Socket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
+            try {
+                this.in = new ObjectInputStream(socket.getInputStream());
+                this.out = new ObjectOutputStream(socket.getOutputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -40,10 +49,7 @@ public class Cliente {
 
     public boolean autenticar(String email, String password) {
         String message = null;
-        try (
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
-        ) {
+        try {
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
             } else {
@@ -82,10 +88,7 @@ public class Cliente {
 
     public boolean registar(String nome, String cc, String email, String password) {
         String message = null;
-        try (
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
-        ) {
+        try {
             if (nome.isEmpty() || cc.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
             } else {
@@ -113,10 +116,7 @@ public class Cliente {
 
     public boolean pedeDadosParaRegisto() {
         String message;
-        try (
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
-        ) {
+        try {
             message = "DADOS";
             out.writeObject(message);
             out.flush();
@@ -137,10 +137,7 @@ public class Cliente {
 
     public boolean editaRegistoConta(String nome, String email, String password) {
         String message;
-        try (
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
-        ) {
+        try {
             //Pedir dados primeiro
             //Depois enviar os dados
             String aux = null;
@@ -176,9 +173,7 @@ public class Cliente {
     }
 
     public boolean logout() {
-        try (
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())
-        ) {
+        try {
             out.writeObject("LOGOUT");
             out.flush();
         } catch (IOException e) {
