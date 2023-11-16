@@ -25,7 +25,7 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
         fileName = fileName.trim();
 
         /*
-         * Verifica se o ficheiro solicitado existe e encontra-se por baixo da localDirectory.
+         * Verifica se o ficheiro solicitado existe e encontra-se em localDirectory.
          */
 
         requestedCanonicalFilePath = new File(localDirectory+File.separator+fileName).getCanonicalPath();
@@ -78,7 +78,7 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
         }
 
     }
-    public void getFile(String fileName, GetRemoteBDObserverInterface cliRemoto) throws IOException {
+    public void getFile(String fileName, GetRemoteBDObserverInterface serBack) throws IOException {
         byte [] fileChunk = new byte[MAX_CHUNCK_SIZE];
         int nbytes;
 
@@ -97,7 +97,7 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
                  * sua interface remota.
                  */
 
-                cliRemoto.writeFileChunk(fileChunk, nbytes);
+                serBack.writeFileChunk(fileChunk, nbytes);
 
             }
 
@@ -106,8 +106,6 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
             notifyObservers("Ficheiro " + new File(localDirectory+File.separator+fileName).getCanonicalPath() +
                     " transferido para o cliente com sucesso.");
             System.out.println();
-
-            return;
 
         }catch(FileNotFoundException e){   //Subclasse de IOException
             System.out.println("Ocorreu a excecao {" + e + "} ao tentar abrir o ficheiro!");

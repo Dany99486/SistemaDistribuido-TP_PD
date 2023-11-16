@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label layoutX="253.0" layoutY="39.0" text="Créditos" textFill="#007f7f">
             <font>
@@ -23,7 +22,7 @@
                 <Font name="System Regular" size="16.0" />
             </font>
         </Label>
-        <Label layoutX="140.0" layoutY="170.0" text="Flávio Rodrigues - 2020..." textFill="#000000">
+        <Label layoutX="140.0" layoutY="170.0" prefHeight="25.0" prefWidth="222.0" text="Flávio Rodrigues - 2020137206" textFill="#000000">
             <font>
                 <Font name="System Regular" size="16.0" />
             </font>

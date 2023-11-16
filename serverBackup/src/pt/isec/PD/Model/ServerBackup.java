@@ -4,7 +4,6 @@ import java.io.File;
 
 public class ServerBackup {
     private String[] args;
-    private String CC;
 
     public ServerBackup(String[] args) {
         this.args = args;

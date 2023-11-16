@@ -90,22 +90,4 @@ public class MenuInicialController {
         // Exiba o palco
         stage.show();
     }
-
-    @FXML
-    public void handleToPaginaP() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/PaginaPrincipal.fxml"));
-        Parent root = loader.load();
-
-        // Crie a cena usando a raiz carregada do FXML
-        Scene scene = new Scene(root);
-
-        // Obtenha o palco da aplicação do botão ou de outra maneira adequada
-        Stage stage = (Stage) btnAutenticar.getScene().getWindow();
-
-        // Defina a nova cena no palco
-        stage.setScene(scene);
-
-        // Exiba o palco
-        stage.show();
-    }
 }

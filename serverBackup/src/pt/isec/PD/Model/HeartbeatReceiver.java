@@ -50,8 +50,7 @@ public class HeartbeatReceiver extends Thread {
                 try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
                     Object object = objectInputStream.readObject();
 
-                    if (object instanceof Heartbeat) {
-                        Heartbeat heartbeat = (Heartbeat) object;
+                    if (object instanceof Heartbeat heartbeat) {
                         System.out.println("Received Heartbeat:");
                         System.out.println("Registry Name: " + heartbeat.getRegistryName());
                         RMIRegistryName = heartbeat.getRegistryName();
@@ -68,7 +67,6 @@ public class HeartbeatReceiver extends Thread {
                             }
                             launchRMIReceiver(localFilePath);
 
-
                         }
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -79,8 +77,6 @@ public class HeartbeatReceiver extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
     private void launchRMIReceiver(String path) {
         try(FileOutputStream localFileOutputStream = new FileOutputStream(path)) {

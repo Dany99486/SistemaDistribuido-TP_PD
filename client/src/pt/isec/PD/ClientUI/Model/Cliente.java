@@ -46,7 +46,7 @@ public class Cliente {
                 error = "Preencha todos os campos!";
             } else {
                 //TODO: Enviar para o servidor
-                message = "AUTENTICAR";
+                message = AUTENTICAR;
 
                 autenticar = "A autenticar...";
                 out.writeObject(message);
