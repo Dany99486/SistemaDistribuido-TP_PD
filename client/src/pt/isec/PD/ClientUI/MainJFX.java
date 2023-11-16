@@ -3,6 +3,7 @@ package pt.isec.PD.ClientUI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.Model.Manager;
 
@@ -24,6 +25,7 @@ public class MainJFX extends Application {
 
         Scene scene = new Scene(fxmlLoader.load(), 400 , 400);
         stage.setScene(scene);
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         stage.setResizable(false);
         stage.show();

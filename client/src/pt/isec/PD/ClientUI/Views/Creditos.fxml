@@ -34,7 +34,7 @@
         </Label>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="362.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Imgs/Isec.png" />
+            <Image url="@../Img/Isec.png" />
          </image>
       </ImageView>
     </children>

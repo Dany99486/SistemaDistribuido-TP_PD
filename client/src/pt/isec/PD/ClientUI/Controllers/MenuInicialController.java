@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class MenuInicialController {
 
         // Defina a nova cena no palco
         stage.setScene(scene);
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Exiba o palco
         stage.show();
@@ -66,6 +68,7 @@ public class MenuInicialController {
 
         // Obtenha o palco da aplicação do botão ou de outra maneira adequada
         Stage stage = (Stage) btnAutenticar.getScene().getWindow();
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Defina a nova cena no palco
         stage.setScene(scene);
@@ -83,6 +86,7 @@ public class MenuInicialController {
 
         // Obtenha o palco da aplicação do botão ou de outra maneira adequada
         Stage stage = (Stage) btnAutenticar.getScene().getWindow();
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Defina a nova cena no palco
         stage.setScene(scene);

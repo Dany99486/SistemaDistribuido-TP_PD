@@ -22,7 +22,7 @@
 <!--            <GNAvatarView layoutX="211.0" layoutY="14.0" prefHeight="217.0" prefWidth="218.0" strokeWidth="1.0" type="CIRCLE">-->
           <ImageView fitHeight="150" fitWidth="200" layoutX="14.0" layoutY="43.0" preserveRatio="true">
               <image>
-                  <Image url="@../Imgs/login.png" />
+                  <Image url="@../Img/login.png" />
               </image>
           </ImageView>
 <!--            </GNAvatarView>-->
