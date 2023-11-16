@@ -10,7 +10,7 @@ public class Cliente {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private String[] args;
-    private Socket socket;
+    private static Socket socket;
     private String error;
     private String autenticar;
     private String editado;
