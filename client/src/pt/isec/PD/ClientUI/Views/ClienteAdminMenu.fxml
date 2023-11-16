@@ -3,17 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ClienteAdminMenuController">
    <children>
       <AnchorPane prefHeight="403.0" prefWidth="600.0">
          <children>
-            <Button fx:id="btnLogout" layoutX="515.0" layoutY="357.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Logout" textFill="WHITE" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="14.600000000000023">
+            <Button fx:id="btnLogout" layoutX="515.0" layoutY="357.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: #a9a9a9;" text="Logout" textFill="WHITE" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="14.600000000000023">
                <font>
                   <Font size="14.0" />
                </font>
@@ -26,23 +24,6 @@
                   <Insets />
                </opaqueInsets>
             </Label>
-            <MenuButton layoutX="142.0" layoutY="77.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="315.0" text="Eventos">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Criação de um evento" />
-                  <MenuItem mnemonicParsing="false" text="Consulta dos eventos" />
-                  <MenuItem mnemonicParsing="false" text="Edição dos dados de um evento" />
-                  <MenuItem mnemonicParsing="false" text="Eliminação de um evento" />
-                  <MenuItem mnemonicParsing="false" text="Consulta dos eventos criados" />
-               </items>
-            </MenuButton>
-            <MenuButton layoutX="142.0" layoutY="144.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="315.0" text="Presenças">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Inserção de presenças" />
-                  <MenuItem mnemonicParsing="false" text="Consulta das presenças registadas" />
-                  <MenuItem mnemonicParsing="false" text="Eliminação de presenças registadas" />
-                  <MenuItem mnemonicParsing="false" text="Geração de um código para registo de presenças" />
-               </items>
-            </MenuButton>
             <Button layoutX="114.0" layoutY="211.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos participantes (2)" textFill="WHITE">
                <font>
                   <Font size="16.0" />
@@ -52,6 +33,22 @@
                </padding>
             </Button>
             <Button layoutX="92.0" layoutY="273.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="416.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos eventos do utilizador (3)" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Button>
+            <Button layoutX="114.0" layoutY="145.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Presenças" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Button>
+            <Button layoutX="114.0" layoutY="80.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Eventos" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
