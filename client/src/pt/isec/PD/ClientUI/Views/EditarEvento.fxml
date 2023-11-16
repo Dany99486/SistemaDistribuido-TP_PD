@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="401.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="129.0" layoutY="37.0" text="Edição dos dados de um evento">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <TextField layoutX="276.0" layoutY="103.0" promptText="Nome" />
+            <TextField layoutX="276.0" layoutY="146.0" promptText="Local" />
+            <TextField layoutX="276.0" layoutY="186.0" promptText="Hora de inicio" />
+            <DatePicker layoutX="263.0" layoutY="272.0" />
+            <Label layoutX="203.0" layoutY="275.0" prefHeight="18.0" prefWidth="45.0" text="Data:" />
+            <TextField layoutX="276.0" layoutY="226.0" promptText="Hora de fim" />
+            <Label layoutX="190.0" layoutY="229.0" prefHeight="18.0" prefWidth="71.0" text="Hora de fim:" />
+            <Label layoutX="184.0" layoutY="191.0" prefHeight="18.0" prefWidth="82.0" text="Hora de Inicio:" />
+            <Label layoutX="207.0" layoutY="149.0" prefHeight="18.0" prefWidth="36.0" text="Local:" />
+            <Label layoutX="203.0" layoutY="106.0" prefHeight="18.0" prefWidth="45.0" text="Nome:" />
+            <Button layoutX="457.0" layoutY="331.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

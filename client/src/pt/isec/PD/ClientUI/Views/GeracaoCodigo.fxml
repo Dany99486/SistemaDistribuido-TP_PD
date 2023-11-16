@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="234.0" prefWidth="411.0">
+         <children>
+            <Label layoutX="104.0" layoutY="22.0" text="Geração de código">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Label layoutX="63.0" layoutY="103.0" text="O seu código é:">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <TextField disable="true" layoutX="194.0" layoutY="104.0" promptText="código" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
