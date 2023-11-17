@@ -2,6 +2,7 @@ package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
@@ -9,13 +10,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class AutenticarController extends MenuInicialController {
+public class AutenticarController extends MenuInicialController implements Initializable {
     public Label lblError;
     public Button loginButton;
     @FXML
@@ -24,20 +29,27 @@ public class AutenticarController extends MenuInicialController {
     public PasswordField passwordField;
     public Label lblAutenticar;
 
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         loginButton = new Button();
     }
 
     @FXML
     public void handleLogin() throws IOException, InterruptedException {
+        if (emailField.getText().isBlank() || emailField.getText().isEmpty() || emailField == null)
+            lblError.setText("Introduza um email"); //a alterar pra mudar a cor de azul para vermelho na filed
+        else if (passwordField.getText().isBlank() || passwordField.getText().isEmpty() || passwordField == null)
+            lblError.setText("Introduza uma password");
+
         if (!controller.autenticar(emailField.getText(), passwordField.getText())) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
+        }else {
+            lblAutenticar.setText(controller.getAutenticar());
+            lblAutenticar.setVisible(true);
+            Thread.sleep(1000);
+            handleToClienteMenu();
         }
-        lblAutenticar.setText(controller.getAutenticar());
-        lblAutenticar.setVisible(true);
-        Thread.sleep(1000);
-        handleToClienteMenu();
     }
 
     @FXML

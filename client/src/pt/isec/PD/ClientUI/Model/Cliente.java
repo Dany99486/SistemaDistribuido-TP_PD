@@ -36,6 +36,7 @@ public class Cliente {
         }
         try {
             socket = new Socket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
+            socket.setSoTimeout(10000);
             try {
                 this.in = new ObjectInputStream(socket.getInputStream());
                 this.out = new ObjectOutputStream(socket.getOutputStream());
@@ -50,10 +51,11 @@ public class Cliente {
     }
 
     public boolean autenticar(String email, String password) {
-        String message = null;
+        String message;
         try {
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
+                return false;
             } else {
                 //TODO: Enviar para o servidor
                 message = AUTENTICAR;
@@ -78,6 +80,7 @@ public class Cliente {
                 autenticar = response;
             } else {
                 error = "Tente novamente";
+                return false;
             }
 
         } catch (IOException | ClassNotFoundException e) {
