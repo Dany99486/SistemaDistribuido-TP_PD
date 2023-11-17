@@ -99,9 +99,10 @@ public class TCPConnection extends Thread {
                             envia = "Admin bem-vindo";
                         else
                             envia = "Logado com sucesso";
-                    }
-                    else {
+                    } else {
                         envia = "Nao foi possivel logar";
+                        out.writeObject(envia);
+                        out.flush();
                     }
                     //out.println(envia);
                 }
@@ -268,7 +269,6 @@ public class TCPConnection extends Thread {
                         envia = evento.insereCodigo(cc, x, args, BDFileName,queryArray);
                         System.out.println("queryarray: " + Arrays.toString(queryArray));
                         notifyObservers(queryArray);
-
                     }
                 }
 

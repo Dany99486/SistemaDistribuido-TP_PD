@@ -30,12 +30,12 @@ public class AutenticarController extends MenuInicialController {
 
     @FXML
     public void handleLogin() throws IOException, InterruptedException {
-        controller.autenticar(emailField.getText(), passwordField.getText());
-        if(controller.getError() != null) {
+        if (!controller.autenticar(emailField.getText(), passwordField.getText())) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
         }
         lblAutenticar.setText(controller.getAutenticar());
+        lblAutenticar.setVisible(true);
         Thread.sleep(1000);
         handleToClienteMenu();
     }
