@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,9 +38,13 @@ public class AutenticarController extends MenuInicialController implements Initi
     @FXML
     public void handleLogin() throws IOException, InterruptedException {
         if (emailField.getText().isBlank() || emailField.getText().isEmpty() || emailField == null)
-            lblError.setText("Introduza um email"); //a alterar pra mudar a cor de azul para vermelho na filed
-        else if (passwordField.getText().isBlank() || passwordField.getText().isEmpty() || passwordField == null)
-            lblError.setText("Introduza uma password");
+            emailField.setBorder(new Border(new BorderStroke(javafx.scene.paint.Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        else
+            emailField.setBorder(null);
+        if (passwordField.getText().isBlank() || passwordField.getText().isEmpty() || passwordField == null)
+            passwordField.setBorder(new Border(new BorderStroke(javafx.scene.paint.Color.RED, BorderStrokeStyle.SOLID, null, null)));
+        else
+            passwordField.setBorder(null);
 
         if (!controller.autenticar(emailField.getText(), passwordField.getText())) {
             lblError.setText(controller.getError());

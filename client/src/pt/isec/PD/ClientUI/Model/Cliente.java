@@ -53,6 +53,8 @@ public class Cliente {
     public boolean autenticar(String email, String password) {
         String message;
         try {
+            if (socket.isClosed())
+                socketClient();
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
                 return false;
