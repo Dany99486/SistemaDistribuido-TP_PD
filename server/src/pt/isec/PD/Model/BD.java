@@ -110,10 +110,11 @@ public class BD {
                 String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
                 System.out.println(query);
                 ResultSet resultSet = statement.executeQuery(query);
-                cc = resultSet.getString("cartaoCidadao");
-                role = resultSet.getString("role");
-                exist = resultSet.next();
-
+                if (resultSet.next()) {
+                    cc = resultSet.getString("cartaoCidadao");
+                    role = resultSet.getString("role");
+                    exist = true;
+                }
 
                 connection.close();
             }

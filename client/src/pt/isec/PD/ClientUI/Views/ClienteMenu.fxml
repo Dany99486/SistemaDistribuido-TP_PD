@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ClienteMenu">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ClienteMenu">
    <children>
       <AnchorPane prefHeight="403.0" prefWidth="600.0">
          <children>
-            <Button onAction="#editaregisto" fx:id="EditarRegisto" layoutX="220.0" layoutY="77.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Edição dos dados de registo" textFill="WHITE" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0">
+            <Button fx:id="EditarRegisto" layoutX="220.0" layoutY="77.0" mnemonicParsing="false" onAction="#editaregisto" style="-fx-background-color: #a9a9a9;" text="Edição dos dados de registo" textFill="WHITE" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0">
                <font>
                   <Font size="16.0" />
                </font>
@@ -52,11 +49,12 @@
                   <Insets />
                </opaqueInsets>
             </Label>
-            <Button onAction="#logout" fx:id="btnLogout" layoutX="515.0" layoutY="357.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Logout" textFill="WHITE" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="14.600000000000023">
+            <Button fx:id="btnLogout" layoutX="515.0" layoutY="357.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: #a9a9a9;" text="Logout" textFill="WHITE" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="14.600000000000023">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
+            <Label fx:id="lblOut" layoutX="337.0" layoutY="362.0" prefHeight="18.0" prefWidth="168.0" />
          </children>
       </AnchorPane>
    </children>

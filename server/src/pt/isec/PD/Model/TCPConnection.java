@@ -87,10 +87,12 @@ public class TCPConnection extends Thread {
 
                     //Realizar
                     boolean verificaNaBDCliente = bd.checkClientIfExists(aux2[0], aux2[1], args, BDFileName);
-                    cc = bd.getCC();
-                    role = bd.getRole();
                     //System.out.println("role: " + role);
+
                     if (verificaNaBDCliente) {
+                        cc = bd.getCC();
+                        role = bd.getRole();
+
                         clients.add(toClientSocket);
                         nClients++;
                         if (role.equalsIgnoreCase(ADMIN))
@@ -129,8 +131,14 @@ public class TCPConnection extends Thread {
                         envia = "A sessão não foi terminada";
                 }
                 if (aux[0].equalsIgnoreCase(DADOS)) {
-                    envia = bd.devolveDados(cc, args, BDFileName);
+                    if (cc == null || role == null)
+                        envia = "Erro: Não está registado";
+                    else
+                        envia = bd.devolveDados(cc, args, BDFileName);
                 }
+
+                if (role == null || cc == null)
+                    return; //Temos de fechar esta conexao do cliente
 
                 if (role.equalsIgnoreCase(ADMIN)) {
 

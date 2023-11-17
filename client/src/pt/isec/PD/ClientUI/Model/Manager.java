@@ -53,6 +53,10 @@ public class Manager {
         return cliente.logout();
     }
 
+    public String getLogout() {
+        return cliente.getLogout();
+    }
+
     public void registar(String nomeFieldText, String cc, String emailFieldText, String passwordFieldText) {
         cliente.registar(nomeFieldText, cc, emailFieldText, passwordFieldText);
     }

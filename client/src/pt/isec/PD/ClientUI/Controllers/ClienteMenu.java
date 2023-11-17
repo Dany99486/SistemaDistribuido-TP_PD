@@ -1,6 +1,7 @@
 package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ public class ClienteMenu extends MenuInicialController {
     public Button ConsultarPresenca;
     public Button SubmeterCodigo;
     public Button EditarRegisto;
+    public Label lblOut;
 
     public void initialize() {
         btnLogout = new Button();
@@ -25,8 +27,10 @@ public class ClienteMenu extends MenuInicialController {
     }
 
     public void logout() {
-        if(controller.logout())
+        if(controller.logout()) {
+            lblOut.setText(controller.getLogout());
             System.exit(0);
+        }
     }
 
     public void editaregisto() throws IOException {

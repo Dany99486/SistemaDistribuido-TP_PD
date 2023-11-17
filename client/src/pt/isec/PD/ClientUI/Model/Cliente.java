@@ -14,6 +14,8 @@ public class Cliente {
     private String error;
     private String autenticar;
     private String editado;
+
+    private String logout;
     private String nome, email, password; //Usar para os campos de edicao de registo
     private boolean admin = false;
 
@@ -176,7 +178,9 @@ public class Cliente {
         try {
             out.writeObject("LOGOUT");
             out.flush();
-        } catch (IOException e) {
+
+            logout = (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
             return false;
@@ -202,5 +206,9 @@ public class Cliente {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getLogout() {
+        return logout;
     }
 }
