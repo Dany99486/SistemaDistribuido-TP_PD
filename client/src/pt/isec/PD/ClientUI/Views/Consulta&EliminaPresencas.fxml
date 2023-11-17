@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -27,6 +28,17 @@
                </font>
             </Label>
             <Button layoutX="489.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #ff2020;" text="Eliminar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <TextField fx:id="searchField" layoutX="24.0" layoutY="87.0" onAction="#onSearch" prefHeight="27.0" prefWidth="219.0" style="-fx-border-color: #3a4151; -fx-background-color: #fff;" />
+            <Button layoutX="412.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="345.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Criar" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
