@@ -7,18 +7,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.SubmeteCodigoCrontroller">
    <children>
-      <AnchorPane prefHeight="234.0" prefWidth="411.0">
+      <AnchorPane prefHeight="236.0" prefWidth="434.0">
          <children>
             <Label layoutX="92.0" layoutY="21.0" text="Submissão de código">
                <font>
                   <Font name="System Bold" size="23.0" />
                </font>
             </Label>
-            <TextField layoutX="59.0" layoutY="117.0" prefHeight="26.0" prefWidth="170.0" promptText="Insira o código" />
-            <Button layoutX="256.0" layoutY="117.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" style="-fx-background-color: #a9a9a9;" text="Submit" textFill="WHITE" AnchorPane.leftAnchor="256.0" AnchorPane.rightAnchor="53.0" />
+            <TextField fx:id="txtCodigo" layoutX="59.0" layoutY="117.0" prefHeight="26.0" prefWidth="170.0" promptText="Insira o código" />
+            <Button fx:id="SubmeterCodigo" layoutX="256.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleSubmeterCodigo" prefHeight="26.0" prefWidth="101.0" style="-fx-background-color: #a9a9a9;" text="Submit" textFill="WHITE" AnchorPane.leftAnchor="256.0" AnchorPane.rightAnchor="53.0" />
+            <Label fx:id="lblMessage" alignment="CENTER_RIGHT" layoutX="500.0" layoutY="189.0" prefHeight="34.0" prefWidth="270.0" textFill="RED" visible="false" AnchorPane.leftAnchor="0.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
