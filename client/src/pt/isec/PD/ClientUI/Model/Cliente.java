@@ -182,6 +182,23 @@ public class Cliente {
         return true;
     }
 
+    public String submeteCodigo(String code) {
+        String message = "CODIGO " + code;
+        try {
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            return response;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean logout() {
         try {
             out.writeObject("LOGOUT");
@@ -195,6 +212,7 @@ public class Cliente {
         }
         return true;
     }
+
 
     public boolean isAdmin() {
         return admin;
@@ -219,4 +237,5 @@ public class Cliente {
     public String getLogout() {
         return logout;
     }
+
 }

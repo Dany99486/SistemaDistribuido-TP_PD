@@ -60,4 +60,9 @@ public class Manager {
     public void registar(String nomeFieldText, String cc, String emailFieldText, String passwordFieldText) {
         cliente.registar(nomeFieldText, cc, emailFieldText, passwordFieldText);
     }
+
+    public String submeteCodigo(String code) {
+        cliente.submeteCodigo(code);
+        return null;
+    }
 }

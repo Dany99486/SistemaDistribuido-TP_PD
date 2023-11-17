@@ -17,7 +17,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button fx:id="SubmeterCodigo" layoutX="255.0" layoutY="147.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Submissão de código" textFill="WHITE" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0">
+            <Button fx:id="SubmeterCodigo" onAction="#SubmeteCodigo" layoutX="255.0" layoutY="147.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Submissão de código" textFill="WHITE" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0">
                <font>
                   <Font size="16.0" />
                </font>
