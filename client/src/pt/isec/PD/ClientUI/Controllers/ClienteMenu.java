@@ -26,9 +26,10 @@ public class ClienteMenu extends MenuInicialController {
     public void handleClienteMenu() {
     }
 
-    public void logout() {
+    public void logout() throws InterruptedException {
         if(controller.logout()) {
             lblOut.setText(controller.getLogout());
+            Thread.sleep(500);
             System.exit(0);
         }
     }

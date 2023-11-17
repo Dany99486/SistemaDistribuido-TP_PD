@@ -226,7 +226,7 @@ public class TCPConnection extends Thread {
                             }
                             if (atualiza) {
                                 //Só precisa da validade, encontra depois um evento que existe com esta validade
-                                int registo = evento.geraCodigo(aux[1], x, args, BDFileName,queryArray);
+                                int registo = evento.geraCodigo(aux[1], x, args, BDFileName, queryArray);
                                 System.out.println(Arrays.toString(queryArray));
                                 if (registo < 0)
                                     defaultRegistoReturn(registo);

@@ -124,6 +124,9 @@ public class Cliente {
     public boolean pedeDadosParaRegisto() {
         String message;
         try {
+            out.reset();
+            in.reset();
+
             message = "DADOS";
             out.writeObject(message);
             out.flush();

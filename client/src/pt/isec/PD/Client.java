@@ -298,7 +298,7 @@ public class Client {
 
                         if (response.contains("Erro")) {
                             System.out.println("Tente novamente");
-                            System.exit(0);
+                            //System.exit(0);
                         }
                     }
                 } while (!message.equalsIgnoreCase("LOGOUT"));
