@@ -103,8 +103,8 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
 
             System.out.println("Ficheiro " + new File(localDirectory+File.separator+fileName).getCanonicalPath() +
                     " transferido para o cliente com sucesso.");
-            notifyObservers("Ficheiro " + new File(localDirectory+File.separator+fileName).getCanonicalPath() +
-                    " transferido para o cliente com sucesso.");
+            notifyObservers(new String[]{"Ficheiro " + new File(localDirectory+File.separator+fileName).getCanonicalPath() +
+                    " transferido para o cliente com sucesso."});
             System.out.println();
 
         }catch(FileNotFoundException e){   //Subclasse de IOException
@@ -140,13 +140,13 @@ public class GetRemoteBDService extends UnicastRemoteObject implements GetRemote
         }
     }
 
-    public void notifyObservers(String msg) {
+    public void notifyObservers(String[] msg) {
         System.out.println("Notificando observadores...");
         List<GetRemoteBDObserverInterface> observersToRemove = new ArrayList<>();
 
         for (GetRemoteBDObserverInterface observer : observers) {
             try {
-                observer.notifyNewOperationConcluded(msg);
+                observer.notifyNewOperationConcluded(msg[0]);
             } catch (RemoteException ex) {
                 observersToRemove.add(observer);
                 System.out.println("Menos um observador (observador inacessivel)");

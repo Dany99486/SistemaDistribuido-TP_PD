@@ -8,8 +8,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class HeartbeatSender extends Thread {
-    private final String multicastAddress = "230.44.44.44";
-    private final int port = 4444;
+    private static final String multicastAddress = "230.44.44.44";
+    private static final int port = 4444;
     private String nameRMI;
     private int registryPort;
     private int databaseVersion;
@@ -21,11 +21,22 @@ public class HeartbeatSender extends Thread {
     }
 
     public void run() {
+        while (true) {
+            sendHeartbeat(nameRMI, registryPort, databaseVersion);
+            //
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void sendHeartbeat(String nameRMI , int registryPort, int databaseVersion) {
         try {
             InetAddress group = InetAddress.getByName(multicastAddress);
             DatagramSocket socket = new DatagramSocket();
 
-            while (true) {
+
                 // Envie o heartbeat
                 Heartbeat heartbeat = new Heartbeat(nameRMI, registryPort, databaseVersion);
                 try (ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -38,19 +49,14 @@ public class HeartbeatSender extends Thread {
                     e.printStackTrace();
                 }
 
-                // Aguarde um intervalo de 10 segundos antes de enviar o próximo heartbeat
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         //String username = "name";
         int registryPort = Integer.parseInt(args[3]);
         String nameRMI = args[2];
@@ -58,5 +64,5 @@ public class HeartbeatSender extends Thread {
         // Inicialize e comece a thread de envio de heartbeat
         HeartbeatSender heartbeatSender = new HeartbeatSender(nameRMI, registryPort, databaseVersion);
         heartbeatSender.start();
-    }
+    }*/
 }

@@ -17,6 +17,7 @@ public class HeartbeatReceiver extends Thread {
     private String RMIRegistryName;
     private int RMIRegistryPort;
     private File localDirectory;
+    private RmiService rmiService;
 
     public HeartbeatReceiver(File directoryPath) {
         this.localDirectory = directoryPath;
@@ -59,13 +60,9 @@ public class HeartbeatReceiver extends Thread {
                         System.out.println("Database Version: " + heartbeat.getDatabaseVersion());
                         if (count == 0) {
                             String localFilePath;
-                            try{
-                                localFilePath = new File(localDirectory.getPath()+File.separator+"serverdatabase.db").getCanonicalPath();
-                            }catch(IOException ex){
-                                System.out.println("Erro E/S - " + ex);
-                                return;
-                            }
-                            launchRMIReceiver(localFilePath);
+
+                            rmiService=new RmiService(RMIRegistryName, RMIRegistryPort, localDirectory.getPath()+File.separator+"serverdatabase.db");
+                            rmiService.start();
 
                         }
                     }
@@ -78,41 +75,6 @@ public class HeartbeatReceiver extends Thread {
             e.printStackTrace();
         }
     }
-    private void launchRMIReceiver(String path) {
-        try(FileOutputStream localFileOutputStream = new FileOutputStream(path)) {
 
-            System.out.println("Launching RMI Receiver");
-            String objectUrl = "rmi://localhost:"+RMIRegistryPort + "/"+RMIRegistryName;
-            GetRemoteBDServiceInterface getRemoteFileService = (GetRemoteBDServiceInterface) Naming.lookup(objectUrl);
-
-            System.setProperty("java.rmi.server.hostname", "localhost");
-
-
-            System.out.println("RMI Receiver launched");
-            GetRemoteBDObserver observer = new GetRemoteBDObserver();
-            observer.setFout(localFileOutputStream);
-            System.out.println("Observer registado no servidor RMI");
-            getRemoteFileService.getFile("serverdatabase.db", observer);
-            getRemoteFileService.addObserver(observer);
-
-            System.out.println("<Enter> para terminar...");
-            System.out.println();
-            System.in.read();
-            System.out.println("Removing observer");
-
-            getRemoteFileService.removeObserver(observer);
-            UnicastRemoteObject.unexportObject(observer, true);
-
-        } catch (MalformedURLException e) {
-            System.out.println("Erro a obter o URL do objecto remoto");
-        } catch (NotBoundException e) {
-            System.out.println("Erro a obter a referencia para o objecto remoto");
-        } catch (RemoteException e) {
-            System.out.println("Erro de comunicacao com o objecto remoto");
-        } catch (IOException e) {
-            System.out.println("Erro de E/S");
-        }
-
-    }
 
 }

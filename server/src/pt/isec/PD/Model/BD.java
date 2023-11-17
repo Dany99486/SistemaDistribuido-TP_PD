@@ -125,7 +125,7 @@ public class BD {
     }
 
     //TODO: Regista utilizador se nao existir
-    public int registClient(String user, String passe,String cc,String name, String[] args, String BDFileName) {
+    public int registClient(String user, String passe, String cc, String name, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
@@ -142,6 +142,7 @@ public class BD {
                 }
 
                 String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
+                queryArray[0] = query;
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, passe);
@@ -162,8 +163,9 @@ public class BD {
         return registed;
     }
 
-    public synchronized int editClient(String coluna, String alteracao, String cartaoCC, String[] args, String bdFileName) {
+    public synchronized int editClient(String coluna, String alteracao, String cartaoCC, String[] args, String bdFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
+        System.out.println(url);
         int registed = 0;
 
         try {
@@ -179,6 +181,7 @@ public class BD {
                     }
 
                     String query = "UPDATE utilizadores SET '" + coluna + "'='" + alteracao + "' WHERE cartaoCidadao='" + cartaoCC + "';";
+                    queryArray[0] = query;
                     System.out.println(query);
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
 

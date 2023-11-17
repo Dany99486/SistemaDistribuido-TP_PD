@@ -17,7 +17,7 @@ public class Evento {
 
 
     //TODO: Regista um evento
-    public  int criaEvento(String nome, String data_inicio, String data_fim, String local, String horaInicio, String horaFim, String[] args, String BDFileName) {
+    public  int criaEvento(String nome, String data_inicio, String data_fim, String local, String horaInicio, String horaFim, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
@@ -67,6 +67,7 @@ public class Evento {
                     String data_realizada = diaInicio + "/" + mesInicio + "/" + anoInicio + " - " + diaFim + "/" + mesFim + "/" + anoFim;
 
                     String query = "INSERT INTO eventos (nome,local,data,hora_inicio,hora_fim,code_validade) VALUES (?,?,?,?,?,?);";
+                    queryArray[0] = query;
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     preparedStatement.setString(1, nome);
                     preparedStatement.setString(2, local);
@@ -89,7 +90,7 @@ public class Evento {
     }
 
     //TODO: Edição de um evento
-    public int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName) {
+    public int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
         System.out.println("AQUI");
@@ -108,6 +109,7 @@ public class Evento {
                     String query = "SELECT eventos.nome FROM eventos " +
                             "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                             "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -117,6 +119,7 @@ public class Evento {
                     }
                     query = "UPDATE eventos SET '" + coluna + "'='" + alteracao + "' WHERE nome='" + nome + "'" +
                             "AND codigo IS NULL;";
+                    queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
 
                     int resultSet = preparedStatement.executeUpdate();
@@ -134,7 +137,7 @@ public class Evento {
     }
 
     //TODO: Elimina um evento se não existirem presenças
-    public  int eliminaEvento(String nome, String[] args, String bdFileName) {
+    public  int eliminaEvento(String nome, String[] args, String bdFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
 
@@ -153,6 +156,7 @@ public class Evento {
                     String query = "SELECT eventos.nome FROM eventos " +
                             "LEFT JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                             "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -162,6 +166,7 @@ public class Evento {
                     }
 
                     query = "DELETE FROM eventos WHERE nome='" + nome + "';";
+                    queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
 
                     int resultSet = preparedStatement.executeUpdate();
@@ -374,7 +379,7 @@ public class Evento {
     //---Presenças---
 
     //TODO: Regista presenças num evento
-    public int inserePresenca(String evento, String email, String[] args, String BDFileName) {
+    public int inserePresenca(String evento, String email, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
         System.out.println("entrou");
@@ -398,6 +403,7 @@ public class Evento {
                     //TODO:======================
                     String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
 
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -406,6 +412,7 @@ public class Evento {
                     idEvento = result.getInt("idEvento");
 
                     query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '" + email + "';";
+
                     preparedStatement = connection.prepareStatement(query);
                     result = preparedStatement.executeQuery();
 
@@ -417,6 +424,7 @@ public class Evento {
 
 
                     query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+                    queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
                     preparedStatement.setInt(1, idEvento);
                     preparedStatement.setString(2, idCC);
@@ -437,7 +445,7 @@ public class Evento {
     }
 
     //TODO: Elimina presenças de num evento
-    public  int eliminaPresenca(String evento, String email, String[] args, String BDFileName) {
+    public  int eliminaPresenca(String evento, String email, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
@@ -460,6 +468,7 @@ public class Evento {
                     //TODO:======================
                     String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
 
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -468,6 +477,7 @@ public class Evento {
                     idEvento = result.getInt("idEvento");
 
                     query = "SELECT cartaoCidadao FROM utilizadores WHERE email = '" + email + "';";
+
                     preparedStatement = connection.prepareStatement(query);
                     result = preparedStatement.executeQuery();
 
@@ -479,6 +489,7 @@ public class Evento {
 
 
                     query = "DELETE FROM presencas WHERE idEvento = '" + idEvento + "' AND idCC = '" + idCC + "'";
+                    queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
                     int resultSet = preparedStatement.executeUpdate();
 
@@ -541,7 +552,7 @@ public class Evento {
     }
 
     //TODO: Gera código de presenças de num evento
-    public int geraCodigo(String evento, int validade, String[] args, String BDFileName) {
+    public int geraCodigo(String evento, int validade, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int codigo;
 
@@ -558,6 +569,7 @@ public class Evento {
                     }
 
                     String query = "SELECT * FROM eventos WHERE nome = '" + evento + "';";
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -602,6 +614,7 @@ public class Evento {
 
                     query = "SELECT idEvento FROM eventos " +
                             "WHERE eventos.idEvento = '" + idEvent + "';";
+
                     preparedStatement = connection.prepareStatement(query);
                     result = preparedStatement.executeQuery();
 
@@ -613,6 +626,7 @@ public class Evento {
                     //Gera código de presenças
                     codigo = (int) (Math.random() * 1000000);
                     query = "UPDATE eventos SET codigo = '" + codigo + "' WHERE idEvento = '" + idEvent + "';";
+                    queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
                     int resultSet = preparedStatement.executeUpdate();
                     if (resultSet <= 0)
@@ -899,7 +913,7 @@ public class Evento {
     }
 
     //TODO: Inserir código de presenças num evento, pelo cliente
-    public String insereCodigo(String cc, int code, String[] args, String BDFileName) {
+    public String insereCodigo(String cc, int code, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
 
         try {
@@ -967,6 +981,7 @@ public class Evento {
 
                     if (regista) {
                         query = "INSERT INTO presencas (idEvento,idCC) VALUES (?,?);";
+                        queryArray[0] = query;
                         preparedStatement = connection.prepareStatement(query);
                         preparedStatement.setInt(1, idEvent);
                         preparedStatement.setString(2, cc);

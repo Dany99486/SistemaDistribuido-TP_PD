@@ -58,6 +58,7 @@ public class TCPConnection extends Thread {
                 ObjectOutputStream out = new ObjectOutputStream(toClientSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(toClientSocket.getInputStream())
         ) {
+            String[] queryArray = new String[1];
             do {
                 recebido = (String) in.readObject();
                 if (recebido == null)
@@ -103,18 +104,21 @@ public class TCPConnection extends Thread {
                     //out.println(envia);
                 }
                 if (aux[0].equalsIgnoreCase(REGISTAR)) {
-                    int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName);
+                    int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName,queryArray);
                     if (registo == 1) {
                         cc = aux[3];
                         role = "user";
                     }
-                    notifyObservers(2);
+                    System.out.println(Arrays.toString(queryArray));
+                    notifyObservers(queryArray);
                     defaultRegistoReturn(registo);
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
-                    int registo = bd.editClient(aux[1], aux[2], cc, args, BDFileName);
+                    int registo = bd.editClient(aux[1], aux[2], cc, args, BDFileName,queryArray);
+
+                    System.out.println(Arrays.toString(queryArray));
                     defaultRegistoReturn(registo);
-                    notifyObservers(0);
+                    notifyObservers(queryArray);
                 }
                 if (aux[0].equalsIgnoreCase(LOGOUT)) {
                     boolean registo = clients.remove(toClientSocket);
@@ -145,8 +149,9 @@ public class TCPConnection extends Thread {
                             } catch (Exception e) {/*Não precisa dizer nada*/}
                             if (atualiza) {
                                 //Evento - coluna, alteracao, nome do evento a atualizar
-                                int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName);
-                                notifyObservers(2);
+                                int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName,queryArray);
+                                System.out.println(Arrays.toString(queryArray));
+                                notifyObservers(queryArray);
                                 defaultRegistoReturn(registo);
                             } else
                                 defaultRegistoReturn(-3);
@@ -156,8 +161,9 @@ public class TCPConnection extends Thread {
                         if (aux.length != 3)
                             defaultRegistoReturn(-3);
                         else {
-                            int registo = evento.eliminaEvento(aux[2], args, BDFileName);
-                            notifyObservers(3);
+                            int registo = evento.eliminaEvento(aux[2], args, BDFileName,queryArray);
+                            System.out.println(Arrays.toString(queryArray));
+                            notifyObservers(queryArray);
                             defaultRegistoReturn(registo);
                         }
                     }
@@ -174,19 +180,22 @@ public class TCPConnection extends Thread {
                         if (aux.length != 7)
                             defaultRegistoReturn(-3);
                         else {
-                            int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName);
-                            notifyObservers(0);
+                            int registo = evento.criaEvento(aux[1], aux[2], aux[3], aux[4], aux[5], aux[6], args, BDFileName,queryArray);
+                            System.out.println(Arrays.toString(queryArray));
+                            notifyObservers(queryArray);
                             defaultRegistoReturn(registo);
                         }
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 3) {
-                        int registo = evento.inserePresenca(aux[1], aux[2], args, BDFileName);
-                        notifyObservers(1);
+                        int registo = evento.inserePresenca(aux[1], aux[2], args, BDFileName,queryArray);
+                        System.out.println(Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
                         defaultRegistoReturn(registo);
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 4) {
-                        int registo = evento.eliminaPresenca(aux[2], aux[3], args, BDFileName);
-                        notifyObservers(3);
+                        int registo = evento.eliminaPresenca(aux[2], aux[3], args, BDFileName,queryArray);
+                        System.out.println(Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
                         defaultRegistoReturn(registo);
                     }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 2) {
@@ -208,11 +217,12 @@ public class TCPConnection extends Thread {
                             }
                             if (atualiza) {
                                 //Só precisa da validade, encontra depois um evento que existe com esta validade
-                                int registo = evento.geraCodigo(aux[1], x, args, BDFileName);
+                                int registo = evento.geraCodigo(aux[1], x, args, BDFileName,queryArray);
+                                System.out.println(Arrays.toString(queryArray));
                                 if (registo < 0)
                                     defaultRegistoReturn(registo);
                                 else {
-                                    notifyObservers(0);
+                                    notifyObservers(queryArray);
                                     envia = "Codigo de registo de presenças: " + registo;
                                 }
                             } else
@@ -247,8 +257,10 @@ public class TCPConnection extends Thread {
                         } catch (Exception e) {
                             defaultRegistoReturn(-3);
                         }
-                        notifyObservers(0);
-                        envia = evento.insereCodigo(cc, x, args, BDFileName);
+                        envia = evento.insereCodigo(cc, x, args, BDFileName,queryArray);
+                        System.out.println("queryarray: " + Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
+
                     }
                 }
 
@@ -301,9 +313,9 @@ public class TCPConnection extends Thread {
         }
     }
 
-    private void notifyObservers(int i) {
-        String[] msg = { "A Base de Dados foi atualizada (update table)", "A Base de Dados foi alterada (edit table)", "A Base de Dados foi alterada (new entry in table)", "A Base de Dados foi atualizada (delete from table)" };
-        fileService.notifyObservers(msg[i]);
+    private void notifyObservers(String[] msg) {
+        HeartbeatSender.sendHeartbeat(args[2], Integer.parseInt(args[3]), 12);
+        fileService.notifyObservers(msg);
     }
 
     public List<Socket> getClients() {
