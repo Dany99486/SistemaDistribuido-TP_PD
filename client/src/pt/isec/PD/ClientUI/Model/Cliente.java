@@ -217,7 +217,7 @@ public class Cliente {
         try {
             String message;
             if (admin)
-                message = EVENTO + CONSULTA; //Tens que ver como ele recebe no server e/ou como usa no client text mode
+                message = EVENTO + CONSULTA + " sem_filtro"; //Tens que ver como ele recebe no server e/ou como usa no client text mode
             else
                 message = CONSULTA + " sem_filtro";
 

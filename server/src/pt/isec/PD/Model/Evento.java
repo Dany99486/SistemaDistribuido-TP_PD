@@ -228,6 +228,7 @@ public class Evento {
         return resultado.toString();
     }
 
+    //TODO: Seleciona um evento atraves de um nome
     public String consultaEvento(String name, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
@@ -350,7 +351,11 @@ public class Evento {
                         return resultado.append("Erro de conexão com a base de dados").toString();
                     }
 
-                    String query = "SELECT * FROM eventos " +
+                    String query;
+                    if (filtro.equalsIgnoreCase("sem_filtro"))
+                        query = "SELECT * FROM eventos;";
+                    else
+                        query = "SELECT * FROM eventos " +
                             //"JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                             "WHERE eventos.'" + campo + "' = '" + filtro + "';";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
