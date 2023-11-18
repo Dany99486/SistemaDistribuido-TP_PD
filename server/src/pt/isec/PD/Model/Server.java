@@ -25,6 +25,7 @@ public class Server {
     private String hertbeat;
     private SharedDatabaseLock lock;
     private GetRemoteBDService fileService;
+    private static int versaoBD;
 
     public Server(String[] a) {
         this.args = a;
@@ -62,7 +63,7 @@ public class Server {
         launchRMI();
 
         //TODO: Conexão com clientes via TCP
-        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(fileService, clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
+        ServerTCPConnectionSocket socketClient = new ServerTCPConnectionSocket(versaoBD, fileService, clients, nClients, TIMEOUT, bd, evento, args, BDFileName);
 
         show = socketClient.serverTCPConnection();
 
@@ -71,6 +72,7 @@ public class Server {
         nClients = socketClient.getnClients();
         bd = socketClient.getBd();
         evento = socketClient.getEvento();
+        versaoBD = socketClient.getVersaoBD();
 
         for (Socket s : clients) {
             try {

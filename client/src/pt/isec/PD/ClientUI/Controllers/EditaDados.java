@@ -42,12 +42,7 @@ public class EditaDados {
 
     @FXML
     public void handleToClienteMenu() throws IOException {
-        FXMLLoader loader;
-        if (controller.isAdmin()) {
-            loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteAdminMenu.fxml"));
-        } else {
-            loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteMenu.fxml"));
-        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteMenu.fxml"));
         Parent root = loader.load();
 
         // Crie a cena usando a raiz carregada do FXML

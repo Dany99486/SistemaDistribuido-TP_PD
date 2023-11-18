@@ -38,8 +38,9 @@ public class TCPConnection extends Thread {
     private Evento evento;
     private boolean open = true;
     private GetRemoteBDService fileService;
+    private int versaoBD;
 
-    public TCPConnection(GetRemoteBDService fileService, List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
+    public TCPConnection(int versaoBD, GetRemoteBDService fileService, List<Socket> cs, int nc, Socket toClientSocket, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.toClientSocket = toClientSocket;
         this.TIMEOUT = TIMEOUT;
         this.args = args;
@@ -49,6 +50,7 @@ public class TCPConnection extends Thread {
         this.clients = cs;
         this.nClients = nc;
         this.fileService = fileService;
+        this.versaoBD = versaoBD;
     }
 
     @Override
@@ -338,8 +340,14 @@ public class TCPConnection extends Thread {
     }
 
     private void notifyObservers(String[] msg) {
-        HeartbeatSender.sendHeartbeat(args[2], Integer.parseInt(args[3]), 12);
+        versaoAlterada();
+        HeartbeatSender.sendHeartbeat(args[2], Integer.parseInt(args[3]), versaoBD);
         fileService.notifyObservers(msg);
+    }
+
+    private void versaoAlterada() {
+        int pesquisaV = bd.pesquisaUltimaVersaoBD(args, BDFileName);
+        //if (pesquisaV >= 0)
     }
 
     public List<Socket> getClients() {
@@ -348,5 +356,9 @@ public class TCPConnection extends Thread {
 
     public int getnClients() {
         return nClients;
+    }
+
+    public int getVersaoBD() {
+        return versaoBD;
     }
 }

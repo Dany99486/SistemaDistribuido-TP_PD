@@ -233,4 +233,74 @@ public class BD {
         }
         return aux;
     }
+
+    //TODO: Versão de Base de dados, aceder ultima versão
+    public int pesquisaUltimaVersaoBD(String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        int aux = -1;
+
+        try {
+            // Estabelece a conexão com a base de dados ou cria uma nova se não existir
+            show = url;
+            show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return -1;
+                }
+                Statement statement = connection.createStatement();
+                String query = "SELECT versao FROM versao;";
+                System.out.println(query);
+                ResultSet resultSet = statement.executeQuery(query);
+                while (resultSet.next()) {
+                    aux = resultSet.getInt("versao");
+                    System.out.println("Versao da BD: " + aux);
+                }
+                connection.close();
+            }
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            return -2;
+        }
+        return aux;
+    }
+
+    //TODO: Versão de Base de dados, regista nova versao
+    public int insereNovaVersaoBD(int lastVersion, String[] args, String BDFileName) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        int aux = -3;
+
+        try {
+            // Estabelece a conexão com a base de dados ou cria uma nova se não existir
+            show = url;
+            show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return -1;
+                }
+                String query = "INSERT OR IGNORE INTO versao (versao) VALUES (?);";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+                lastVersion++;
+                preparedStatement.setInt(1, lastVersion);
+                int resultSet = preparedStatement.executeUpdate();
+
+                if (resultSet > 0)
+                    aux = 0;
+
+                connection.close();
+            }
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            return -2;
+        }
+        return aux;
+    }
 }

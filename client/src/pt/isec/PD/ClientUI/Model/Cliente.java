@@ -18,6 +18,7 @@ public class Cliente {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private final String CONSULTA = "CONSULTA";
+    private final String EVENTO = "EVENTO";
     private String[] args;
     private static Socket socket;
     private String error;
@@ -214,7 +215,11 @@ public class Cliente {
 
     public List<Evento> consultarPresencas() {
         try {
-            String message = CONSULTA + " sem_filtro";
+            String message;
+            if (admin)
+                message = EVENTO + CONSULTA; //Tens que ver como ele recebe no server e/ou como usa no client text mode
+            else
+                message = CONSULTA + " sem_filtro";
 
             out.writeObject(message);
             out.flush();

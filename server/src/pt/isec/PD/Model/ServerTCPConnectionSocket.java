@@ -16,8 +16,9 @@ public class ServerTCPConnectionSocket extends Thread {
     private BD bd;
     private Evento evento;
     private GetRemoteBDService fileService;
+    private int versaoBD;
 
-    public ServerTCPConnectionSocket(GetRemoteBDService fileService, List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
+    public ServerTCPConnectionSocket(int versaoBD, GetRemoteBDService fileService, List<Socket> cs, int nc, int TIMEOUT, BD bd, Evento evento, String[] args, String BDFileName) {
         this.TIMEOUT = TIMEOUT;
         this.args = args;
         this.BDFileName = BDFileName;
@@ -26,6 +27,7 @@ public class ServerTCPConnectionSocket extends Thread {
         this.bd = bd;
         this.evento = evento;
         this.fileService = fileService;
+        this.versaoBD = versaoBD;
     }
 
     public String serverTCPConnection() {
@@ -38,10 +40,11 @@ public class ServerTCPConnectionSocket extends Thread {
                 System.out.println("Thread");
 
                 Socket toClientSocket = socket.accept();
-                TCPConnection tcp = new TCPConnection(fileService, clients, nClients, toClientSocket, TIMEOUT, bd, evento, args, BDFileName);
+                TCPConnection tcp = new TCPConnection(versaoBD, fileService, clients, nClients, toClientSocket, TIMEOUT, bd, evento, args, BDFileName);
                 tcp.start();
                 clients = tcp.getClients();
                 nClients = tcp.getnClients();
+                versaoBD = tcp.getVersaoBD();
             }
         } catch (NumberFormatException e) {
             show += "\nO porto deve ser um inteiro positivo";
@@ -69,4 +72,7 @@ public class ServerTCPConnectionSocket extends Thread {
         return evento;
     }
 
+    public int getVersaoBD() {
+        return versaoBD;
+    }
 }
