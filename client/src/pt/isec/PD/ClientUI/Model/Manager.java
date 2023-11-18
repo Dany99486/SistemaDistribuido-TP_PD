@@ -80,4 +80,8 @@ public class Manager {
     public boolean eliminaEvento(String nome) {
         return cliente.eliminaEvento(nome);
     }
+
+    public boolean editarEvento(String nomeCampoAlterado, String novaAlteracao, String nome) {
+        return cliente.editarEvento(nomeCampoAlterado, novaAlteracao, nome);
+    }
 }

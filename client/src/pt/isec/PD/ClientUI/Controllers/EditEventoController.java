@@ -9,6 +9,8 @@ import pt.isec.PD.ClientUI.Model.Evento;
 
 import java.time.LocalDate;
 
+import static pt.isec.PD.ClientUI.MainJFX.controller;
+
 public class EditEventoController {
     private ModalCallback callback;
     public void setModalCallback(ModalCallback callback) {
@@ -27,6 +29,8 @@ public class EditEventoController {
     @FXML
     public TextField horaInicio;
     @FXML
+    public TextField horaFim;
+    @FXML
     public Button cancelarButton;
     @FXML
     public Button editarButton;
@@ -34,33 +38,49 @@ public class EditEventoController {
     private Evento evento;
     @FXML
     public void onEditarButton() {
+        String nomeCampoAlterado = "";
+        String novaAlteracao = "";
 
-        // Lógica para criar um novo funcionário com os dados inseridos
-        String nome = Nome.getText();
-        String data = Data.getText();
-        String local = Local.getText();
-        String horaInicio = this.horaInicio.getText();
+        if (!Nome.getText().equals(evento.getNome())) {
+            nomeCampoAlterado = "nome";
+            novaAlteracao = Nome.getText();
+            evento.setNome(novaAlteracao);
+        } else if (!Data.getText().equals(evento.getData())) {
+            nomeCampoAlterado = "data";
+            novaAlteracao = Data.getText();
+            evento.setData(novaAlteracao);
+        } else if (!Local.getText().equals(evento.getLocal())) {
+            nomeCampoAlterado = "local";
+            novaAlteracao = Local.getText();
+            evento.setLocal(novaAlteracao);
+        } else if (!horaInicio.getText().equals(evento.getHoraInicio())) {
+            nomeCampoAlterado = "horaInicio";
+            novaAlteracao = horaInicio.getText();
+            evento.setHoraInicio(novaAlteracao);
+        } else if (!horaFim.getText().equals(evento.getHoraFim())) {
+            nomeCampoAlterado = "horaFim";
+            novaAlteracao = horaFim.getText();
+            evento.setHoraFim(novaAlteracao);
+        }
 
+        if (!nomeCampoAlterado.isEmpty() && !novaAlteracao.isEmpty()) {
+            // Chame o método do controlador com os parâmetros desejados
+            if (controller.editarEvento(nomeCampoAlterado, novaAlteracao, evento.getNome())) {
+                System.out.println("Evento editado com sucesso");
+            } else {
+                System.out.println("Erro ao editar evento");
+            }
+        } else {
+            System.out.println("Nenhuma alteração foi feita");
+        }
 
-        evento.setNome(nome);
-        evento.setLocal(local);
-        evento.setData(data);
-        evento.setHoraInicio(horaInicio);
-
-            //if (callback != null) {
-            //    callback.onFuncionarioEditado(evento);
-           // }
-
-            // Fechar o modal
-            Stage stage = (Stage) editarButton.getScene().getWindow();
-            stage.close();
-
-
-
+        // Fechar o modal
+        Stage stage = (Stage) editarButton.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
-    public void handleCancelarButton() {
+    public void onCancelarButton() {
         // Fechar o modal sem fazer nada
         Stage stage = (Stage) cancelarButton.getScene().getWindow();
         stage.close();
@@ -73,6 +93,7 @@ public class EditEventoController {
         Data.setText(evento.getData());
         Local.setText(evento.getLocal());
         horaInicio.setText(evento.getHoraInicio());
+        horaFim.setText(evento.getHoraFim());
 
     }
 }

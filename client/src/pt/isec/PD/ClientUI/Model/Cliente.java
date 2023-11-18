@@ -342,6 +342,24 @@ public class Cliente {
         }
         return false;
     }
+
+    public boolean editarEvento(String nomeCampoAlterado, String novaAlteracao, String nome) {
+        String message = "EVENTO EDICAO "+nomeCampoAlterado+" "+novaAlteracao+" "+nome;
+        try {
+
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     public boolean logout() {
         try {
             out.writeObject("LOGOUT");
