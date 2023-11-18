@@ -242,9 +242,6 @@ public class Cliente {
             String data = matcher.group(3);
             String horaInicio = matcher.group(4);
             String horaFim = matcher.group(5);
-            System.out.println(horaInicio);
-            System.out.println(horaFim);
-
             // Adicionar o evento à lista
             eventos.add(new Evento(nome, local, data, horaInicio, horaFim));
         }

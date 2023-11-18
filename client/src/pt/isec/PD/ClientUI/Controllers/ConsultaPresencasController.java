@@ -20,13 +20,14 @@ public class ConsultaPresencasController {
     public TableColumn<Evento, String> horaFimColumn;
 
 
-    public ConsultaPresencasController(){
+    public void initialize(){
+        /*
         tableView = new TableView<>();
         nomeColumn = new TableColumn<>();
         localColumn = new TableColumn<>();
         dataColumn = new TableColumn<>();
         horaInicioColumn = new TableColumn<>();
-        horaFimColumn = new TableColumn<>();
+        horaFimColumn = new TableColumn<>();*/
 
         nomeColumn.setCellValueFactory(new PropertyValueFactory<>("nome"));
         localColumn.setCellValueFactory(new PropertyValueFactory<>("local"));
