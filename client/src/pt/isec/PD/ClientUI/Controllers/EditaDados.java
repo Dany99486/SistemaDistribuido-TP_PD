@@ -28,13 +28,6 @@ public class EditaDados {
         //Apos pedir vamos atribuir valores
         Nome.setText(controller.getNome());
         Email.setText(controller.getEmail());
-
-        lblError.setText("Erro ao pedir dados");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void edita() throws InterruptedException, IOException {
@@ -47,9 +40,18 @@ public class EditaDados {
         }
     }
 
+    public void voltar() throws IOException {
+        handleToClienteMenu();
+    }
+
     @FXML
     public void handleToClienteMenu() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteMenu.fxml"));
+        FXMLLoader loader;
+        if (controller.isAdmin()) {
+            loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteAdminMenu.fxml"));
+        } else {
+            loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ClienteMenu.fxml"));
+        }
         Parent root = loader.load();
 
         // Crie a cena usando a raiz carregada do FXML
