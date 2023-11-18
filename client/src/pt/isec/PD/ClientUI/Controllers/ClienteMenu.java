@@ -6,12 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
-import pt.isec.PD.ClientUI.Model.Evento;
 
 import java.io.IOException;
 
@@ -34,9 +32,6 @@ public class ClienteMenu {
         this.lblOut = new Label();
     }
 
-    public void handleClienteMenu() {
-    }
-
     public void logout() throws InterruptedException {
         if(controller.logout()) {
             lblOut.setText(controller.getLogout());
@@ -53,6 +48,7 @@ public class ClienteMenu {
             lblOut.setText("Erro ao pedir dados");
     }
 
+    @FXML
     public void SubmeteCodigo() throws IOException {
         FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/SubmissaoCodigo.fxml"));
         Parent root = loader.load();
@@ -94,8 +90,9 @@ public class ClienteMenu {
     }
 
 
+    @FXML
     public void ConsultarPresenca() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/ConsultaPresencas.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/ConsultaPresencas.fxml"));
         Parent root = loader.load();
 
         Stage modalStage = new Stage();
