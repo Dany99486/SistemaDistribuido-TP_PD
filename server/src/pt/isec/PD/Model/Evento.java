@@ -496,7 +496,7 @@ public class Evento {
                     idCC = result.getString("cartaoCidadao");
 
 
-                    query = "DELETE FROM presencas WHERE idEvento = '" + idEvento + "' AND idCC = '" + idCC + "'";
+                    query = "DELETE FROM presencas WHERE idEvento = '" + idEvento + "' AND idCC = '" + idCC + "';";
                     queryArray[0] = query;
                     preparedStatement = connection.prepareStatement(query);
                     int resultSet = preparedStatement.executeUpdate();
@@ -507,6 +507,60 @@ public class Evento {
 
                     connection.close();
                 }
+        } catch (SQLException e) {
+            show += "\nErro ao conectar à base de dados: " + e.getMessage();
+            registed = -2;
+        }
+        return registed;
+    }
+
+    //TODO: Elimina presenças de num evento
+    public  int eliminaPresencaID(int id, String[] args, String BDFileName, String[] queryArray) {
+        String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        int registed = 0;
+
+        try {
+            show = url;
+            show += "\nConectando à base de dados...";
+            synchronized (lock) {
+                Connection connection = DriverManager.getConnection(url);
+                if (connection != null)
+                    show += "\nConexão com a base de dados estabelecida com sucesso.";
+                else {
+                    show += "\nConexão com a base de dados não foi estabelecida.";
+                    return -1;
+                }
+
+                String idCC;
+
+                //TODO:======================
+                String query = "SELECT idCC FROM eventos WHERE id = '" + id + "';";
+
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();
+
+                if (!result.next())
+                    return registed;
+                idCC = result.getString("idCC");
+
+                query = "SELECT cartaoCidadao FROM utilizadores WHERE cartaoCidadao = '" + idCC + "';";
+
+                preparedStatement = connection.prepareStatement(query);
+                result = preparedStatement.executeQuery();
+
+                if (!result.next())
+                    return registed;
+
+                query = "DELETE FROM presencas WHERE id = '" + id + "';";
+                queryArray[0] = query;
+                preparedStatement = connection.prepareStatement(query);
+                int resultSet = preparedStatement.executeUpdate();
+
+                if (resultSet > 0)
+                    registed = 1;
+
+                connection.close();
+            }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
             registed = -2;
@@ -535,11 +589,11 @@ public class Evento {
                     String query;
 
                     if (evento.equalsIgnoreCase("sem_filtro"))
-                        query = "SELECT codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos " +
+                        query = "SELECT presencas.id, codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos " +
                             "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                             "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao;";
                     else
-                        query = "SELECT codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                        query = "SELECT presencas.id, codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
                                 "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
                                 "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
                                 "WHERE eventos.nome = '" + evento + "';";
@@ -548,12 +602,13 @@ public class Evento {
                     ResultSet result = preparedStatement.executeQuery();
 
                     while (result.next()) {
+                        String id = result.getString("id");
                         String codigo = result.getString("codigo");
                         String idEvento = result.getString("idEvento");
                         String cartaoCidadao = result.getString("cartaoCidadao");
                         String hora_inicio = result.getString("hora_inicio");
                         String hora_fim = result.getString("hora_fim");
-                        resultado.append("Codigo: ").append(codigo == null ? "Código inválido" : codigo).append(" idEvento: ").append(idEvento)
+                        resultado.append("ID: ").append(id).append(" Codigo: ").append(codigo == null ? "Código inválido" : codigo).append(" idEvento: ").append(idEvento)
                                 .append(" CC: ").append(cartaoCidadao).append(" Hora de inicio: ").append(hora_inicio)
                                 .append(" Hora de fim: ").append(hora_fim).append("\n");
                     }

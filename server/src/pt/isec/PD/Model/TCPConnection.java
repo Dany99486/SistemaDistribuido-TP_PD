@@ -225,6 +225,21 @@ public class TCPConnection extends Thread {
                         notifyObservers(queryArray);
                         defaultRegistoReturn(registo);
                     }
+                    //Para UI
+                    if (aux[0].equalsIgnoreCase(PRESENCAS) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 3) {
+                        int x = 0;
+                        try {
+                            x = Integer.parseInt(aux[2]);
+                            if (x < 0)
+                                x=-x;
+                        } catch (Exception e) {
+                            defaultRegistoReturn(-3);
+                        }
+                        int registo = evento.eliminaPresencaID(x, args, BDFileName,queryArray);
+                        System.out.println(Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
+                        defaultRegistoReturn(registo);
+                    }
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 2) {
                         envia = evento.consultaPresenca(aux[1], args, BDFileName);
                     }

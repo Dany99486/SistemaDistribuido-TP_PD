@@ -6,8 +6,10 @@ public class Presencas {
     private String cartaoCidadao;
     private String horaInicio;
     private String horaFim;
+    private String id;
 
-    public Presencas(String codigo, String idEvento, String cartaoCidadao, String horaInicio, String horaFim) {
+    public Presencas(String id, String codigo, String idEvento, String cartaoCidadao, String horaInicio, String horaFim) {
+        this.id = id;
         this.codigo = codigo;
         this.idEvento = idEvento;
         this.cartaoCidadao = cartaoCidadao;
@@ -44,5 +46,13 @@ public class Presencas {
     }
     public void setHoraFim(String horaFim) {
         this.horaFim = horaFim;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

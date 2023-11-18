@@ -232,16 +232,17 @@ public class Cliente {
         Pattern pattern;
         Matcher matcher;
 
-        pattern = Pattern.compile("Codigo: (.*?) idEvento: (.*?) CC: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
+        pattern = Pattern.compile("ID: (.*?) Codigo: (.*?) idEvento: (.*?) CC: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
         matcher = pattern.matcher(eventosString);
         while (matcher.find()) {
-            String codigo = matcher.group(1);
-            String idEvento = matcher.group(2);
-            String CC = matcher.group(3);
-            String horaInicio = matcher.group(4);
-            String horaFim = matcher.group(5);
+            String id = matcher.group(1);
+            String codigo = matcher.group(2);
+            String idEvento = matcher.group(3);
+            String CC = matcher.group(4);
+            String horaInicio = matcher.group(5);
+            String horaFim = matcher.group(6);
             // Adicionar o evento à lista
-            presencas.add(new Presencas(codigo, idEvento, CC, horaInicio, horaFim));
+            presencas.add(new Presencas(id, codigo, idEvento, CC, horaInicio, horaFim));
         }
 
         return presencas;

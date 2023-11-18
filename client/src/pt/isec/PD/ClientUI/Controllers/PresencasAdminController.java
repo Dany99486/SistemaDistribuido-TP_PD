@@ -30,6 +30,8 @@ public class PresencasAdminController {
     @FXML
     public TableView<Presencas> tableView;
 
+    public TableColumn<Presencas, String> id;
+
     public TableColumn<Presencas, String> codigo;
     public TableColumn<Presencas, String> idEvento;
     public TableColumn<Presencas, String> cartaoCidadao;
@@ -38,6 +40,7 @@ public class PresencasAdminController {
 
     public void initialize(){
 
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
         codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         idEvento.setCellValueFactory(new PropertyValueFactory<>("idEvento"));
         cartaoCidadao.setCellValueFactory(new PropertyValueFactory<>("cartaoCidadao"));
