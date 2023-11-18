@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class EventosAdminController {
+public class EventosAdminController implements ModalCallback {
     public TextField searchField;
     public Button btnCriar;
     public Button btnEditar;
@@ -95,7 +95,19 @@ public class EventosAdminController {
         }
     }
     public void handleEliminar(){
-        return;
+        Evento eventoSelecionado = tableView.getSelectionModel().getSelectedItem();
+        if (eventoSelecionado != null) {
+            System.out.println("Evento selecionado: " + eventoSelecionado.getNome());
+
+            if(!controller.eliminaEvento(eventoSelecionado.getNome())) {
+                System.out.println("Não foi possível eliminar o evento");
+            } else {
+                System.out.println("Evento eliminado com sucesso");
+            }
+
+            // Atualiza a tabela
+            updateTable();
+        }
     }
     public void onSearch(){
         String nome = searchField.getText().toLowerCase();
@@ -137,5 +149,15 @@ public class EventosAdminController {
         List<Evento> eventos = controller.consultarEventos();
         tableView.getItems().clear();
         tableView.getItems().addAll(eventos);
+    }
+
+    @Override
+    public void onEventoCriado(Evento evento) {
+
+    }
+
+    @Override
+    public void onEventoEditado(Evento evento) {
+
     }
 }

@@ -308,6 +308,40 @@ public class Cliente {
 
         return eventos;
     }
+
+    public boolean criarEvento(String nome, String local, String dataInicioFormatada, String dataFimFormatada, String horaInicio, String horaFim) {
+        String message = "EVENTO "+nome+" "+dataInicioFormatada+" "+dataFimFormatada+" "+local+" "+horaInicio+" "+horaFim;
+        try {
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean eliminaEvento(String nome) {
+        String message = "EVENTO APAGAR "+nome;
+        try {
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+        }
+        return false;
+    }
     public boolean logout() {
         try {
             out.writeObject("LOGOUT");

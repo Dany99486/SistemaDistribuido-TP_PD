@@ -72,4 +72,12 @@ public class Manager {
     public List<Presencas> consultarPresencas() {
         return cliente.consultarPresencas();
     }
+
+    public boolean criarEvento(String nome, String local, String dataInicioFormatada, String dataFimFormatada, String horaInicio, String horaFim) {
+        return cliente.criarEvento(nome, local, dataInicioFormatada, dataFimFormatada, horaInicio, horaFim);
+    }
+
+    public boolean eliminaEvento(String nome) {
+        return cliente.eliminaEvento(nome);
+    }
 }
