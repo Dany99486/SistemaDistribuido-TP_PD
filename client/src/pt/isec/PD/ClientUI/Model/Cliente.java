@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -233,7 +234,7 @@ public class Cliente {
     private List<Evento> processarStringEventos(String eventosString) {
         List<Evento> eventos = new ArrayList<>();
 
-        Pattern pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)");
+        Pattern pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
         Matcher matcher = pattern.matcher(eventosString);
 
         while (matcher.find()) {

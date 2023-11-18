@@ -1,16 +1,20 @@
 package pt.isec.PD.ClientUI.Controllers;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import pt.isec.PD.ClientUI.Model.Evento;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
 public class ConsultaPresencasController {
+    public TextField searchField;
     @FXML
     public TableView<Evento> tableView;
     public TableColumn<Evento, String> nomeColumn;
@@ -39,7 +43,12 @@ public class ConsultaPresencasController {
     }
 
     public void onSearch() {
+        String nome = searchField.getText().toLowerCase();
+        List<Evento> funcionariosFiltrados = controller.consultarPresencas().stream()
+                .filter(evento -> evento.getNome().toLowerCase().contains(nome))
+                .collect(Collectors.toList());
 
+        tableView.setItems(FXCollections.observableArrayList(funcionariosFiltrados));
     }
 
 

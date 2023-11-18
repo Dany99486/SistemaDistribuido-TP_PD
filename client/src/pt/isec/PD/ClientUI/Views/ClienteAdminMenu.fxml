@@ -40,7 +40,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button layoutX="114.0" layoutY="145.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Presenças" textFill="WHITE">
+            <Button fx:id="btnPresencas" onAction="#handlePresencas" layoutX="114.0" layoutY="145.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Presenças" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -48,7 +48,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button layoutX="114.0" layoutY="80.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Eventos" textFill="WHITE">
+            <Button fx:id="btnEventos" onAction="#handleEventos" layoutX="114.0" layoutY="80.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Eventos" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>

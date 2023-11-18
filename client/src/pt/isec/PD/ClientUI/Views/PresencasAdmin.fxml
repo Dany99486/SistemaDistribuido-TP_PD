@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.PresencasAdminController">
+   <children>
+      <AnchorPane prefHeight="401.0" prefWidth="600.0">
+         <children>
+            <TableView fx:id="tableView" layoutX="24.0" layoutY="129.0" prefHeight="222.0" prefWidth="552.0">
+              <columns>
+                <TableColumn fx:id="nomeColumn" prefWidth="90.4000244140625" text="Nome" />
+                <TableColumn fx:id="localColumn" prefWidth="100.0" text="Local" />
+                  <TableColumn fx:id="dataColumn" prefWidth="142.39996337890625" text="Data" />
+                  <TableColumn fx:id="horaInicioColumn" prefWidth="112.7999267578125" text="Hora de inicio" />
+                  <TableColumn fx:id="horaFimColumn" prefWidth="108.00006103515625" text="Hora de fim" />
+              </columns>
+            </TableView>
+            <Label layoutX="180.0" layoutY="32.0" text="Consulta de presenças">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnEliminar" onAction="#handleEliminar" layoutX="489.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #ff2020;" text="Eliminar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <TextField fx:id="searchField" layoutX="24.0" layoutY="87.0" onAction="#onSearch" prefHeight="27.0" prefWidth="219.0" style="-fx-border-color: #3a4151; -fx-background-color: #fff;" />
+            <Button fx:id="btnEditar" onAction="#handleEditar" layoutX="412.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnCriar" onAction="#handleCriar" layoutX="345.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Criar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="513.0" layoutY="359.0" mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="Voltar" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

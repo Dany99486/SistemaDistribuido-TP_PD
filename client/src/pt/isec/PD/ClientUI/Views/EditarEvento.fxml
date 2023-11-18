@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="pt.isec.PD.ClientUI.Controllers.EditEventoController">
    <children>
       <AnchorPane prefHeight="401.0" prefWidth="600.0">
          <children>
@@ -18,17 +18,17 @@
                   <Font name="System Bold" size="23.0" />
                </font>
             </Label>
-            <TextField layoutX="276.0" layoutY="103.0" promptText="Nome" />
-            <TextField layoutX="276.0" layoutY="146.0" promptText="Local" />
-            <TextField layoutX="276.0" layoutY="186.0" promptText="Hora de inicio" />
-            <DatePicker layoutX="263.0" layoutY="272.0" />
+            <TextField fx:id="Nome" layoutX="276.0" layoutY="103.0" promptText="Nome" />
+            <TextField fx:id="Local" layoutX="276.0" layoutY="146.0" promptText="Local" />
+            <TextField fx:id="horaInicio" layoutX="276.0" layoutY="186.0" promptText="Hora de inicio" />
+            <TextField fx:id="Data" layoutX="263.0" layoutY="272.0" promptText="Data" />
             <Label layoutX="203.0" layoutY="275.0" prefHeight="18.0" prefWidth="45.0" text="Data:" />
             <TextField layoutX="276.0" layoutY="226.0" promptText="Hora de fim" />
             <Label layoutX="190.0" layoutY="229.0" prefHeight="18.0" prefWidth="71.0" text="Hora de fim:" />
             <Label layoutX="184.0" layoutY="191.0" prefHeight="18.0" prefWidth="82.0" text="Hora de Inicio:" />
             <Label layoutX="207.0" layoutY="149.0" prefHeight="18.0" prefWidth="36.0" text="Local:" />
             <Label layoutX="203.0" layoutY="106.0" prefHeight="18.0" prefWidth="45.0" text="Nome:" />
-            <Button layoutX="457.0" layoutY="331.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
+            <Button fx:id="editarButton" onAction="#onEditarButton" layoutX="457.0" layoutY="331.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
