@@ -62,7 +62,6 @@ public class Manager {
     }
 
     public String submeteCodigo(String code) {
-        cliente.submeteCodigo(code);
-        return null;
+        return cliente.submeteCodigo(code);
     }
 }
