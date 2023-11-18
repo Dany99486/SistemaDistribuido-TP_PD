@@ -553,7 +553,7 @@ public class Evento {
                         String cartaoCidadao = result.getString("cartaoCidadao");
                         String hora_inicio = result.getString("hora_inicio");
                         String hora_fim = result.getString("hora_fim");
-                        resultado.append("Codigo: ").append(codigo).append(" idEvento: ").append(idEvento)
+                        resultado.append("Codigo: ").append(codigo == null ? "Código inválido" : codigo).append(" idEvento: ").append(idEvento)
                                 .append(" CC: ").append(cartaoCidadao).append(" Hora de inicio: ").append(hora_inicio)
                                 .append(" Hora de fim: ").append(hora_fim).append("\n");
                     }

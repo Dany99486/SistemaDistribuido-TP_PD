@@ -69,6 +69,7 @@ public class PresencasAdminController {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("Editar Presenças");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Definir o conteúdo da janela modal
         Scene scene = new Scene(root);
