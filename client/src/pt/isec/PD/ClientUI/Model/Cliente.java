@@ -163,12 +163,12 @@ public class Cliente {
                     aux = "email " + email;
             if (!password.isEmpty() || !password.isBlank())
                 if (!password.equals(this.password))
-                    aux = "password " + password;
+                    aux = "pass " + password;
 
             if (aux == null)
                 return false;
 
-            message = "EDICAO  " + aux;
+            message = "EDICAO " + aux;
 
             out.writeObject(message);
             out.flush();

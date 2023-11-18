@@ -20,14 +20,14 @@ public class EditaDados {
     public Label lblError;
 
     public EditaDados() {
-        Nome = new TextField();
-        Email = new TextField();
-        Password = new TextField();
-        lblError = new Label();
+        //Nome = new TextField();
+        //Email = new TextField();
+        //Password = new TextField();
+        //lblError = new Label();
 
         //Apos pedir vamos atribuir valores
-        Nome.setText(controller.getNome());
-        Email.setText(controller.getEmail());
+        //Nome.setPromptText(controller.getNome());
+        //Email.setPromptText(controller.getEmail());
     }
 
     public void edita() throws InterruptedException, IOException {

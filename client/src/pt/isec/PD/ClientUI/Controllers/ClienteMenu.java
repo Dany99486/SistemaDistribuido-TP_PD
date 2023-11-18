@@ -72,6 +72,11 @@ public class ClienteMenu {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/EditaDados.fxml"));
         Parent root = loader.load();
 
+        EditaDados editaDadosController = loader.getController();
+        // Agora você pode acessar e manipular os campos do controlador diretamente
+        editaDadosController.Nome.setText(controller.getNome());
+        editaDadosController.Email.setText(controller.getEmail());
+
         // Crie a cena usando a raiz carregada do FXML
         Scene scene = new Scene(root);
 
