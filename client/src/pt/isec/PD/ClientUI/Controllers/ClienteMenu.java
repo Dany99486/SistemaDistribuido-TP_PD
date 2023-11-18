@@ -1,6 +1,7 @@
 package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,10 +11,12 @@ import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class ClienteMenu extends MenuInicialController {
+public class ClienteMenu extends MenuInicialController implements Initializable {
     public Button btnLogout;
     public Button ObterCSV;
     public Button ConsultarPresenca;
@@ -21,7 +24,8 @@ public class ClienteMenu extends MenuInicialController {
     public Button EditarRegisto;
     public Label lblOut;
 
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         btnLogout = new Button();
         ObterCSV = new Button();
         ConsultarPresenca = new Button();

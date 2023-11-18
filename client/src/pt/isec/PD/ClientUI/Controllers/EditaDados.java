@@ -2,6 +2,7 @@ package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,20 +11,31 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class EditaDados extends MenuInicialController {
+public class EditaDados extends MenuInicialController implements Initializable {
     public TextField Nome;
     public TextField Email;
     public TextField Password;
     public Label lblError;
 
-    public void initialize() {
-        controller.pedeDadosRegisto();
-        //Apos pedir vamos atribuir valores
-        Nome.setText(controller.getNome());
-        Email.setText(controller.getEmail());
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(controller.pedeDadosRegisto()) {
+            //Apos pedir vamos atribuir valores
+            Nome.setText(controller.getNome());
+            Email.setText(controller.getEmail());
+        } else {
+            lblError.setText("Erro ao pedir dados");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void edita() throws InterruptedException, IOException {

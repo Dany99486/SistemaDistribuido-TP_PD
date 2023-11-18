@@ -32,7 +32,7 @@ public class TCPConnection extends Thread {
     private int nClients;
     private String recebido, envia;
     private String msgShow;
-    protected String cc = null;
+    private String cc;
     private String role;
     private BD bd;
     private Evento evento;
@@ -61,8 +61,10 @@ public class TCPConnection extends Thread {
             String[] queryArray = new String[1];
             do {
                 recebido = (String) in.readObject();
-                if (recebido == null)
+                if (recebido == null) {
+                    System.out.println("Recebido: [null]");
                     return; //EOF
+                }
 
                 String[] aux = recebido.trim().split(" ");
 
@@ -93,12 +95,16 @@ public class TCPConnection extends Thread {
                         cc = bd.getCC();
                         role = bd.getRole();
 
-                        clients.add(toClientSocket);
-                        nClients++;
-                        if (role.equalsIgnoreCase(ADMIN))
-                            envia = "Admin bem-vindo";
-                        else
-                            envia = "Logado com sucesso";
+                        if (cc == null || role == null) {
+                            envia = "Nao foi possivel logar";
+                        } else {
+                            clients.add(toClientSocket);
+                            nClients++;
+                            if (role.equalsIgnoreCase(ADMIN))
+                                envia = "Admin bem-vindo";
+                            else
+                                envia = "Logado com sucesso";
+                        }
                     } else {
                         envia = "Nao foi possivel logar";
                         out.writeObject(envia);
@@ -132,14 +138,24 @@ public class TCPConnection extends Thread {
                         envia = "A sessão não foi terminada";
                 }
                 if (aux[0].equalsIgnoreCase(DADOS)) {
-                    if (cc == null || role == null)
+                    if (cc == null || role == null) {
                         envia = "Erro: Não está registado";
-                    else
+                        out.writeObject(envia);
+                        out.flush();
+                    } else {
                         envia = bd.devolveDados(cc, args, BDFileName);
+                        if (envia == null)
+                            envia = "Erro, sem dados obtidos";
+                        System.out.println("envia: " + envia);
+                        out.writeObject(envia);
+                        out.flush();
+                    }
                 }
 
-                if (role == null || cc == null)
+                if (role == null || cc == null) {
+                    System.out.println("Role e cc error: [null]");
                     return; //Temos de fechar esta conexao do cliente
+                }
 
                 if (role.equalsIgnoreCase(ADMIN)) {
 

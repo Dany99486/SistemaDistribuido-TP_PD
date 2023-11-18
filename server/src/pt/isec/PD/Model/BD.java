@@ -204,6 +204,7 @@ public class BD {
     //TODO: Devolve os dados do cliente
     public String devolveDados(String x, String[] args, String BDFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
+        String aux = null;
 
         try {
             // Estabelece a conexão com a base de dados ou cria uma nova se não existir
@@ -222,14 +223,14 @@ public class BD {
                 System.out.println(query);
                 ResultSet resultSet = statement.executeQuery(query);
                 if (resultSet.next()) {
-                    connection.close();
-                    return resultSet.getString("nome") + " " + resultSet.getString("email") + " " + resultSet.getString("pass");
+                    aux = resultSet.getString("nome") + " " + resultSet.getString("email") + " " + resultSet.getString("pass");
+                    System.out.println(aux);
                 }
                 connection.close();
             }
         } catch (SQLException e) {
             show += "\nErro ao conectar à base de dados: " + e.getMessage();
         }
-        return null;
+        return aux;
     }
 }

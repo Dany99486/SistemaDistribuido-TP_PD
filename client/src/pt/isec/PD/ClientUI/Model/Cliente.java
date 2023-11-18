@@ -42,6 +42,7 @@ public class Cliente {
                 this.out = new ObjectOutputStream(socket.getOutputStream());
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,8 +54,8 @@ public class Cliente {
     public boolean autenticar(String email, String password) {
         String message;
         try {
-            if (socket.isClosed())
-                socketClient();
+            if (!socket.isConnected())
+                return false;
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
                 return false;
@@ -124,15 +125,20 @@ public class Cliente {
     public boolean pedeDadosParaRegisto() {
         String message;
         try {
-            out.reset();
-            in.reset();
-
+            if (!socket.isConnected())
+                return false;
+            System.out.println("Dados");
             message = "DADOS";
             out.writeObject(message);
             out.flush();
 
             String response = (String) in.readObject();
             String[] dados = response.split(" ");
+
+            if (response.contains("Erro"))
+                return false;
+
+            System.out.println(response);
 
             nome = dados[0];
             email = dados[1];
