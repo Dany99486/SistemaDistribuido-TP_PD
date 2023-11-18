@@ -11,6 +11,12 @@ public class SubmeteCodigoCrontroller {
     public Label lblMessage;
     public Button SubmeterCodigo;
 
+    public SubmeteCodigoCrontroller() {
+        txtCodigo = new TextField();
+        lblMessage = new Label();
+        SubmeterCodigo = new Button();
+    }
+
     public void handleSubmeterCodigo() {
         System.out.println("Submeter Codigo");
         String code = txtCodigo.getText();

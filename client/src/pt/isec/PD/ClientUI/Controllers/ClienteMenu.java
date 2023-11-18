@@ -1,22 +1,21 @@
 package pt.isec.PD.ClientUI.Controllers;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
 
-public class ClienteMenu extends MenuInicialController implements Initializable {
+public class ClienteMenu {
     public Button btnLogout;
     public Button ObterCSV;
     public Button ConsultarPresenca;
@@ -24,13 +23,13 @@ public class ClienteMenu extends MenuInicialController implements Initializable 
     public Button EditarRegisto;
     public Label lblOut;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        btnLogout = new Button();
-        ObterCSV = new Button();
-        ConsultarPresenca = new Button();
-        SubmeterCodigo = new Button();
-        EditarRegisto = new Button();
+    public ClienteMenu() {
+        this.btnLogout = new Button();
+        this.ObterCSV = new Button();
+        this.ConsultarPresenca = new Button();
+        this.SubmeterCodigo = new Button();
+        this.EditarRegisto = new Button();
+        this.lblOut = new Label();
     }
 
     public void handleClienteMenu() {
@@ -41,12 +40,15 @@ public class ClienteMenu extends MenuInicialController implements Initializable 
             lblOut.setText(controller.getLogout());
             Thread.sleep(500);
             System.exit(0);
-        }
+        }else
+            lblOut.setText("Não foi possivel realizar o logout: " + controller.getLogout());
     }
 
     public void editaregisto() throws IOException {
         if (controller.pedeDadosRegisto())
             handleToEditaDados();
+        else
+            lblOut.setText("Erro ao pedir dados");
     }
 
     public void SubmeteCodigo() throws IOException {
@@ -63,5 +65,24 @@ public class ClienteMenu extends MenuInicialController implements Initializable 
 
         // Mostrar a janela modal
         modalStage.showAndWait();
+    }
+
+    @FXML
+    public void handleToEditaDados() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/EditaDados.fxml"));
+        Parent root = loader.load();
+
+        // Crie a cena usando a raiz carregada do FXML
+        Scene scene = new Scene(root);
+
+        // Obtenha o palco da aplicação do botão ou de outra maneira adequada
+        Stage stage = (Stage) lblOut.getScene().getWindow();
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Defina a nova cena no palco
+        stage.setScene(scene);
+
+        // Exiba o palco
+        stage.show();
     }
 }

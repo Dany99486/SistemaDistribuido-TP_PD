@@ -138,8 +138,6 @@ public class Cliente {
             if (response.contains("Erro"))
                 return false;
 
-            System.out.println(response);
-
             nome = dados[0];
             email = dados[1];
             password = dados[2];

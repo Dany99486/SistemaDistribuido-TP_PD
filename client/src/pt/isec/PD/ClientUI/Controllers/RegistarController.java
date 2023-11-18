@@ -23,8 +23,14 @@ public class RegistarController {
     public PasswordField passwordField;
     public Label lblRegistar;
 
-    public void initialize() {
-        loginButton = new Button();
+    public RegistarController() {
+        this.nomeField = new TextField();
+        this.CCField = new TextField();
+        this.emailField = new TextField();
+        this.passwordField = new PasswordField();
+        this.lblError = new Label();
+        this.lblRegistar = new Label();
+        this.loginButton = new Button();
     }
 
     @FXML
