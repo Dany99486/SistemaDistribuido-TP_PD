@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
+import pt.isec.PD.ClientUI.Model.Evento;
 import pt.isec.PD.ClientUI.Model.Presencas;
 
 import java.io.IOException;
@@ -25,7 +26,6 @@ import static pt.isec.PD.ClientUI.MainJFX.controller;
 public class PresencasAdminController {
     public TextField searchField;
     public Button btnCriar;
-    public Button btnEditar;
     public Button btnEliminar;
     @FXML
     public TableView<Presencas> tableView;
@@ -62,24 +62,20 @@ public class PresencasAdminController {
         // Mostrar a janela modal
         modalStage.showAndWait();
     }
-    public void handleEditar() throws IOException {
-        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/EditarPresencas.fxml"));
-        Parent root = loader.load();
-
-        Stage modalStage = new Stage();
-        modalStage.initModality(Modality.APPLICATION_MODAL);
-        modalStage.setTitle("Editar Presenças");
-        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
-
-        // Definir o conteúdo da janela modal
-        Scene scene = new Scene(root);
-        modalStage.setScene(scene);
-
-        // Mostrar a janela modal
-        modalStage.showAndWait();
-    }
     public void handleEliminar(){
-        return;
+        Presencas presencaSelecionado = tableView.getSelectionModel().getSelectedItem();
+        if (presencaSelecionado != null) {
+            System.out.println("Evento selecionado: " + presencaSelecionado.getIdEvento());
+
+            if(!controller.eliminaPresenca(presencaSelecionado.getIdEvento())) {
+                System.out.println("Não foi possível eliminar o evento");
+            } else {
+                System.out.println("Evento eliminado com sucesso");
+            }
+
+            // Atualiza a tabela
+            updateTable();
+        }
     }
 
     public void onSearch(){

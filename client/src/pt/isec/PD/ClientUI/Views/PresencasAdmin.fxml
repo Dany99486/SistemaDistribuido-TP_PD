@@ -33,12 +33,7 @@
                </font>
             </Button>
             <TextField fx:id="searchField" layoutX="24.0" layoutY="87.0" onAction="#onSearch" prefHeight="27.0" prefWidth="219.0" style="-fx-border-color: #3a4151; -fx-background-color: #fff;" />
-            <Button fx:id="btnEditar" onAction="#handleEditar" layoutX="412.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Editar" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Button>
-            <Button fx:id="btnCriar" onAction="#handleCriar" layoutX="345.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Criar" textFill="WHITE">
+            <Button fx:id="btnCriar" onAction="#handleCriar" layoutX="410.0" layoutY="85.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Inserir" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
