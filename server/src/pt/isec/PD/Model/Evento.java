@@ -461,9 +461,8 @@ public class Evento {
                         return -1;
                     }
 
-                    int idEvento = 0;
-                    String idCC = "";
-                    boolean novaPresenca = false;
+                    int idEvento;
+                    String idCC;
 
                     //TODO:======================
                     String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
