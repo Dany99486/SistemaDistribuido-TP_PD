@@ -6,10 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
+import pt.isec.PD.ClientUI.Model.Evento;
 
 import java.io.IOException;
 
@@ -89,5 +91,22 @@ public class ClienteMenu {
 
         // Exiba o palco
         stage.show();
+    }
+
+
+    public void ConsultarPresenca() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/ConsultaPresencas.fxml"));
+        Parent root = loader.load();
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Codigo");
+
+        // Definir o conteúdo da janela modal
+        Scene scene = new Scene(root);
+        modalStage.setScene(scene);
+
+        // Mostrar a janela modal
+        modalStage.showAndWait();
     }
 }

@@ -5,10 +5,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Cliente {
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
+    private final String CONSULTA = "CONSULTA";
     private String[] args;
     private static Socket socket;
     private String error;
@@ -203,6 +211,46 @@ public class Cliente {
         return null;
     }
 
+    public List<Evento> consultarPresencas() {
+        try {
+            String message = CONSULTA + " sem_filtro";
+
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            // Processar a string e criar uma lista de eventos
+            return processarStringEventos(response);
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return new ArrayList<>(); // ou lançar uma exceção, dependendo dos requisitos
+        }
+    }
+
+    private List<Evento> processarStringEventos(String eventosString) {
+        List<Evento> eventos = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)");
+        Matcher matcher = pattern.matcher(eventosString);
+
+        while (matcher.find()) {
+            String nome = matcher.group(1);
+            String local = matcher.group(2);
+            String data = matcher.group(3);
+            String horaInicio = matcher.group(4);
+            String horaFim = matcher.group(5);
+            System.out.println(horaInicio);
+            System.out.println(horaFim);
+
+            // Adicionar o evento à lista
+            eventos.add(new Evento(nome, local, data, horaInicio, horaFim));
+        }
+
+        return eventos;
+    }
     public boolean logout() {
         try {
             out.writeObject("LOGOUT");

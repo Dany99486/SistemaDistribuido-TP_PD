@@ -1,5 +1,7 @@
 package pt.isec.PD.ClientUI.Model;
 
+import java.util.List;
+
 public class Manager {
     private Cliente cliente;
     private String[] args;
@@ -63,5 +65,8 @@ public class Manager {
 
     public String submeteCodigo(String code) {
         return cliente.submeteCodigo(code);
+    }
+    public List<Evento> consultarPresencas() {
+        return cliente.consultarPresencas();
     }
 }
