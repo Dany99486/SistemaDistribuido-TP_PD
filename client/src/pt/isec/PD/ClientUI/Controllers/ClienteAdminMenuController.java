@@ -16,10 +16,12 @@ public class ClienteAdminMenuController {
     public Button btnPresencas;
     public Button btnEventos;
     public ClienteAdminMenuController() {
+        this.btnPresencas = new Button();
+        this.btnEventos = new Button();
         this.btnLogout = new Button();
     }
 
-    public void handlePresencas () throws IOException {
+    public void handlePresencas() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/PresencasAdmin.fxml"));
         Parent root = loader.load();
 
@@ -37,7 +39,7 @@ public class ClienteAdminMenuController {
         stage.show();
     }
 
-    public void handleEventos () throws IOException {
+    public void handleEventos() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/EventosAdmin.fxml"));
         Parent root = loader.load();
 

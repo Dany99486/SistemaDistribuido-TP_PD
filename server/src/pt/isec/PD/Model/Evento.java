@@ -274,7 +274,7 @@ public class Evento {
     }
 
     //TODO: Seleciona um evento atraves de um email de um utilizador, e com filtro
-    public  String consultaEventoCLienteFiltro(String cc, String filtro, String[] args, String bdFileName) {
+    public  String consultaPresencasClienteFiltro(String cc, String filtro, String[] args, String bdFileName) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         StringBuilder resultado = new StringBuilder();
         System.out.println("AQUI");
@@ -367,9 +367,13 @@ public class Evento {
                         String data = result.getString("data");
                         String hora_inicio = result.getString("hora_inicio");
                         String hora_fim = result.getString("hora_fim");
+                        String codigo = result.getString("codigo");
+                        String code_validade = result.getString("code_validade");
                         resultado.append("Nome: ").append(nome).append(" Local: ").append(local)
                                 .append(" Data: ").append(data).append(" Hora de inicio: ").append(hora_inicio)
-                                .append(" Hora de fim: ").append(hora_fim).append("\n");
+                                .append(" Hora de fim: ").append(hora_fim)
+                                .append(" Codigo: ").append(codigo == null ? "Sem codigo" : codigo)
+                                .append(" Validade: ").append(code_validade).append("\n");
                     }
 
                     connection.close();
@@ -528,10 +532,18 @@ public class Evento {
                         return resultado.append("Erro de conexão com a base de dados").toString();
                     }
 
-                    String query = "SELECT codigo, idEvento, cartaoCidado, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                    String query;
+
+                    if (evento.equalsIgnoreCase("sem_filtro"))
+                        query = "SELECT codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos " +
                             "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
-                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
-                            "WHERE eventos.nome = '" + evento + "';";
+                            "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao;";
+                    else
+                        query = "SELECT codigo, eventos.idEvento, cartaoCidadao, hora_inicio, hora_fim FROM eventos, utilizadores, presencas " +
+                                "JOIN presencas ON eventos.idEvento = presencas.idEvento " +
+                                "JOIN utilizadores ON presencas.idCC = utilizadores.cartaoCidadao " +
+                                "WHERE eventos.nome = '" + evento + "';";
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 

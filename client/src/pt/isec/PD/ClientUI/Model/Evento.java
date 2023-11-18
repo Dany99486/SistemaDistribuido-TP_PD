@@ -6,6 +6,8 @@ public class Evento {
     private String data;
     private String horaInicio;
     private String horaFim;
+    private String codigo;
+    private String validade;
 
     // Construtor da classe
     public Evento (String nome, String local, String data, String horaInicio, String horaFim) {
@@ -14,6 +16,16 @@ public class Evento {
         this.data = data;
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
+    }
+
+    public Evento (String nome, String local, String data, String horaInicio, String horaFim, String codigo, String validade) {
+        this.nome = nome;
+        this.local = local;
+        this.data = data;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.codigo = codigo;
+        this.validade = validade;
     }
 
     public String getNome() {
@@ -47,4 +59,19 @@ public class Evento {
         this.horaFim = horaFim;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getValidade() {
+        return validade;
+    }
+
+    public void setValidade(String validade) {
+        this.validade = validade;
+    }
 }

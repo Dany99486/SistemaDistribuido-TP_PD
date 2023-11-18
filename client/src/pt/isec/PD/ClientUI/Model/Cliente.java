@@ -5,16 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Cliente {
+    private final String PRESENCAS = "PRESENCAS";
     private final String AUTENTICAR = "AUTENTICAR";
     private final String REGISTAR = "REGISTAR";
     private final String CONSULTA = "CONSULTA";
@@ -213,13 +210,53 @@ public class Cliente {
         return null;
     }
 
-    public List<Evento> consultarPresencas() {
+    public List<Presencas> consultarPresencas() { //Admin
+        try {
+            String message = PRESENCAS + " sem_filtro";
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            System.out.println(response);
+
+            // Processar a string e criar uma lista de eventos
+            return processarStringPresencas(response);
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return new ArrayList<>(); // ou lançar uma exceção, dependendo dos requisitos
+        }
+    }
+    private List<Presencas> processarStringPresencas(String eventosString) { //Admin
+        List<Presencas> presencas = new ArrayList<>();
+        Pattern pattern;
+        Matcher matcher;
+
+        pattern = Pattern.compile("Codigo: (.*?) idEvento: (.*?) CC: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
+        matcher = pattern.matcher(eventosString);
+        while (matcher.find()) {
+            String codigo = matcher.group(1);
+            String idEvento = matcher.group(2);
+            String CC = matcher.group(3);
+            String horaInicio = matcher.group(4);
+            String horaFim = matcher.group(5);
+            // Adicionar o evento à lista
+            presencas.add(new Presencas(codigo, idEvento, CC, horaInicio, horaFim));
+        }
+
+        return presencas;
+    }
+
+
+
+
+    public List<Evento> consultarEventos() { //Admin e User (Presencas)
         try {
             String message;
             if (admin)
-                message = EVENTO + " " + CONSULTA + " campo sem_filtro"; //Tens que ver como ele recebe no server e/ou como usa no client text mode
+                message = EVENTO + " " + CONSULTA + " campo sem_filtro";
             else
-                message = CONSULTA + " sem_filtro";
+                message = CONSULTA + " sem_filtro"; //Para o user é para pesquisar eventos
 
             out.writeObject(message);
             out.flush();
@@ -236,20 +273,37 @@ public class Cliente {
         }
     }
 
-    private List<Evento> processarStringEventos(String eventosString) {
+    private List<Evento> processarStringEventos(String eventosString) { //Admin e User (Presencas)
         List<Evento> eventos = new ArrayList<>();
+        Pattern pattern;
+        Matcher matcher;
 
-        Pattern pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
-        Matcher matcher = pattern.matcher(eventosString);
-
-        while (matcher.find()) {
-            String nome = matcher.group(1);
-            String local = matcher.group(2);
-            String data = matcher.group(3);
-            String horaInicio = matcher.group(4);
-            String horaFim = matcher.group(5);
-            // Adicionar o evento à lista
-            eventos.add(new Evento(nome, local, data, horaInicio, horaFim));
+        if (admin) {
+            pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?) Codigo: (.*?) Validade: (.*?)\n");
+            matcher = pattern.matcher(eventosString);
+            while (matcher.find()) {
+                String nome = matcher.group(1);
+                String local = matcher.group(2);
+                String data = matcher.group(3);
+                String horaInicio = matcher.group(4);
+                String horaFim = matcher.group(5);
+                String codigo = matcher.group(6);
+                String validade = matcher.group(7);
+                // Adicionar o evento à lista
+                eventos.add(new Evento(nome, local, data, horaInicio, horaFim, codigo, validade));
+            }
+        } else {
+            pattern = Pattern.compile("Nome: (.*?) Local: (.*?) Data: (.*?) Hora de inicio: (.*?) Hora de fim: (.*?)\n");
+            matcher = pattern.matcher(eventosString);
+            while (matcher.find()) {
+                String nome = matcher.group(1);
+                String local = matcher.group(2);
+                String data = matcher.group(3);
+                String horaInicio = matcher.group(4);
+                String horaFim = matcher.group(5);
+                // Adicionar o evento à lista
+                eventos.add(new Evento(nome, local, data, horaInicio, horaFim));
+            }
         }
 
         return eventos;

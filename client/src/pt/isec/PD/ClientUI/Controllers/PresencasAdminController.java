@@ -14,7 +14,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.PD.ClientUI.MainJFX;
-import pt.isec.PD.ClientUI.Model.Evento;
+import pt.isec.PD.ClientUI.Model.Presencas;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,27 +28,21 @@ public class PresencasAdminController {
     public Button btnEditar;
     public Button btnEliminar;
     @FXML
-    public TableView<Evento> tableView;
-    public TableColumn<Evento, String> nomeColumn;
-    public TableColumn<Evento, String> localColumn;
-    public TableColumn<Evento, String> dataColumn;
-    public TableColumn<Evento, String> horaInicioColumn;
-    public TableColumn<Evento, String> horaFimColumn;
+    public TableView<Presencas> tableView;
+
+    public TableColumn<Presencas, String> codigo;
+    public TableColumn<Presencas, String> idEvento;
+    public TableColumn<Presencas, String> cartaoCidadao;
+    public TableColumn<Presencas, String> horaInicio;
+    public TableColumn<Presencas, String> horaFim;
 
     public void initialize(){
-        /*
-        tableView = new TableView<>();
-        nomeColumn = new TableColumn<>();
-        localColumn = new TableColumn<>();
-        dataColumn = new TableColumn<>();
-        horaInicioColumn = new TableColumn<>();
-        horaFimColumn = new TableColumn<>();*/
 
-        nomeColumn.setCellValueFactory(new PropertyValueFactory<>("nome"));
-        localColumn.setCellValueFactory(new PropertyValueFactory<>("local"));
-        dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
-        horaInicioColumn.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
-        horaFimColumn.setCellValueFactory(new PropertyValueFactory<>("horaFim"));
+        codigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        idEvento.setCellValueFactory(new PropertyValueFactory<>("idEvento"));
+        cartaoCidadao.setCellValueFactory(new PropertyValueFactory<>("cartaoCidadao"));
+        horaInicio.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        horaFim.setCellValueFactory(new PropertyValueFactory<>("horaFim"));
 
         updateTable();
     }
@@ -89,11 +83,11 @@ public class PresencasAdminController {
 
     public void onSearch(){
         String nome = searchField.getText().toLowerCase();
-        List<Evento> funcionariosFiltrados = controller.consultarPresencas().stream()
-                .filter(evento -> evento.getNome().toLowerCase().contains(nome))
+        List<Presencas> filtrados = controller.consultarPresencas().stream()
+                .filter(p -> p.getCartaoCidadao().toLowerCase().contains(nome))
                 .collect(Collectors.toList());
 
-        tableView.setItems(FXCollections.observableArrayList(funcionariosFiltrados));
+        tableView.setItems(FXCollections.observableArrayList(filtrados));
     }
 
     public void voltar() throws IOException {
@@ -124,8 +118,8 @@ public class PresencasAdminController {
         stage.show();
     }
     public void updateTable() {
-        List<Evento> eventos = controller.consultarPresencas();
+        List<Presencas> presencas = controller.consultarPresencas();
         tableView.getItems().clear();
-        tableView.getItems().addAll(eventos);
+        tableView.getItems().addAll(presencas);
     }
 }

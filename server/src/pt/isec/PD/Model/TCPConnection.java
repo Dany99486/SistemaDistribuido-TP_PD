@@ -275,7 +275,7 @@ public class TCPConnection extends Thread {
                         enviaFicheiro(registo,"CSVClientfile.csv");
                     }
                     if (aux[0].equalsIgnoreCase(CONSULTA) && aux.length <= 2) {
-                        envia = evento.consultaEventoCLienteFiltro(cc, aux[1], args, BDFileName);
+                        envia = evento.consultaPresencasClienteFiltro(cc, aux[1], args, BDFileName);
                     }
                     if (aux[0].equalsIgnoreCase(CODIGO) && aux.length == 2) {
                         int x = 0;
@@ -347,7 +347,11 @@ public class TCPConnection extends Thread {
 
     private void versaoAlterada() {
         int pesquisaV = bd.pesquisaUltimaVersaoBD(args, BDFileName);
-        //if (pesquisaV >= 0)
+        if (pesquisaV >= versaoBD) //Será igual
+            versaoBD = pesquisaV;
+        int resultado = bd.insereNovaVersaoBD(versaoBD, args, BDFileName);
+        if (resultado >= 0)
+            ++versaoBD;
     }
 
     public List<Socket> getClients() {

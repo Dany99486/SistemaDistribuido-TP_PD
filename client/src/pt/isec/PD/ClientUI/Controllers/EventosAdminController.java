@@ -1,7 +1,6 @@
 package pt.isec.PD.ClientUI.Controllers;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,26 +34,17 @@ public class EventosAdminController {
     public TableColumn<Evento, String> dataColumn;
     public TableColumn<Evento, String> horaInicioColumn;
     public TableColumn<Evento, String> horaFimColumn;
-    public TableColumn<Evento, String> idEventoColumn;
     public TableColumn<Evento, String> codigoColumn;
     public TableColumn<Evento, String> validadeColumn;
 
 
     public void initialize(){
-        /*
-        tableView = new TableView<>();
-        nomeColumn = new TableColumn<>();
-        localColumn = new TableColumn<>();
-        dataColumn = new TableColumn<>();
-        horaInicioColumn = new TableColumn<>();
-        horaFimColumn = new TableColumn<>();*/
 
         nomeColumn.setCellValueFactory(new PropertyValueFactory<>("nome"));
         localColumn.setCellValueFactory(new PropertyValueFactory<>("local"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
         horaInicioColumn.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
         horaFimColumn.setCellValueFactory(new PropertyValueFactory<>("horaFim"));
-        idEventoColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         codigoColumn.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         validadeColumn.setCellValueFactory(new PropertyValueFactory<>("validade"));
 
@@ -76,7 +66,7 @@ public class EventosAdminController {
         // Mostrar a janela modal
         modalStage.showAndWait();
     }
-    public void handleEditar(ActionEvent event) throws IOException {
+    public void handleEditar() throws IOException {
         Evento evento = tableView.getSelectionModel().getSelectedItem();
         if(evento!= null) {
             FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/EditarEvento.fxml"));
@@ -108,11 +98,11 @@ public class EventosAdminController {
     }
     public void onSearch(){
         String nome = searchField.getText().toLowerCase();
-        List<Evento> funcionariosFiltrados = controller.consultarPresencas().stream()
+        List<Evento> filtrados = controller.consultarEventos().stream()
                 .filter(evento -> evento.getNome().toLowerCase().contains(nome))
                 .collect(Collectors.toList());
 
-        tableView.setItems(FXCollections.observableArrayList(funcionariosFiltrados));
+        tableView.setItems(FXCollections.observableArrayList(filtrados));
     }
 
     public void voltar() throws IOException {
@@ -143,7 +133,7 @@ public class EventosAdminController {
         stage.show();
     }
     public void updateTable() {
-        List<Evento> eventos = controller.consultarPresencas();
+        List<Evento> eventos = controller.consultarEventos();
         tableView.getItems().clear();
         tableView.getItems().addAll(eventos);
     }

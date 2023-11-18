@@ -15,11 +15,11 @@
          <children>
             <TableView fx:id="tableView" layoutX="24.0" layoutY="129.0" prefHeight="222.0" prefWidth="552.0">
               <columns>
-                <TableColumn fx:id="nomeColumn" prefWidth="90.4000244140625" text="Nome" />
-                <TableColumn fx:id="localColumn" prefWidth="100.0" text="Local" />
-                  <TableColumn fx:id="dataColumn" prefWidth="142.39996337890625" text="Data" />
-                  <TableColumn fx:id="horaInicioColumn" prefWidth="112.7999267578125" text="Hora de inicio" />
-                  <TableColumn fx:id="horaFimColumn" prefWidth="108.00006103515625" text="Hora de fim" />
+                <TableColumn fx:id="codigo" prefWidth="90.4000244140625" text="Codigo" />
+                <TableColumn fx:id="idEvento" prefWidth="100.0" text="ID Evento" />
+                  <TableColumn fx:id="cartaoCidadao" prefWidth="142.39996337890625" text="CC" />
+                  <TableColumn fx:id="horaInicio" prefWidth="112.7999267578125" text="Hora de inicio" />
+                  <TableColumn fx:id="horaFim" prefWidth="108.00006103515625" text="Hora de fim" />
               </columns>
             </TableView>
             <Label layoutX="180.0" layoutY="32.0" text="Consulta de presenças">

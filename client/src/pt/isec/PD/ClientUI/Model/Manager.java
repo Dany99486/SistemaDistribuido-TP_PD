@@ -66,7 +66,10 @@ public class Manager {
     public String submeteCodigo(String code) {
         return cliente.submeteCodigo(code);
     }
-    public List<Evento> consultarPresencas() {
+    public List<Evento> consultarEventos() {
+        return cliente.consultarEventos();
+    }
+    public List<Presencas> consultarPresencas() {
         return cliente.consultarPresencas();
     }
 }

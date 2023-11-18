@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ConsultaEventosController">
+   <children>
+      <AnchorPane prefHeight="401.0" prefWidth="600.0">
+         <children>
+            <TableView fx:id="tableView" layoutX="24.0" layoutY="129.0" prefHeight="222.0" prefWidth="552.0">
+              <columns>
+                <TableColumn fx:id="nomeColumn" prefWidth="90.4000244140625" text="Nome" />
+                <TableColumn fx:id="localColumn" prefWidth="100.0" text="Local" />
+                  <TableColumn fx:id="dataColumn" prefWidth="142.39996337890625" text="Data" />
+                  <TableColumn fx:id="horaInicioColumn" prefWidth="112.7999267578125" text="Hora inicio" />
+                  <TableColumn fx:id="horaFimColumn" prefWidth="108.00006103515625" text="Hora fim" />
+                  <TableColumn fx:id="codeColumn" prefWidth="108.00006103515625" text="Codigo" />
+                  <TableColumn fx:id="validadeColumn" prefWidth="108.00006103515625" text="Validade" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <Label layoutX="180.0" layoutY="32.0" text="Consulta de eventos">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <TextField fx:id="searchField" layoutX="24.0" layoutY="87.0" onAction="#onSearch" prefHeight="27.0" prefWidth="219.0" style="-fx-border-color: #3a4151; -fx-background-color: #fff;" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
