@@ -226,7 +226,7 @@ public class TCPConnection extends Thread {
                         defaultRegistoReturn(registo);
                     }
                     //Para UI
-                    if (aux[0].equalsIgnoreCase(PRESENCAS) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 3) {
+                    if (aux[0].equalsIgnoreCase("PRESENCASUI") && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 3) {
                         int x = 0;
                         try {
                             x = Integer.parseInt(aux[2]);

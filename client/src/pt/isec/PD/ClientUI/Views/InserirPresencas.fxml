@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.InserirPresencasController">
    <children>
       <AnchorPane prefHeight="295.0" prefWidth="600.0">
          <children>
@@ -16,11 +16,11 @@
                   <Font name="System Bold" size="23.0" />
                </font>
             </Label>
-            <TextField layoutX="203.0" layoutY="101.0" promptText="Nome" />
-            <TextField layoutX="203.0" layoutY="144.0" promptText="Local" />
+            <TextField fx:id="nomeField" layoutX="203.0" layoutY="101.0" promptText="Nome" />
+            <TextField fx:id="emailField" layoutX="203.0" layoutY="144.0" promptText="email" />
             <Label layoutX="134.0" layoutY="147.0" prefHeight="18.0" prefWidth="36.0" text="Email:" />
             <Label layoutX="134.0" layoutY="104.0" prefHeight="18.0" prefWidth="45.0" text="Nome:" />
-            <Button layoutX="197.0" layoutY="195.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Inserir" textFill="WHITE">
+            <Button fx:id="btnInserir" onAction="#handleInserir" layoutX="197.0" layoutY="195.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Inserir" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
