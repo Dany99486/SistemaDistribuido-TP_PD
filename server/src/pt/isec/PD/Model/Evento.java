@@ -93,7 +93,7 @@ public class Evento {
     public int editaEvento(String coluna, String alteracao, String nome, String[] args, String bdFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + bdFileName;
         int registed = 0;
-        System.out.println("AQUI");
+
         try {
             show = url;
             show += "\nConectando à base de dados...";
@@ -117,13 +117,17 @@ public class Evento {
                         connection.close();
                         return registed;
                     }
-                    query = "UPDATE eventos SET '" + coluna + "'='" + alteracao + "' WHERE nome='" + nome + "'" +
-                            "AND codigo IS NULL;";
-                    queryArray[0] = query;
-                    preparedStatement = connection.prepareStatement(query);
+
+                    String query2 = "UPDATE eventos SET " + coluna + " = ? " +
+                            "WHERE eventos.nome = ? AND eventos.codigo IS NULL;";
+
+                    preparedStatement = connection.prepareStatement(query2);
+                    preparedStatement.setString(1, alteracao);
+                    preparedStatement.setString(2, nome);
 
                     int resultSet = preparedStatement.executeUpdate();
-                    System.out.println(resultSet);
+                    queryArray[0] = query2;
+
                     if (resultSet > 0)
                         registed = 1;
 

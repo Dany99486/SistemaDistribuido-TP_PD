@@ -5,10 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -36,6 +33,7 @@ public class EventosAdminController implements ModalCallback {
     public TableColumn<Evento, String> horaFimColumn;
     public TableColumn<Evento, String> codigoColumn;
     public TableColumn<Evento, String> validadeColumn;
+    public Label lblResult;
 
 
     public void initialize(){
@@ -101,9 +99,11 @@ public class EventosAdminController implements ModalCallback {
             System.out.println("Evento selecionado: " + eventoSelecionado.getNome());
 
             if(!controller.eliminaEvento(eventoSelecionado.getNome())) {
-                System.out.println("Não foi possível eliminar o evento");
+                //System.out.println("Não foi possível eliminar o evento");
+                lblResult.setText("Não foi possível eliminar o evento");
             } else {
-                System.out.println("Evento eliminado com sucesso");
+                //System.out.println("Evento eliminado com sucesso");
+                lblResult.setText("Evento eliminado com sucesso");
             }
 
             // Atualiza a tabela

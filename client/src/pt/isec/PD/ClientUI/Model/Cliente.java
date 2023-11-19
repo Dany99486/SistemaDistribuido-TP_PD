@@ -317,9 +317,9 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            System.out.println(response);
+            if(response.contains("Sucesso"))
+                return true;
 
-            return true;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
@@ -334,9 +334,9 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            System.out.println(response);
+            if(response.contains("Sucesso"))
+                return true;
 
-            return true;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
@@ -352,14 +352,14 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            System.out.println(response);
+            if(response.contains("Sucesso"))
+                return true;
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
-            return false;
         }
-        return true;
+        return false;
     }
 
     public boolean inserirPresencas(String nome, String email) {
@@ -369,14 +369,14 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            System.out.println(response);
+            if(response.contains("Sucesso"))
+                return true;
 
-            return true;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     public boolean eliminaPresenca(String id) {
@@ -386,13 +386,14 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            System.out.println(response);
 
             if (response.contains("Erro"))
                 return false;
+
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -419,6 +420,9 @@ public class Cliente {
             out.flush();
 
             logout = (String) in.readObject();
+            if (logout.contains("Erro"))
+                return false;
+
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();

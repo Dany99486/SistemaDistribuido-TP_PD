@@ -41,7 +41,7 @@ public class CriaEventoController {
 
         if (nome.isEmpty() || local.isEmpty() || dataInicio == null || dataFim == null || horaInicio.isEmpty() || horaFim.isEmpty()
         || nome.isBlank() || local.isBlank() || horaInicio.isBlank() || horaFim.isBlank()) {
-            System.out.println("Preencha todos os campos!");
+            //System.out.println("Preencha todos os campos!");
             lblResult.setText("Preencha todos os campos!");
         } else {
             // Formatar as datas conforme desejado
@@ -50,16 +50,16 @@ public class CriaEventoController {
             String dataFimFormatada = dataFim.format(formatter);
             // Verificar horas
             if (!horaInicio.contains(":") || !horaFim.contains(":") || horaInicio.length() != 5 || horaFim.length() != 5) {
-                System.out.println("Hora inválida!");
+                //System.out.println("Hora inválida!");
                 lblResult.setText("Hora inválida!");
             }
             System.out.println("nome: " + nome + "\nlocal: " + local + "\ndataInicio: " + dataInicioFormatada + "\ndataFim: " + dataFimFormatada + "\nhoraInicio: " + horaInicio + "\nhoraFim: " + horaFim);
 
             if(!controller.criarEvento(nome, local, dataInicioFormatada, dataFimFormatada, horaInicio, horaFim)) {
-                System.out.println("Erro ao criar evento!");
+                //System.out.println("Erro ao criar evento!");
                 lblResult.setText("Erro ao criar evento!");
             } else {
-                System.out.println("Evento criado com sucesso!");
+                //System.out.println("Evento criado com sucesso!");
                 lblResult.setText("Evento criado com sucesso!");
                 limparCampos();
             }
