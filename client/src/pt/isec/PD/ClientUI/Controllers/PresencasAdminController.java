@@ -68,9 +68,8 @@ public class PresencasAdminController {
     public void handleEliminar(){
         Presencas presencaSelecionado = tableView.getSelectionModel().getSelectedItem();
         if (presencaSelecionado != null) {
-            System.out.println("Evento selecionado: " + presencaSelecionado.getIdEvento());
 
-            if(!controller.eliminaPresenca(presencaSelecionado.getIdEvento())) {
+            if(!controller.eliminaPresenca(presencaSelecionado.getId())) {
                 System.out.println("Não foi possível eliminar o evento");
             } else {
                 System.out.println("Evento eliminado com sucesso");

@@ -85,7 +85,11 @@ public class Manager {
         return cliente.editarEvento(nomeCampoAlterado, novaAlteracao, nome);
     }
 
-    public boolean eliminaPresenca(String nomeEvento) {
-        return cliente.eliminaPresenca(nomeEvento);
+    public boolean eliminaPresenca(String id) {
+        return cliente.eliminaPresenca(id);
+    }
+
+    public boolean inserirPresencas(String nome, String email) {
+        return cliente.inserirPresencas(nome, email);
     }
 }

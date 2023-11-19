@@ -362,14 +362,31 @@ public class Cliente {
         return true;
     }
 
-    public boolean eliminaPresenca(String nomeEvento) {
-        String message = "PRESENCAS APAGAR "+nomeEvento;
+    public boolean inserirPresencas(String nome, String email) {
+        String message = "PRESENCAS "+nome+" "+email;
         try {
             out.writeObject(message);
             out.flush();
 
             String response = (String) in.readObject();
             System.out.println(response);
+
+            return true;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean eliminaPresenca(String id) {
+        String message = "PRESENCASUI APAGAR "+id;
+        try {
+            out.writeObject(message);
+            out.flush();
+
+            String response = (String) in.readObject();
+            //System.out.println(response);
 
             return true;
         } catch (IOException | ClassNotFoundException e) {
