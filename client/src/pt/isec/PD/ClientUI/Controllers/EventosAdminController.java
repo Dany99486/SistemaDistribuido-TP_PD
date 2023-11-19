@@ -58,6 +58,7 @@ public class EventosAdminController implements ModalCallback {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("Criar Evento");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Definir o conteúdo da janela modal
         Scene scene = new Scene(root);
@@ -153,11 +154,13 @@ public class EventosAdminController implements ModalCallback {
 
     @Override
     public void onEventoCriado(Evento evento) {
-
+        // Atualiza a tabela
+        updateTable();
     }
 
     @Override
     public void onEventoEditado(Evento evento) {
-
+        // Atualiza a tabela
+        updateTable();
     }
 }

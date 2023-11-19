@@ -172,7 +172,7 @@ public class TCPConnection extends Thread {
                                 int x = Integer.parseInt(aux[3]);
                                 if (x < 0) {
                                     atualiza = false;
-                                    throw new Exception("Valores negativos");
+                                    envia = "Valores negativos";
                                 }
                             } catch (Exception e) {/*Não precisa dizer nada*/}
                             if (atualiza) {
@@ -253,9 +253,8 @@ public class TCPConnection extends Thread {
                             boolean atualiza = true;
                             try {
                                 x = Integer.parseInt(aux[2]);
-                                if (x < 0) {
-                                    throw new Exception("Valores negativos");
-                                }
+                                if (x < 0)
+                                    envia = "Valores negativos";
                             } catch (Exception e) {
                                 atualiza = false;
                             }
@@ -369,6 +368,7 @@ public class TCPConnection extends Thread {
         int resultado = bd.insereNovaVersaoBD(versaoBD, args, BDFileName);
         if (resultado >= 0)
             ++versaoBD;
+        bd.pesquisaUltimaVersaoBD(args, BDFileName);
     }
 
     public List<Socket> getClients() {

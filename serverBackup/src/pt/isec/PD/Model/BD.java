@@ -14,11 +14,8 @@ public class BD {
 
         try {
             Connection connection = DriverManager.getConnection(url);
-            if (connection != null)
-                System.out.println("Conexão com a base de dados estabelecida.");
-            else {
-                System.out.println("Conexão com a base de dados não foi estabelecida.");
-            }
+           if (connection == null)
+               return false;
 
             Statement statement = connection.createStatement();
             String query = "SELECT versao FROM versao ORDER BY versao DESC;";
