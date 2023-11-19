@@ -67,7 +67,7 @@ public class Evento {
                     String data_realizada = diaInicio + "/" + mesInicio + "/" + anoInicio + " - " + diaFim + "/" + mesFim + "/" + anoFim;
 
                     String query = "INSERT INTO eventos (nome,local,data,hora_inicio,hora_fim,code_validade) VALUES (?,?,?,?,?,?);";
-                    queryArray[0] = query;
+
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     preparedStatement.setString(1, nome);
                     preparedStatement.setString(2, local);
@@ -76,6 +76,8 @@ public class Evento {
                     preparedStatement.setString(5, horaFim);
                     preparedStatement.setString(6, String.valueOf(validade));
                     int resultSet = preparedStatement.executeUpdate();
+
+                    queryArray[0] = query;
 
                     if (resultSet > 0)
                         registed = 1;
@@ -118,15 +120,12 @@ public class Evento {
                         return registed;
                     }
 
-                    String query2 = "UPDATE eventos SET " + coluna + " = ? " +
-                            "WHERE eventos.nome = ? AND eventos.codigo IS NULL;";
+                    query = "UPDATE eventos SET '" + coluna + "' = '" + alteracao + "' " +
+                            "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
 
-                    preparedStatement = connection.prepareStatement(query2);
-                    preparedStatement.setString(1, alteracao);
-                    preparedStatement.setString(2, nome);
-
+                    preparedStatement = connection.prepareStatement(query);
                     int resultSet = preparedStatement.executeUpdate();
-                    queryArray[0] = query2;
+                    queryArray[0] = query;
 
                     if (resultSet > 0)
                         registed = 1;
