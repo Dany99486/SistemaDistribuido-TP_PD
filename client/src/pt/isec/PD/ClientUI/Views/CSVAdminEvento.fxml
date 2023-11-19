@@ -14,8 +14,8 @@
                </font>
             </Label>
             <TextField fx:id="nomeField" layoutX="203.0" layoutY="102.0" promptText="Nome" />
-            <Label layoutX="134.0" layoutY="104.0" prefHeight="18.0" prefWidth="45.0" text="Nome:" />
-            <Button layoutX="197.0" layoutY="160.0" mnemonicParsing="false" onAction="#downloadFile" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Gerar" textFill="WHITE">
+            <Label layoutX="89.0" layoutY="104.0" prefHeight="18.0" prefWidth="97.0" text="Nome do Evento:" />
+            <Button layoutX="191.0" layoutY="160.0" mnemonicParsing="false" onAction="#downloadFile" prefHeight="31.0" prefWidth="106.0" style="-fx-background-color: #a9a9a9;" text="Gerar CSV" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

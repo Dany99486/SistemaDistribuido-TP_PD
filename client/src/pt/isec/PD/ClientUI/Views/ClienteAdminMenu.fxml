@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ClienteAdminMenuController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.ClienteAdminMenuController">
    <children>
       <AnchorPane prefHeight="403.0" prefWidth="600.0">
          <children>
@@ -24,7 +22,7 @@
                   <Insets />
                </opaqueInsets>
             </Label>
-            <Button layoutX="114.0" layoutY="240.0" onAction="#obterCSVEmail" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos participantes (2)" textFill="WHITE">
+            <Button layoutX="81.0" layoutY="240.0" mnemonicParsing="false" onAction="#obterCSVEmail" prefHeight="46.0" prefWidth="437.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos participantes num evento" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -32,7 +30,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button layoutX="92.0" layoutY="302.0" onAction="#obterCSVNomeEvento" mnemonicParsing="false" prefHeight="46.0" prefWidth="416.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos eventos do utilizador (3)" textFill="WHITE">
+            <Button layoutX="82.0" layoutY="302.0" mnemonicParsing="false" onAction="#obterCSVNomeEvento" prefHeight="46.0" prefWidth="437.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos eventos de um utilizador" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -56,7 +54,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button fx:id="btnGerarCodigo" onAction="#handleGerarCodigo" layoutX="114.0" layoutY="177.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Gerar código para presenças" textFill="WHITE">
+            <Button fx:id="btnGerarCodigo" layoutX="114.0" layoutY="177.0" mnemonicParsing="false" onAction="#handleGerarCodigo" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Gerar código para presenças" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
