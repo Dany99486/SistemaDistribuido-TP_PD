@@ -92,4 +92,8 @@ public class Manager {
     public boolean inserirPresencas(String nome, String email) {
         return cliente.inserirPresencas(nome, email);
     }
+
+    public String gerarCodigo(String nomeEvento, String tempo) {
+        return cliente.gerarCodigo(nomeEvento, tempo);
+    }
 }

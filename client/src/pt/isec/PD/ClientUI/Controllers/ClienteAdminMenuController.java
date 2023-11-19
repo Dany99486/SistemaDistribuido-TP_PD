@@ -5,7 +5,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import pt.isec.PD.ClientUI.MainJFX;
 
 import java.io.IOException;
 
@@ -55,6 +57,23 @@ public class ClienteAdminMenuController {
 
         // Exiba o palco
         stage.show();
+    }
+
+    public void handleGerarCodigo() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/GeracaoCodigo.fxml"));
+        Parent root = loader.load();
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Código");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Definir o conteúdo da janela modal
+        Scene scene = new Scene(root);
+        modalStage.setScene(scene);
+
+        // Mostrar a janela modal
+        modalStage.showAndWait();
     }
 
     public void logout() {

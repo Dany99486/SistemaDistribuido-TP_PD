@@ -16,7 +16,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="188.0" layoutY="14.0" text="Privilégios de Admin" textAlignment="CENTER">
+            <Label layoutX="187.0" layoutY="14.0" text="Privilégios de Admin" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="23.0" />
                </font>
@@ -24,7 +24,7 @@
                   <Insets />
                </opaqueInsets>
             </Label>
-            <Button layoutX="114.0" layoutY="211.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos participantes (2)" textFill="WHITE">
+            <Button layoutX="114.0" layoutY="240.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos participantes (2)" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -32,7 +32,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button layoutX="92.0" layoutY="273.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="416.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos eventos do utilizador (3)" textFill="WHITE">
+            <Button layoutX="92.0" layoutY="302.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="416.0" style="-fx-background-color: #a9a9a9;" text="Obtenção de um ficheiro csv dos eventos do utilizador (3)" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -40,7 +40,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button fx:id="btnPresencas" onAction="#handlePresencas" layoutX="114.0" layoutY="145.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Presenças" textFill="WHITE">
+            <Button fx:id="btnPresencas" layoutX="114.0" layoutY="56.0" mnemonicParsing="false" onAction="#handlePresencas" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Presenças" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -48,7 +48,15 @@
                   <Insets bottom="10.0" top="10.0" />
                </padding>
             </Button>
-            <Button fx:id="btnEventos" onAction="#handleEventos" layoutX="114.0" layoutY="80.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Eventos" textFill="WHITE">
+            <Button fx:id="btnEventos" layoutX="114.0" layoutY="116.0" mnemonicParsing="false" onAction="#handleEventos" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Eventos" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
+            </Button>
+            <Button fx:id="btnGerarCodigo" onAction="#handleGerarCodigo" layoutX="114.0" layoutY="177.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="371.0" style="-fx-background-color: #a9a9a9;" text="Gerar código para presenças" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
