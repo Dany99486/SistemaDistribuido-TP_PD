@@ -80,4 +80,38 @@ public class ClienteAdminMenuController {
         if(controller.logout())
             System.exit(0);
     }
+
+    public void obterCSVNomeEvento() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/CSVAdminEmail.fxml"));
+        Parent root = loader.load();
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Evento");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Definir o conteúdo da janela modal
+        Scene scene = new Scene(root);
+        modalStage.setScene(scene);
+
+        // Mostrar a janela modal
+        modalStage.showAndWait();
+    }
+
+    public void obterCSVEmail() throws IOException {
+        FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/CSVAdminEvento.fxml"));
+        Parent root = loader.load();
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Utilizador");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Definir o conteúdo da janela modal
+        Scene scene = new Scene(root);
+        modalStage.setScene(scene);
+
+        // Mostrar a janela modal
+        modalStage.showAndWait();
+    }
 }

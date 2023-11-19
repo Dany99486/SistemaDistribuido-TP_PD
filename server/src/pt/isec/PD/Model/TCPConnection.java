@@ -277,18 +277,18 @@ public class TCPConnection extends Thread {
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV2) && aux.length == 3) {
                         int registo = evento.geraCSV2(aux[2], args, BDFileName);
-                        System.out.println("cria csv2");
                         //envia = evento.getCanonicalPathCSV();
+                        file = true;
                         enviaFicheiro(registo,"CSVfile.csv");
                     }
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 3) {
                         int registo = evento.geraCSV1(aux[2], args, BDFileName);
                         //envia = evento.getCanonicalPathCSV();
+                        file = true;
                         enviaFicheiro(registo,"CSV1file.csv");
                     }
                 } else { //cliente
                     if (aux[0].equalsIgnoreCase(EVENTO) && aux[1].equalsIgnoreCase(CSV) && aux.length == 4) {
-                        System.out.println("cria csv cliente");
                         int registo = evento.geraCSVClient(aux[2],aux[3], args, BDFileName);
                         //envia = evento.getCanonicalPathCSV();
                         file = true;

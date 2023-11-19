@@ -435,19 +435,33 @@ public class Cliente {
     }
 
     public boolean obterCSVCliente(String campo, String param) {
+        String message = "EVENTO CSV " + campo + " " + param;
+        return ficheiro(message, "CSVClientfile.csv");
+    }
+
+    public boolean obterCSVAdminEmail(String n) {
+        String messageEmail = "EVENTO CSV " + n;
+        return ficheiro(messageEmail, "CSV1file.csv");
+    }
+
+    public boolean obterCSVAdminEvento(String n) {
+        String messageNome = "EVENTO CSV2 " + n;
+        return ficheiro(messageNome, "CSVfile.csv");
+    }
+
+    private boolean ficheiro(String message, String filename) {
         try {
-            String message = "EVENTO CSV " + campo + " " + param;
             out.writeObject(message);
             out.flush();
 
             System.out.println("A receber ficheiro...");
-            ReceiveFile receiveFile = new ReceiveFile(socket);
-            if (receiveFile.receiveFile("CSVClientfile.csv"))
+            Socket s = socket;
+            ReceiveFile receiveFile = new ReceiveFile(s);
+            if (receiveFile.receiveFile(filename))
                 ficheiro = "Ficheiro recebido com sucesso";
             else
                 ficheiro = "Erro ao receber ficheiro";
             out.flush();
-
         } catch (IOException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();

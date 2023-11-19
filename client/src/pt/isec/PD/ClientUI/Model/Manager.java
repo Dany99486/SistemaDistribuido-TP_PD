@@ -100,4 +100,12 @@ public class Manager {
     public boolean obterCSVCliente(String campo, String param) {
         return cliente.obterCSVCliente(campo, param);
     }
+
+    public boolean obterCSVAdminEmail(String n) {
+        return cliente.obterCSVAdminEmail(n);
+    }
+
+    public boolean obterCSVAdminEvento(String n) {
+        return cliente.obterCSVAdminEvento(n);
+    }
 }
