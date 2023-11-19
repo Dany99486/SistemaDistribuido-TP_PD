@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="271.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.CSVClienteController">
+   <children>
+      <AnchorPane prefHeight="295.0" prefWidth="600.0">
+         <children>
+            <Label alignment="CENTER" layoutX="124.0" layoutY="29.0" prefHeight="34.0" prefWidth="239.0" text="Obtenção de CSV" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <TextField fx:id="campoField" layoutX="203.0" layoutY="101.0" promptText="Campo" />
+            <TextField fx:id="paramField" layoutX="203.0" layoutY="144.0" promptText="Parâmetro" />
+            <Label layoutX="119.0" layoutY="147.0" prefHeight="18.0" prefWidth="60.0" text="Parâmetro:" />
+            <Label layoutX="134.0" layoutY="104.0" prefHeight="18.0" prefWidth="45.0" text="Campo:" />
+            <Button fx:id="btnInserir" layoutX="197.0" layoutY="195.0" mnemonicParsing="false" onAction="#downloadFile" prefHeight="31.0" prefWidth="89.0" style="-fx-background-color: #a9a9a9;" text="Gerar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <Label fx:id="lblResult" layoutX="37.0" layoutY="240.0" prefHeight="17.0" prefWidth="205.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

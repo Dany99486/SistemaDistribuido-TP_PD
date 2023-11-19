@@ -3,7 +3,6 @@ package pt.isec.PD;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Arrays;
 
 public class ReceiveFile {
 
@@ -19,9 +18,9 @@ public class ReceiveFile {
 
     public boolean receiveFile(String fileName) {
 
-
         InputStream in;
         File localDirectory=new File(directory);
+
         try{
             localFilePath = localDirectory.getCanonicalPath()+ File.separator+fileName;
         }catch(IOException e){
@@ -29,14 +28,13 @@ public class ReceiveFile {
             return false;
         }
 
-            int nbytes, nLoops = 0, totalBytes = 0;
-            byte[] fileChunk = new byte[MAX_SIZE];
+        int nbytes, nLoops = 0, totalBytes = 0;
+        byte[] fileChunk = new byte[MAX_SIZE];
 
         try(FileOutputStream localFileOutputStream = new FileOutputStream(localFilePath)) {
 
             socketToServer.setSoTimeout(TIMEOUT * 10000);
             in=socketToServer.getInputStream();
-
 
             boolean marcaDeTerminoRecebida = false;
 

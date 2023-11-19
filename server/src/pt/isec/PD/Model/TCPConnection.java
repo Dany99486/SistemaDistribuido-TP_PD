@@ -37,7 +37,7 @@ public class TCPConnection extends Thread {
     private String role;
     private BD bd;
     private Evento evento;
-    private boolean open = true;
+    private boolean open = true, file = false;
     private GetRemoteBDService fileService;
     private int versaoBD;
 
@@ -178,8 +178,10 @@ public class TCPConnection extends Thread {
                             if (atualiza) {
                                 //Evento - coluna, alteracao, nome do evento a atualizar
                                 int registo = evento.editaEvento(aux[2], aux[3], aux[4], args, BDFileName,queryArray);
-                                System.out.println(Arrays.toString(queryArray));
-                                notifyObservers(queryArray);
+                                if (registo >= 0) {
+                                    System.out.println(Arrays.toString(queryArray));
+                                    notifyObservers(queryArray);
+                                }
                                 defaultRegistoReturn(registo);
                             } else
                                 defaultRegistoReturn(-3);
@@ -261,10 +263,11 @@ public class TCPConnection extends Thread {
                             if (atualiza) {
                                 //Só precisa da validade, encontra depois um evento que existe com esta validade
                                 int registo = evento.geraCodigo(aux[1], x, args, BDFileName, queryArray);
-                                System.out.println(Arrays.toString(queryArray));
-                                if (registo < 0)
+                                if (registo < 0) {
                                     defaultRegistoReturn(registo);
-                                else {
+                                    envia += evento.getMsg();
+                                } else {
+                                    System.out.println(Arrays.toString(queryArray));
                                     notifyObservers(queryArray);
                                     envia = "Codigo de registo de presenças: " + registo;
                                 }
@@ -288,6 +291,7 @@ public class TCPConnection extends Thread {
                         System.out.println("cria csv cliente");
                         int registo = evento.geraCSVClient(aux[2],aux[3], args, BDFileName);
                         //envia = evento.getCanonicalPathCSV();
+                        file = true;
                         enviaFicheiro(registo,"CSVClientfile.csv");
                     }
                     if (aux[0].equalsIgnoreCase(CONSULTA) && aux.length <= 2) {
@@ -301,13 +305,17 @@ public class TCPConnection extends Thread {
                             defaultRegistoReturn(-3);
                         }
                         envia = evento.insereCodigo(cc, x, args, BDFileName,queryArray);
-                        System.out.println("queryarray: " + Arrays.toString(queryArray));
-                        notifyObservers(queryArray);
+                        if (envia.equalsIgnoreCase("Inserido com sucesso")) {
+                            System.out.println("queryarray: " + Arrays.toString(queryArray));
+                            notifyObservers(queryArray);
+                        }
                     }
                 }
 
-                out.writeObject(envia);
+                if (!file)
+                    out.writeObject(envia);
                 out.flush();
+                file = false;
 
                 verificaConectados();
             }while (open);
@@ -323,10 +331,10 @@ public class TCPConnection extends Thread {
         boolean enviaFile = false;
         if (registo == 0)
             enviaFile = new SendFile(toClientSocket).sendFile(fileName);
-        if (enviaFile)
+        /*if (enviaFile)
             envia = "Sucesso, ficheiro enviado";
         else
-            envia = "Erro: Não foi possivel enviar o ficheiro";
+            envia = "Erro: Não foi possivel enviar o ficheiro";*/
     }
 
     private void defaultRegistoReturn(int registo) {

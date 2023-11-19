@@ -35,6 +35,11 @@
                </font>
             </Label>
             <Label fx:id="lblAutenticar" layoutX="14.0" layoutY="197.0" prefHeight="17.0" prefWidth="150" />
+            <Button fx:id="voltarButton" onAction="#voltar" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Voltar" textFill="WHITE">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
       </children>
     </AnchorPane>
   </children>

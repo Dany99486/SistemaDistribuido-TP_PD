@@ -52,6 +52,11 @@
             </Label>
             <TextField fx:id="nomeField" layoutX="318.0" layoutY="30.0" promptText="Nome" />
             <TextField fx:id="CCField" layoutX="318.0" layoutY="69.0" promptText="CC" />
+          <Button fx:id="voltarButton" onAction="#voltar" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: #a9a9a9;" text="Voltar" textFill="WHITE">
+              <font>
+                  <Font size="10.0" />
+              </font>
+          </Button>
       </children>
     </AnchorPane>
   </children>

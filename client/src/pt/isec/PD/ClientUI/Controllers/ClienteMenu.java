@@ -99,6 +99,7 @@ public class ClienteMenu {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("Codigo");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Definir o conteúdo da janela modal
         Scene scene = new Scene(root);
@@ -106,5 +107,27 @@ public class ClienteMenu {
 
         // Mostrar a janela modal
         modalStage.showAndWait();
+    }
+
+    @FXML
+    public void handleToCSV() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/CSVCliente.fxml"));
+        Parent root = loader.load();
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Código");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+
+        // Definir o conteúdo da janela modal
+        Scene scene = new Scene(root);
+        modalStage.setScene(scene);
+
+        // Mostrar a janela modal
+        modalStage.showAndWait();
+    }
+
+    public void obterCSVCliente() throws IOException {
+        handleToCSV();
     }
 }

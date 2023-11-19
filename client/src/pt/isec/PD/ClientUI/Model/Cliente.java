@@ -1,5 +1,7 @@
 package pt.isec.PD.ClientUI.Model;
 
+import pt.isec.PD.ReceiveFile;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +23,7 @@ public class Cliente {
     private String error;
     private String autenticar;
     private String editado;
+    private String ficheiro;
 
     private String logout;
     private String nome, email, password; //Usar para os campos de edicao de registo
@@ -431,6 +434,28 @@ public class Cliente {
         return true;
     }
 
+    public boolean obterCSVCliente(String campo, String param) {
+        try {
+            String message = "EVENTO CSV " + campo + " " + param;
+            out.writeObject(message);
+            out.flush();
+
+            System.out.println("A receber ficheiro...");
+            ReceiveFile receiveFile = new ReceiveFile(socket);
+            if (receiveFile.receiveFile("CSVClientfile.csv"))
+                ficheiro = "Ficheiro recebido com sucesso";
+            else
+                ficheiro = "Erro ao receber ficheiro";
+            out.flush();
+
+        } catch (IOException e) {
+            System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
     public boolean isAdmin() {
         return admin;
@@ -454,5 +479,13 @@ public class Cliente {
 
     public String getLogout() {
         return logout;
+    }
+
+    public String getEditado() {
+        return editado;
+    }
+
+    public String getFicheiro() {
+        return ficheiro;
     }
 }

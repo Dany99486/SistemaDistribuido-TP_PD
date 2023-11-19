@@ -10,6 +10,15 @@ public class Evento {
     private String canocialPath;
     private String show;
     private final Server.SharedDatabaseLock lock;
+    private String msg;
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void cleanMsg() {
+        this.msg = null;
+    }
 
     public Evento(Server.SharedDatabaseLock lock) {
         this.lock = lock;
@@ -627,6 +636,7 @@ public class Evento {
     public int geraCodigo(String evento, int validade, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int codigo;
+        cleanMsg();
 
         try {
             show = url;
@@ -646,6 +656,7 @@ public class Evento {
                     ResultSet result = preparedStatement.executeQuery();
 
                     String dataInicio, dataFim, horaInicio, horaFim;
+                    StringBuilder motivo = new StringBuilder();
                     int idEvent = 0;
                     boolean encontrou = false;
 
@@ -668,20 +679,35 @@ public class Evento {
                             int mesFim = Integer.parseInt(dataA[1]);
                             int anoFim = Integer.parseInt(dataA[2]);
 
-                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
-                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
-                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
-                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
+                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim) {
+                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim) {
+                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim) {
+                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim)) {
                                             encontrou = true;
+                                        } else {
+                                            motivo.append(" Fora da hora de realização do evento ");
+                                        }
+                                    } else {
+                                        motivo.append(" Fora da data (ano) de realização do evento ");
+                                    }
+                                } else {
+                                    motivo.append(" Fora da data (mes) de realização do evento ");
+                                }
+                            } else {
+                                motivo.append(" Fora da data (dia) de realização do evento ");
+                            }
+                        } else {
+                            motivo.append(" Código de presença expirado ");
                         }
                         if (encontrou)
                             break;
                     }
+                    msg = motivo.toString();
 
                     if (!encontrou) {
                         connection.close();
-                        System.out.println("O evento, " + evento + " não existe");
-                        return -2;
+                        System.out.println("O evento, " + evento + " tem a seguinte causa: " + motivo);
+                        return -404;
                     }
 
                     query = "SELECT idEvento FROM eventos " +

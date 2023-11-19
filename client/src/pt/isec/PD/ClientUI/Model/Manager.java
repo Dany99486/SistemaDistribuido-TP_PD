@@ -96,4 +96,8 @@ public class Manager {
     public String gerarCodigo(String nomeEvento, String tempo) {
         return cliente.gerarCodigo(nomeEvento, tempo);
     }
+
+    public boolean obterCSVCliente(String campo, String param) {
+        return cliente.obterCSVCliente(campo, param);
+    }
 }

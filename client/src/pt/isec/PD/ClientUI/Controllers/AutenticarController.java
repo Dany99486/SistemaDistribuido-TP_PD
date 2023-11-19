@@ -26,6 +26,7 @@ public class AutenticarController {
     @FXML
     public PasswordField passwordField;
     public Label lblAutenticar;
+    public Button voltarButton;
 
     public AutenticarController() {
         this.emailField = new TextField();
@@ -33,6 +34,7 @@ public class AutenticarController {
         this.lblError = new Label();
         this.lblAutenticar = new Label();
         this.loginButton = new Button();
+        this.voltarButton = new Button();
     }
 
     @FXML
@@ -76,6 +78,29 @@ public class AutenticarController {
 
         // Defina a nova cena no palco
         stage.setScene(scene);
+
+        // Exiba o palco
+        stage.show();
+    }
+
+    public void voltar() throws IOException {
+        handleToMenuInicial();
+    }
+
+    @FXML
+    public void handleToMenuInicial() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/MenuInicialPD.fxml"));
+        Parent root = loader.load();
+
+        // Crie a cena usando a raiz carregada do FXML
+        Scene scene = new Scene(root);
+
+        // Obtenha o palco da aplicação do botão ou de outra maneira adequada
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+
+        // Defina a nova cena no palco
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Exiba o palco
         stage.show();

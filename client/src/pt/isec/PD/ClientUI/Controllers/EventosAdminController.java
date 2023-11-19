@@ -66,31 +66,36 @@ public class EventosAdminController implements ModalCallback {
         modalStage.showAndWait();
     }
     public void handleEditar() throws IOException {
+        lblResult.setText(null);
         Evento evento = tableView.getSelectionModel().getSelectedItem();
-        if(evento!= null) {
-            FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/EditarEvento.fxml"));
-            Parent root = loader.load();
 
-            //EditEventoController editaEventoController = loader.getController();
-            // Agora você pode acessar e manipular os campos do controlador diretamente
-            //editaEventoController.Nome.setText(controller.getNome());
+        if(evento != null) {
+            if (evento.getCodigo() == null) {//Só podemos editar os sem codigo
+                FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/EditarEvento.fxml"));
+                Parent root = loader.load();
 
-            EditEventoController editaEventoController = loader.getController();
-            editaEventoController.setModalCallback((ModalCallback) this);
+                //EditEventoController editaEventoController = loader.getController();
+                //editaEventoController.Nome.setText(controller.getNome());
 
-            editaEventoController.setEventoParaEdicao(evento);
+                EditEventoController editaEventoController = loader.getController();
+                editaEventoController.setModalCallback((ModalCallback) this);
 
-            Stage modalStage = new Stage();
-            modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.setTitle("Editar Evento");
-            modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
+                editaEventoController.setEventoParaEdicao(evento);
 
-            // Definir o conteúdo da janela modal
-            Scene scene = new Scene(root);
-            modalStage.setScene(scene);
+                Stage modalStage = new Stage();
+                modalStage.initModality(Modality.APPLICATION_MODAL);
+                modalStage.setTitle("Editar Evento");
+                modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
-            // Mostrar a janela modal
-            modalStage.showAndWait();
+                // Definir o conteúdo da janela modal
+                Scene scene = new Scene(root);
+                modalStage.setScene(scene);
+
+                // Mostrar a janela modal
+                modalStage.showAndWait();
+            } else {
+                lblResult.setText("Não é possível editar eventos com código");
+            }
         }
     }
     public void handleEliminar(){
