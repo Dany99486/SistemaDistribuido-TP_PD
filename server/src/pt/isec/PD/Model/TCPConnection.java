@@ -19,6 +19,7 @@ public class TCPConnection extends Thread {
     private final String CONSULTA = "CONSULTA";
     private final String EVENTO = "EVENTO";
     private final String PRESENCAS = "PRESENCAS";
+    private final String PRESENCASUI = "PRESENCASUI";
     private final String GERAR = "GERAR";
     private final String CSV2 = "CSV2";
     private final String CSV = "CSV";
@@ -225,8 +226,8 @@ public class TCPConnection extends Thread {
                         notifyObservers(queryArray);
                         defaultRegistoReturn(registo);
                     }
-                    //Para UI
-                    if (aux[0].equalsIgnoreCase("PRESENCASUI") && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 3) {
+                    //Para UI ---------------------------------------------------
+                    if (aux[0].equalsIgnoreCase(PRESENCASUI) && aux[1].equalsIgnoreCase(APAGAR) && aux.length == 3) {
                         int x = 0;
                         try {
                             x = Integer.parseInt(aux[2]);
@@ -240,6 +241,7 @@ public class TCPConnection extends Thread {
                         notifyObservers(queryArray);
                         defaultRegistoReturn(registo);
                     }
+                    //---------------------------------------------------------------
                     if (aux[0].equalsIgnoreCase(PRESENCAS) && aux.length == 2) {
                         envia = evento.consultaPresenca(aux[1], args, BDFileName);
                     }

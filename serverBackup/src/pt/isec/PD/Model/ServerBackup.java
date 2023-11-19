@@ -11,6 +11,7 @@ public class ServerBackup {
 
     public void serverBackup() {
         String message = null;
+
         if (args.length != 1) {
             System.out.println("Sintaxe: java ServerBackup DirectoryToStoreData");
             return;
@@ -32,8 +33,8 @@ public class ServerBackup {
             System.out.println("O diretório especificado não existe ou não é uma diretoria válida.");
         }
 
+        //TODO: RMI
         HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver(directory);
         heartbeatReceiver.start();
-        //TODO: RMI
     }
 }

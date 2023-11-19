@@ -1,5 +1,7 @@
 package pt.isec.PD.RMI;
 
+import pt.isec.PD.Model.BD;
+
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -17,7 +19,7 @@ public class GetRemoteBDObserver extends UnicastRemoteObject implements GetRemot
         public void notifyNewOperationConcluded(String msg) throws RemoteException {
             System.out.println("->" + msg + "\n");
             updateBD(msg);
-
+            new BD(localFilePath).incVersion();
         }
         private void updateBD(String query){
             String url = "jdbc:sqlite:"+localFilePath;
@@ -30,16 +32,16 @@ public class GetRemoteBDObserver extends UnicastRemoteObject implements GetRemot
                 }
 
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-                System.out.println("Executando query: "+query);
+                System.out.println("Executando query: " + query);
                 int resultSet = preparedStatement.executeUpdate();
 
                 if (resultSet <= 0)
-                    System.out.println("Erro ao actualizar a BD");
+                    System.out.println("Erro ao atualizar a BD");
 
                 connection.close();
 
             } catch (SQLException e) {
-                System.out.println("Erro ao actualizar a BD:"+e.getMessage());
+                System.out.println("Erro ao atualizar a BD: " + e.getMessage());
             }
         }
         public synchronized void setFout(FileOutputStream fout) {
@@ -67,6 +69,5 @@ public class GetRemoteBDObserver extends UnicastRemoteObject implements GetRemot
                 throw new IOException("<SERV> Erro ao escrever no ficheiro", ex.getCause());
             }
         }
-
 
 }

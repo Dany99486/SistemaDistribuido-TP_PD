@@ -12,18 +12,21 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RmiService extends Thread{
+public class RmiService extends Thread {
     private final String rmiRegistryName;
     private final int rmiRegistryPort;
     private final String localFilePath;
+    private int databaseVersion;
 
-    public RmiService(String rmiRegistryName, int rmiRegistryPort, String localFilePath) {
+    public RmiService(String rmiRegistryName, int rmiRegistryPort, String localFilePath, int databaseVersion) {
         this.rmiRegistryName = rmiRegistryName;
         this.rmiRegistryPort = rmiRegistryPort;
         this.localFilePath = localFilePath;
+        this.databaseVersion = databaseVersion;
         System.out.println("filepath:"+localFilePath);
     }
 
+    @Override
     public void run() {
         String filePath;
         try{
@@ -35,11 +38,10 @@ public class RmiService extends Thread{
         try(FileOutputStream localFileOutputStream = new FileOutputStream(filePath)) {
 
             System.out.println("Launching RMI Receiver");
-            String objectUrl = "rmi://localhost:"+rmiRegistryPort + "/"+rmiRegistryName;
+            String objectUrl = "rmi://localhost:"+rmiRegistryPort+"/"+rmiRegistryName;
             GetRemoteBDServiceInterface getRemoteFileService = (GetRemoteBDServiceInterface) Naming.lookup(objectUrl);
 
             System.setProperty("java.rmi.server.hostname", "localhost");
-
 
             System.out.println("RMI Receiver launched");
             GetRemoteBDObserver observer = new GetRemoteBDObserver(localFilePath);
@@ -49,11 +51,11 @@ public class RmiService extends Thread{
             getRemoteFileService.addObserver(observer);
 
             observer.closeFout();
-            do {
 
-            }while (true);
-            //getRemoteFileService.removeObserver(observer);
-            //UnicastRemoteObject.unexportObject(observer, true);
+            while (new BD(localFilePath).checkVersion(databaseVersion));
+
+            getRemoteFileService.removeObserver(observer);
+            UnicastRemoteObject.unexportObject(observer, true);
 
         } catch (MalformedURLException e) {
             System.out.println("Erro a obter o URL do objecto remoto");
@@ -64,7 +66,6 @@ public class RmiService extends Thread{
         } catch (IOException e) {
             System.out.println("Erro de E/S");
         }
-
     }
 
 }

@@ -1,14 +1,7 @@
 package pt.isec.PD.Model;
 
-import pt.isec.PD.RMI.GetRemoteBDObserver;
-import pt.isec.PD.RMI.GetRemoteBDServiceInterface;
-
 import java.io.*;
 import java.net.*;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 public class HeartbeatReceiver extends Thread {
     private final static String multicastAddress = "230.44.44.44";
@@ -35,7 +28,6 @@ public class HeartbeatReceiver extends Thread {
 
             socket.setSoTimeout(TIMEOUT_SECONDS * 1000);
 
-
             while (true) {
                 byte[] buffer = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -59,11 +51,8 @@ public class HeartbeatReceiver extends Thread {
                         RMIRegistryPort = heartbeat.getRegistryPort();
                         System.out.println("Database Version: " + heartbeat.getDatabaseVersion());
                         if (count == 0) {
-                            String localFilePath;
-
-                            rmiService=new RmiService(RMIRegistryName, RMIRegistryPort, localDirectory.getPath()+File.separator+"serverdatabase.db");
+                            rmiService = new RmiService(RMIRegistryName, RMIRegistryPort, localDirectory.getPath()+File.separator+"serverdatabase.db", heartbeat.getDatabaseVersion());
                             rmiService.start();
-
                         }
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -75,6 +64,5 @@ public class HeartbeatReceiver extends Thread {
             e.printStackTrace();
         }
     }
-
 
 }

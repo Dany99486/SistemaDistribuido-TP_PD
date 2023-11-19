@@ -42,6 +42,10 @@ public class BD {
                 return show;
             }
             Statement statement = connection.createStatement();
+            statement.execute("CREATE TABLE IF NOT EXISTS versao (" +
+                    "id INTEGER PRIMARY KEY, " +
+                    "versao INTEGER " +
+                    ")");
             statement.execute("CREATE TABLE IF NOT EXISTS presencas (" +
                     "id INTEGER PRIMARY KEY, " +
                     "idEvento INTEGER REFERENCES eventos (idEvento), " +
@@ -66,9 +70,19 @@ public class BD {
                     ")");
             show += "\nTabelas criadas com sucesso.";
 
-            String query = "SELECT * FROM utilizadores";
+            String query = "SELECT * FROM versao ORDER BY versao DESC;";
             ResultSet resultSet = statement.executeQuery(query);
-
+            if (resultSet.next())
+                show += "\nVersão da base de dados: " + resultSet.getInt("versao");
+            else {
+                query = "INSERT INTO versao (versao) VALUES (0);";
+                boolean v = statement.execute(query);
+                if (v)
+                    show += "\nVersão da base de dados: 0";
+                else
+                    show += "\nVersão da base de dados: 0 não inserida";
+            }
+            /*
             StringBuilder stringBuilder = new StringBuilder();
             // Exibe os resultados no console
             while (resultSet.next()) {
@@ -81,6 +95,7 @@ public class BD {
                 stringBuilder.append("\n");
             }
             show += stringBuilder.toString();
+             */
             connection.close();
 
         } catch (SQLException e) {
@@ -252,10 +267,10 @@ public class BD {
                     return -1;
                 }
                 Statement statement = connection.createStatement();
-                String query = "SELECT versao FROM versao;";
+                String query = "SELECT versao FROM versao ORDER BY versao DESC;";
                 System.out.println(query);
                 ResultSet resultSet = statement.executeQuery(query);
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                     aux = resultSet.getInt("versao");
                     System.out.println("Versao da BD: " + aux);
                 }
@@ -285,7 +300,7 @@ public class BD {
                     show += "\nConexão com a base de dados não foi estabelecida.";
                     return -1;
                 }
-                String query = "INSERT OR IGNORE INTO versao (versao) VALUES (?);";
+                String query = "INSERT INTO versao (versao) VALUES (?);";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
 
                 lastVersion++;

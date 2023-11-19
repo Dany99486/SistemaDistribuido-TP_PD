@@ -25,7 +25,7 @@ public class Server {
     private String hertbeat;
     private SharedDatabaseLock lock;
     private GetRemoteBDService fileService;
-    private static int versaoBD;
+    private static int versaoBD = 0;
 
     public Server(String[] a) {
         this.args = a;
@@ -49,14 +49,19 @@ public class Server {
         RMIServiceName = args[2];
         RMIPort = args[3];
 
-        HeartbeatSender heartbeatReceiver = new HeartbeatSender(RMIServiceName, Integer.parseInt(args[3]), 1);
-        heartbeatReceiver.start();
-
         show = checkBDFolder();
         if (show != null)
             return null;
 
-        show = new BD(new SharedDatabaseLock()).createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se não existir
+        show = bd.createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se não existir
+        //System.out.println(show);
+
+        int v = bd.pesquisaUltimaVersaoBD(args, BDFileName);
+        if (v >= 0)
+            versaoBD = v;
+
+        HeartbeatSender heartbeatReceiver = new HeartbeatSender(RMIServiceName, Integer.parseInt(args[3]), versaoBD);
+        heartbeatReceiver.start();
 
         //TODO: RMI
         System.setProperty("java.rmi.server.hostname", "localhost");

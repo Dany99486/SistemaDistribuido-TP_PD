@@ -38,6 +38,7 @@
                </font>
             </Button>
             <Button layoutX="513.0" layoutY="359.0" mnemonicParsing="false" onAction="#voltar" prefHeight="26.0" prefWidth="62.0" style="-fx-background-color: #a9a9a9;" text="Voltar" textFill="WHITE" />
+            <Label fx:id="lblResult" layoutX="24.0" layoutY="364.0" prefHeight="17.0" prefWidth="477.0" />
          </children>
       </AnchorPane>
    </children>

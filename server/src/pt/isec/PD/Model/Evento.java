@@ -476,7 +476,6 @@ public class Evento {
                     //TODO:======================
                     String query = "SELECT idEvento FROM eventos WHERE nome = '" + evento + "';";
 
-
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet result = preparedStatement.executeQuery();
 
@@ -530,11 +529,10 @@ public class Evento {
                     show += "\nConexão com a base de dados não foi estabelecida.";
                     return -1;
                 }
-
+                /* Não utilizar (deixar em comentario)
                 String idCC;
 
-                //TODO:======================
-                String query = "SELECT idCC FROM eventos WHERE id = '" + id + "';";
+                String query = "SELECT idCC FROM presencas WHERE id = '" + id + "';";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 ResultSet result = preparedStatement.executeQuery();
@@ -549,11 +547,11 @@ public class Evento {
                 result = preparedStatement.executeQuery();
 
                 if (!result.next())
-                    return registed;
+                    return registed; */
 
-                query = "DELETE FROM presencas WHERE id = '" + id + "';";
+                String query = "DELETE FROM presencas WHERE id = '" + id + "';";
                 queryArray[0] = query;
-                preparedStatement = connection.prepareStatement(query);
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
                 int resultSet = preparedStatement.executeUpdate();
 
                 if (resultSet > 0)

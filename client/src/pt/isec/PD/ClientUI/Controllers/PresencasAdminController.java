@@ -5,10 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -37,6 +34,7 @@ public class PresencasAdminController {
     public TableColumn<Presencas, String> cartaoCidadao;
     public TableColumn<Presencas, String> horaInicio;
     public TableColumn<Presencas, String> horaFim;
+    public Label lblResult;
 
     public void initialize(){
 
@@ -57,6 +55,7 @@ public class PresencasAdminController {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("Criar Presenças");
+        modalStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/pt/isec/PD/ClientUI/Img/logo.png"))));
 
         // Definir o conteúdo da janela modal
         Scene scene = new Scene(root);
@@ -70,11 +69,10 @@ public class PresencasAdminController {
         if (presencaSelecionado != null) {
 
             if(!controller.eliminaPresenca(presencaSelecionado.getId())) {
-                System.out.println("Não foi possível eliminar o evento");
+                lblResult.setText("Não foi possível eliminar a presença");
             } else {
-                System.out.println("Evento eliminado com sucesso");
+                lblResult.setText("Presença eliminada com sucesso");
             }
-
             // Atualiza a tabela
             updateTable();
         }

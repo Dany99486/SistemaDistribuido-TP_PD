@@ -23,7 +23,6 @@ public class HeartbeatSender extends Thread {
     public void run() {
         while (true) {
             sendHeartbeat(nameRMI, registryPort, databaseVersion);
-            //
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -36,7 +35,6 @@ public class HeartbeatSender extends Thread {
             InetAddress group = InetAddress.getByName(multicastAddress);
             DatagramSocket socket = new DatagramSocket();
 
-
                 // Envie o heartbeat
                 Heartbeat heartbeat = new Heartbeat(nameRMI, registryPort, databaseVersion);
                 try (ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -48,8 +46,6 @@ public class HeartbeatSender extends Thread {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
