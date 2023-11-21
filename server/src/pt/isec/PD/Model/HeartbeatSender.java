@@ -12,12 +12,16 @@ public class HeartbeatSender extends Thread {
     private static final int port = 4444;
     private String nameRMI;
     private int registryPort;
-    private int databaseVersion;
+
+    private static int databaseVersion;
 
     public HeartbeatSender(String nameRMI , int registryPort, int databaseVersion) {
         this.nameRMI = nameRMI;
         this.registryPort = registryPort;
-        this.databaseVersion = databaseVersion;
+        setDatabaseVersion(databaseVersion);
+    }
+    public static void setDatabaseVersion(int databaseVersion) {
+        HeartbeatSender.databaseVersion = databaseVersion;
     }
 
     public void run() {

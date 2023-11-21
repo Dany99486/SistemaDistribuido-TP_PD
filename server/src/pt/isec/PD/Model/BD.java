@@ -300,7 +300,7 @@ public class BD {
                     show += "\nConexão com a base de dados não foi estabelecida.";
                     return -1;
                 }
-                String query = "INSERT INTO versao (versao) VALUES (?);";
+                String query = "UPDATE versao SET versao = ? WHERE id = 1;";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
 
                 lastVersion++;

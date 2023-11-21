@@ -12,6 +12,17 @@ public class HeartbeatReceiver extends Thread {
     private File localDirectory;
     private RmiService rmiService;
 
+    private static int databaseVersion;
+    public static int getDatabaseVersion() {
+        return databaseVersion;
+    }
+
+    public static void setDatabaseVersion(int databaseVersion) {
+        HeartbeatReceiver.databaseVersion = databaseVersion;
+    }
+
+
+
     public HeartbeatReceiver(File directoryPath) {
         this.localDirectory = directoryPath;
     }
@@ -27,7 +38,7 @@ public class HeartbeatReceiver extends Thread {
             socket.joinGroup(group);
 
             socket.setSoTimeout(TIMEOUT_SECONDS * 1000);
-
+            Heartbeat lastHeartbeat = null;
             while (true) {
                 byte[] buffer = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -38,12 +49,16 @@ public class HeartbeatReceiver extends Thread {
                     System.out.println("No heartbeat received for " + TIMEOUT_SECONDS + " seconds. \nExiting...");
                     System.exit(0);
                 }
-
+                if (count!=0)
+                    if (!BD.checkVersion(lastHeartbeat.getDatabaseVersion(),localDirectory.getPath()+File.separator+"serverdatabase.db")) {
+                        rmiService.endService();
+                    }
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(packet.getData());
                 try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
                     Object object = objectInputStream.readObject();
 
                     if (object instanceof Heartbeat heartbeat) {
+                        lastHeartbeat = heartbeat;
                         System.out.println("Received Heartbeat:");
                         System.out.println("Registry Name: " + heartbeat.getRegistryName());
                         RMIRegistryName = heartbeat.getRegistryName();
@@ -51,6 +66,7 @@ public class HeartbeatReceiver extends Thread {
                         RMIRegistryPort = heartbeat.getRegistryPort();
                         System.out.println("Database Version: " + heartbeat.getDatabaseVersion());
                         if (count == 0) {
+                            setDatabaseVersion(heartbeat.getDatabaseVersion());
                             rmiService = new RmiService(RMIRegistryName, RMIRegistryPort, localDirectory.getPath()+File.separator+"serverdatabase.db", heartbeat.getDatabaseVersion());
                             rmiService.start();
                         }
@@ -64,5 +80,6 @@ public class HeartbeatReceiver extends Thread {
             e.printStackTrace();
         }
     }
+
 
 }

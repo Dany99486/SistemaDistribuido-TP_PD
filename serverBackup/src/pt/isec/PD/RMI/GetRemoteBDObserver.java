@@ -1,6 +1,7 @@
 package pt.isec.PD.RMI;
 
 import pt.isec.PD.Model.BD;
+import pt.isec.PD.Model.HeartbeatReceiver;
 
 import java.io.*;
 import java.rmi.RemoteException;
@@ -10,16 +11,23 @@ import java.sql.*;
 public class GetRemoteBDObserver extends UnicastRemoteObject implements GetRemoteBDObserverInterface {
         FileOutputStream fout = null;
         private final String localFilePath;
+        private int databaseVersion;
         public GetRemoteBDObserver(String localFilePath) throws RemoteException {
             super();
             this.localFilePath = localFilePath;
+            databaseVersion=HeartbeatReceiver.getDatabaseVersion();
         }
 
         @Override
         public void notifyNewOperationConcluded(String msg) throws RemoteException {
             System.out.println("->" + msg + "\n");
+            ++databaseVersion;
+            if (BD.checkVersion(HeartbeatReceiver.getDatabaseVersion(),localFilePath)){
+
+            }
+            BD.incVersion(databaseVersion,localFilePath);
             updateBD(msg);
-            new BD(localFilePath).incVersion();
+
         }
         private void updateBD(String query){
             String url = "jdbc:sqlite:"+localFilePath;

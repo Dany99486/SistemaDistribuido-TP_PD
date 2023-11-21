@@ -4,12 +4,8 @@ import java.sql.*;
 
 public class BD {
 
-    private final String localFilePath;
 
-    public BD(String localFilePath) {
-        this.localFilePath = localFilePath;
-    }
-    public boolean checkVersion(int databaseVersion) {
+    public static boolean checkVersion(int databaseVersion,String localFilePath) {
         String url = "jdbc:sqlite:" + localFilePath;
 
         try {
@@ -18,13 +14,13 @@ public class BD {
                return false;
 
             Statement statement = connection.createStatement();
-            String query = "SELECT versao FROM versao ORDER BY versao DESC;";
+            String query = "SELECT versao FROM versao WHERE id=1;";
 
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                //System.out.println("DataBase Version (local): " + resultSet.getInt("versao"));
-                if (resultSet.getInt("versao") == databaseVersion) {
-                    //System.out.println("DataBase Version (remote = local): " + databaseVersion);
+                int versao = resultSet.getInt("versao");
+                System.out.println("------------versao: " + versao+" databaseVersion: "+databaseVersion);
+                if (versao == databaseVersion) {
                     connection.close();
                     return true;
                 }
@@ -36,7 +32,7 @@ public class BD {
         return false;
     }
 
-    public boolean incVersion() {
+    public static boolean incVersion(int databaseVersion,String localFilePath) {
         String url = "jdbc:sqlite:" + localFilePath;
         boolean aux = false;
 
@@ -46,23 +42,22 @@ public class BD {
                 System.out.println("Conexão com a base de dados estabelecida.");
             else {
                 System.out.println("Conexão com a base de dados não foi estabelecida.");
+                System.out.println("Exiting...");
+                System.exit(-1);
             }
+            System.out.println("AQUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 
-            String query = "SELECT versao FROM versao ORDER BY versao DESC;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery(query);
 
-            if (resultSet.next()) {
-                int databaseVersion = resultSet.getInt("versao");
 
-                String query2 = "INSERT INTO versao (versao) VALUES (?);";
-                preparedStatement = connection.prepareStatement(query2);
-                preparedStatement.setInt(1, databaseVersion + 1);
+                System.out.println("atualizing DataBase Version (local) to: " + databaseVersion);
+                String query2 = "UPDATE versao SET versao = ? WHERE id=1;";
+                PreparedStatement preparedStatement = connection.prepareStatement(query2);
+                preparedStatement.setInt(1, databaseVersion);
 
                 int result = preparedStatement.executeUpdate();
                 if (result > 0)
                     aux = true;
-            }
+
 
             connection.close();
         } catch (SQLException e) {

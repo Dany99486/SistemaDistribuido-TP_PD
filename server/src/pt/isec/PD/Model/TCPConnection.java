@@ -365,7 +365,9 @@ public class TCPConnection extends Thread {
 
     private void notifyObservers(String[] msg) {
         versaoAlterada();
+        HeartbeatSender.setDatabaseVersion(versaoBD);
         HeartbeatSender.sendHeartbeat(args[2], Integer.parseInt(args[3]), versaoBD);
+        System.out.println("notifyObservers: " + Arrays.toString(msg));
         fileService.notifyObservers(msg);
     }
 
