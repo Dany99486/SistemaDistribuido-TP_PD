@@ -357,8 +357,10 @@ public class Cliente {
             out.flush();
 
             String response = (String) in.readObject();
-            if(response.contains("Sucesso"))
+            if(response.contains("Sucesso")) {
+                System.out.println("Edicao Evento: " + response);
                 return true;
+            }
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
