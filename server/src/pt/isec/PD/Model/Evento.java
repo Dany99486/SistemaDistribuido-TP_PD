@@ -808,7 +808,7 @@ public class Evento {
                         resultado.append("\"" + nomeUser + "\";\"" + cc + "\";\"" + email + "\"\n");
                     }
                     System.out.println("ficheiro:");
-                    System.out.println(resultado.toString());
+                    System.out.println(resultado);
                     connection.close();
                 }
 

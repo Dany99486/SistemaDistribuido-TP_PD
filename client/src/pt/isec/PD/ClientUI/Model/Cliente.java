@@ -19,7 +19,7 @@ public class Cliente {
     private final String CONSULTA = "CONSULTA";
     private final String EVENTO = "EVENTO";
     private String[] args;
-    private static Socket socket;
+    private Socket socket;
     private String error;
     private String autenticar;
     private String editado;
@@ -27,7 +27,7 @@ public class Cliente {
 
     private String logout;
     private String nome, email, password; //Usar para os campos de edicao de registo
-    private boolean admin = false;
+    private boolean admin = false, timeout = false;
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -64,8 +64,11 @@ public class Cliente {
     public boolean autenticar(String email, String password) {
         String message;
         try {
-            if (!socket.isConnected())
+            timeout = false;
+            if (!socket.isConnected()) {
+                timeout = true;
                 return false;
+            }
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
                 return false;
@@ -501,5 +504,9 @@ public class Cliente {
 
     public String getFicheiro() {
         return ficheiro;
+    }
+
+    public boolean getLog() {
+        return timeout;
     }
 }

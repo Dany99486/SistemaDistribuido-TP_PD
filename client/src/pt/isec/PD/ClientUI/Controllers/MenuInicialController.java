@@ -19,6 +19,7 @@ public class MenuInicialController {
     public Button btnCreditos;
     @FXML
     private Label lblError;
+    private boolean avanca;
 
     public MenuInicialController() {
         this.btnRegistar = new Button();
@@ -37,19 +38,24 @@ public class MenuInicialController {
             }
             System.exit(0);
         }
-        if (!controller.socketParaCliente()) {
-            lblError.setText("Erro ao conectar ao servidor");
-            try {
-                Thread.sleep(1000); //tempo para ler a mensagem de erro
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.exit(0);
+        avanca = controller.socketParaCliente();
+    }
+
+    private void errorServer() {
+        lblError.setText("Erro ao conectar ao servidor");
+        System.err.println("Erro ao conectar ao servidor");
+        try {
+            Thread.sleep(1000); //tempo para ler a mensagem de erro
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        System.exit(0);
     }
 
     @FXML
     public void handleToAutenticar() throws IOException {
+        if (!avanca)
+            errorServer();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/Autenticar.fxml"));
         Parent root = loader.load();
 
@@ -68,6 +74,8 @@ public class MenuInicialController {
     }
     @FXML
     public void handleToRegistar() throws IOException {
+        if (!avanca)
+            errorServer();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/pt/isec/PD/ClientUI/Views/Registar.fxml"));
         Parent root = loader.load();
 

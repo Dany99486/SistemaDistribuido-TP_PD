@@ -51,11 +51,22 @@ public class AutenticarController {
         if (!controller.autenticar(emailField.getText(), passwordField.getText())) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
-        }else {
+        } else {
             lblAutenticar.setText(controller.getAutenticar());
             lblAutenticar.setVisible(true);
             Thread.sleep(1000);
             handleToClienteMenu();
+            if (!controller.getLog()) {
+                if (!controller.socketParaCliente()) {
+                    lblError.setText("Erro ao conectar ao servidor");
+                    try {
+                        Thread.sleep(1000); //tempo para ler a mensagem de erro
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
         }
     }
 
