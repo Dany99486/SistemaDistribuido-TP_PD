@@ -82,6 +82,18 @@ public class BD {
                 else
                     show += "\nVersão da base de dados: 0 não inserida";
             }
+
+            query = "SELECT * FROM utilizadores WHERE role='" + ADMIN + "';";
+            resultSet = statement.executeQuery(query);
+            if (!resultSet.next()) {
+                query = "INSERT INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES ('admin','123','admin','admin@isec.pt','admin');";
+                boolean v = statement.execute(query);
+                if (v)
+                    show += "\nUtilizador admin criado com sucesso.";
+                else
+                    show += "\nUtilizador admin não criado.";
+            }
+
             /*
             StringBuilder stringBuilder = new StringBuilder();
             // Exibe os resultados no console
