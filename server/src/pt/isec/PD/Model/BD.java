@@ -82,18 +82,6 @@ public class BD {
                 else
                     show += "\nVersão da base de dados: 0 não inserida";
             }
-
-            query = "SELECT * FROM utilizadores WHERE role='" + ADMIN + "';";
-            resultSet = statement.executeQuery(query);
-
-            if (!resultSet.next()) {
-                query = "INSERT INTO utilizadores (nome, cartaoCidadao, email, pass, role) VALUES ('admin', 'admin', 'admin', '123', 'admin');";
-                boolean v = statement.execute(query);
-                if (v)
-                    show += "\nUtilizador admin criado com sucesso.";
-                else
-                    show += "\nUtilizador admin não criado.";
-            }
             /*
             StringBuilder stringBuilder = new StringBuilder();
             // Exibe os resultados no console
@@ -134,7 +122,7 @@ public class BD {
                     return false;
                 }
                 Statement statement = connection.createStatement();
-                String query = "SELECT * FROM utilizadores WHERE email='" + user + "' AND pass='" + pass + "';";
+                String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
                 System.out.println(query);
                 ResultSet resultSet = statement.executeQuery(query);
                 if (resultSet.next()) {

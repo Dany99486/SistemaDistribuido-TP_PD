@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.SubmeteCodigoCrontroller">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.PD.ClientUI.Controllers.SubmeteCodigoCrontroller">
    <children>
       <AnchorPane prefHeight="236.0" prefWidth="434.0">
          <children>
@@ -14,7 +17,7 @@
                </font>
             </Label>
             <TextField fx:id="txtCodigo" layoutX="59.0" layoutY="117.0" prefHeight="26.0" prefWidth="170.0" promptText="Insira o código" />
-            <Button fx:id="SubmeterCodigo" layoutX="256.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleSubmeterCodigo" prefHeight="26.0" prefWidth="101.0" style="-fx-background-color: #a9a9a9;" text="Submeter" textFill="WHITE" AnchorPane.leftAnchor="256.0" AnchorPane.rightAnchor="53.0" />
+            <Button fx:id="SubmeterCodigo" layoutX="256.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleSubmeterCodigo" prefHeight="26.0" prefWidth="101.0" style="-fx-background-color: #a9a9a9;" text="Submit" textFill="WHITE" AnchorPane.leftAnchor="256.0" AnchorPane.rightAnchor="53.0" />
             <Label fx:id="lblMessage" alignment="CENTER_RIGHT" layoutX="500.0" layoutY="189.0" prefHeight="34.0" prefWidth="270.0" textFill="RED" visible="false" AnchorPane.leftAnchor="0.0">
                <font>
                   <Font size="15.0" />
