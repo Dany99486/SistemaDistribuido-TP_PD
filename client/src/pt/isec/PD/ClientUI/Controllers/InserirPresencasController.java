@@ -14,9 +14,7 @@ public class InserirPresencasController {
     public void handleInserir(){
         String nome = nomeField.getText();
         String email = emailField.getText();
-        if(nome.isEmpty() || email.isEmpty()){
-            return;
-        } else {
+        if(!nome.isEmpty() && !email.isEmpty()) {
             if(!controller.inserirPresencas(nome, email)){
                 System.out.println("Erro ao inserir presenças");
                 nomeField.clear();
