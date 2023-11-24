@@ -713,10 +713,14 @@ public class Evento {
                             if (anoInicio >= now.get(Calendar.YEAR) && anoFim >= now.get(Calendar.YEAR)) {
                                 if (mesInicio >= now.get(Calendar.MONTH) && mesFim >= now.get(Calendar.MONTH)) {
                                     if (diaInicio <= now.get(Calendar.DAY_OF_MONTH) && diaFim >= now.get(Calendar.DAY_OF_MONTH)) {
-                                        if (horaInicioInt <= horaAtual && horaFimInt >= horaAtual) {
+                                        if (diaInicio == now.get(Calendar.DAY_OF_MONTH) && horaAtual <= horaInicioInt ) {
+                                            encontrou = true;
+                                        } else if(diaFim == now.get(Calendar.DAY_OF_MONTH) && horaAtual <= horaFimInt){
+                                            encontrou = true;
+                                        } else if(diaInicio < now.get(Calendar.DAY_OF_MONTH) && diaFim > now.get(Calendar.DAY_OF_MONTH)){
                                             encontrou = true;
                                         } else {
-                                            motivo.append(" Fora da hora de realização do evento ");
+                                            motivo.append("Fora da hora de realização do evento");
                                         }
                                     } else {
                                         motivo.append(" Fora da data (dia) de realização do evento ");
@@ -1103,11 +1107,21 @@ public class Evento {
                             int horaFimInt = Integer.parseInt(horaFim.split(":")[0]) * 60 + Integer.parseInt(horaFim.split(":")[1]);
                             int horaAtual = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
 
-                            if (anoInicio >= now.get(Calendar.YEAR) && anoFim >= now.get(Calendar.YEAR))
-                                if (mesInicio >= now.get(Calendar.MONTH) && mesFim >= now.get(Calendar.MONTH))
-                                    if (diaInicio <= now.get(Calendar.DAY_OF_MONTH) && diaFim >= now.get(Calendar.DAY_OF_MONTH))
-                                        if (horaInicioInt <= horaAtual && horaFimInt >= horaAtual)
+                            if (anoInicio >= now.get(Calendar.YEAR) && anoFim >= now.get(Calendar.YEAR)) {
+                                if (mesInicio >= now.get(Calendar.MONTH) && mesFim >= now.get(Calendar.MONTH)) {
+                                    if (diaInicio <= now.get(Calendar.DAY_OF_MONTH) && diaFim >= now.get(Calendar.DAY_OF_MONTH)) {
+                                        if (diaInicio == now.get(Calendar.DAY_OF_MONTH) && horaAtual <= horaInicioInt ) {
                                             regista = true;
+                                        } else if(diaFim == now.get(Calendar.DAY_OF_MONTH) && horaAtual <= horaFimInt){
+                                            regista = true;
+                                        } else if(diaInicio < now.get(Calendar.DAY_OF_MONTH) && diaFim > now.get(Calendar.DAY_OF_MONTH)){
+                                            regista = true;
+                                        } else {
+                                            return "Fora da hora de realização do evento";
+                                        }
+                                    }
+                                }
+                            }
                         }
                         if (regista)
                             break;
