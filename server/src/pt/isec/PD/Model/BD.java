@@ -134,7 +134,7 @@ public class BD {
                     return false;
                 }
                 Statement statement = connection.createStatement();
-                String query = "SELECT * FROM utilizadores WHERE nome='" + user + "' AND pass='" + pass + "';";
+                String query = "SELECT * FROM utilizadores WHERE email='" + user + "' AND pass='" + pass + "';";
                 System.out.println(query);
                 ResultSet resultSet = statement.executeQuery(query);
                 if (resultSet.next()) {
