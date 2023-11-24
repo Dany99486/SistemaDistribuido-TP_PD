@@ -353,7 +353,6 @@ public class Cliente {
     public boolean editarEvento(String nomeCampoAlterado, String novaAlteracao, String nome) {
         String message = "EVENTO EDICAO "+nomeCampoAlterado+" "+novaAlteracao+" "+nome;
         try {
-
             out.writeObject(message);
             out.flush();
 

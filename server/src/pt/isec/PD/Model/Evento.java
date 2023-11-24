@@ -130,7 +130,7 @@ public class Evento {
                     }
 
                     query = "UPDATE eventos SET '" + coluna + "' = '" + alteracao + "' " +
-                            "WHERE eventos.nome = '" + nome + "' AND eventos.codigo IS NULL;";
+                            "WHERE eventos.nome = '" + nome + "';";
 
                     preparedStatement = connection.prepareStatement(query);
                     int resultSet = preparedStatement.executeUpdate();
