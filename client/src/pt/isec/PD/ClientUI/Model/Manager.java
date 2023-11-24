@@ -59,10 +59,6 @@ public class Manager {
         return cliente.getLogout();
     }
 
-    public boolean getLog() {
-        return cliente.getLog();
-    }
-
     public void registar(String nomeFieldText, String cc, String emailFieldText, String passwordFieldText) {
         cliente.registar(nomeFieldText, cc, emailFieldText, passwordFieldText);
     }

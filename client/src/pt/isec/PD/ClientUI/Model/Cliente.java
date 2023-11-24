@@ -19,7 +19,7 @@ public class Cliente {
     private final String CONSULTA = "CONSULTA";
     private final String EVENTO = "EVENTO";
     private String[] args;
-    private Socket socket;
+    private static Socket socket;
     private String error;
     private String autenticar;
     private String editado;
@@ -27,7 +27,7 @@ public class Cliente {
 
     private String logout;
     private String nome, email, password; //Usar para os campos de edicao de registo
-    private boolean admin = false, timeout = false;
+    private boolean admin = false;
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -64,11 +64,8 @@ public class Cliente {
     public boolean autenticar(String email, String password) {
         String message;
         try {
-            timeout = false;
-            if (!socket.isConnected()) {
-                timeout = true;
+            if (!socket.isConnected())
                 return false;
-            }
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
                 return false;
@@ -353,13 +350,13 @@ public class Cliente {
     public boolean editarEvento(String nomeCampoAlterado, String novaAlteracao, String nome) {
         String message = "EVENTO EDICAO "+nomeCampoAlterado+" "+novaAlteracao+" "+nome;
         try {
+
             out.writeObject(message);
             out.flush();
 
             String response = (String) in.readObject();
-            if(response.contains("Sucesso")) {
+            if(response.contains("Sucesso"))
                 return true;
-            }
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepção {" + e + "} ao nível do socket TCP de leitura do cliente!");
@@ -504,9 +501,5 @@ public class Cliente {
 
     public String getFicheiro() {
         return ficheiro;
-    }
-
-    public boolean getLog() {
-        return timeout;
     }
 }

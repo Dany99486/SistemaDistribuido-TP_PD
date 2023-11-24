@@ -15,6 +15,7 @@ import pt.isec.PD.ClientUI.Model.Evento;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static pt.isec.PD.ClientUI.MainJFX.controller;
@@ -70,7 +71,7 @@ public class EventosAdminController implements ModalCallback {
         Evento evento = tableView.getSelectionModel().getSelectedItem();
 
         if(evento != null) {
-            if (evento.getCodigo() == null) {//Só podemos editar os sem codigo
+            if (Objects.equals(evento.getCodigo(), "Sem codigo")) {//Só podemos editar os sem codigo
                 FXMLLoader loader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/EditarEvento.fxml"));
                 Parent root = loader.load();
 
