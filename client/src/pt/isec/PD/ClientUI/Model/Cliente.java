@@ -358,7 +358,6 @@ public class Cliente {
 
             String response = (String) in.readObject();
             if(response.contains("Sucesso")) {
-                System.out.println("Edicao Evento: " + response);
                 return true;
             }
 
