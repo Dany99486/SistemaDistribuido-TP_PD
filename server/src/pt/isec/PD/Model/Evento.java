@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
 public class Evento {
@@ -69,7 +71,32 @@ public class Evento {
                     int horaBegin = horaI * 60 + minutoI;
                     int horaEnd = horaF * 60 + minutoF;
 
-                    int validade = horaBegin - horaEnd;
+                    // Obter a data e hora atuais
+                    LocalDateTime now = LocalDateTime.now();
+
+                    // Converter datas e horas de início e fim do evento para LocalDateTime
+                    LocalDateTime inicioEvento = LocalDateTime.of(
+                            Integer.parseInt(data_inicio.split("/")[2]), // ano
+                            Integer.parseInt(data_inicio.split("/")[1]), // mês
+                            Integer.parseInt(data_inicio.split("/")[0]), // dia
+                            Integer.parseInt(horaInicio.split(":")[0]), // hora
+                            Integer.parseInt(horaInicio.split(":")[1])  // minuto
+                    );
+
+                    LocalDateTime fimEvento = LocalDateTime.of(
+                            Integer.parseInt(data_fim.split("/")[2]),    // ano
+                            Integer.parseInt(data_fim.split("/")[1]),    // mês
+                            Integer.parseInt(data_fim.split("/")[0]),    // dia
+                            Integer.parseInt(horaFim.split(":")[0]),     // hora
+                            Integer.parseInt(horaFim.split(":")[1])      // minuto
+                    );
+
+                    // Calcular a diferença em horas
+                    long diferencaEmHoras = ChronoUnit.HOURS.between(now, fimEvento);
+
+                    // Se a diferença for negativa, o evento já ocorreu
+                    // Caso contrário, a diferença representa o tempo total do evento em horas
+                    int validade = (int) (diferencaEmHoras < 0 ? diferencaEmHoras : ChronoUnit.HOURS.between(inicioEvento, fimEvento));
 
                     //String data_realizada = hora + ":" + minuto + ":" + segundo + " de " + dia + " de " + mes + " de " + ano;
 
@@ -670,6 +697,7 @@ public class Evento {
                         String validadeT = result.getString("code_validade");
 
                         if (Integer.parseInt(validadeT) > validade) {
+                            Calendar now = Calendar.getInstance();
                             String[] dataA = dataInicio.trim().split("/");
                             int diaInicio = Integer.parseInt(dataA[0]);
                             int mesInicio = Integer.parseInt(dataA[1]);
@@ -678,23 +706,26 @@ public class Evento {
                             int diaFim = Integer.parseInt(dataA[0]);
                             int mesFim = Integer.parseInt(dataA[1]);
                             int anoFim = Integer.parseInt(dataA[2]);
+                            int horaInicioInt = Integer.parseInt(horaInicio.split(":")[0]) * 60 + Integer.parseInt(horaInicio.split(":")[1]);
+                            int horaFimInt = Integer.parseInt(horaFim.split(":")[0]) * 60 + Integer.parseInt(horaFim.split(":")[1]);
+                            int horaAtual = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
 
-                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim) {
-                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim) {
-                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim) {
-                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim)) {
+                            if (anoInicio >= now.get(Calendar.YEAR) && anoFim >= now.get(Calendar.YEAR)) {
+                                if (mesInicio >= now.get(Calendar.MONTH) && mesFim >= now.get(Calendar.MONTH)) {
+                                    if (diaInicio <= now.get(Calendar.DAY_OF_MONTH) && diaFim >= now.get(Calendar.DAY_OF_MONTH)) {
+                                        if (horaInicioInt <= horaAtual && horaFimInt >= horaAtual) {
                                             encontrou = true;
                                         } else {
                                             motivo.append(" Fora da hora de realização do evento ");
                                         }
                                     } else {
-                                        motivo.append(" Fora da data (ano) de realização do evento ");
+                                        motivo.append(" Fora da data (dia) de realização do evento ");
                                     }
                                 } else {
                                     motivo.append(" Fora da data (mes) de realização do evento ");
                                 }
                             } else {
-                                motivo.append(" Fora da data (dia) de realização do evento ");
+                                motivo.append(" Fora da data (ano) de realização do evento ");
                             }
                         } else {
                             motivo.append(" Código de presença expirado ");
@@ -1058,6 +1089,7 @@ public class Evento {
                         String validadeT = result.getString("code_validade");
 
                         if (Integer.parseInt(validadeT) > 0) {
+                            Calendar now = Calendar.getInstance();
                             String[] dataA = dataInicio.trim().split("/");
                             int diaInicio = Integer.parseInt(dataA[0]);
                             int mesInicio = Integer.parseInt(dataA[1]);
@@ -1067,10 +1099,14 @@ public class Evento {
                             int mesFim = Integer.parseInt(dataA[1]);
                             int anoFim = Integer.parseInt(dataA[2]);
 
-                            if (Calendar.DAY_OF_MONTH > diaInicio && Calendar.DAY_OF_MONTH < diaFim)
-                                if (Calendar.MONTH > mesInicio && Calendar.MONTH < mesFim)
-                                    if (Calendar.YEAR > anoInicio && Calendar.YEAR < anoFim)
-                                        if (Calendar.HOUR_OF_DAY > Integer.parseInt(horaInicio) && Calendar.HOUR_OF_DAY < Integer.parseInt(horaFim))
+                            int horaInicioInt = Integer.parseInt(horaInicio.split(":")[0]) * 60 + Integer.parseInt(horaInicio.split(":")[1]);
+                            int horaFimInt = Integer.parseInt(horaFim.split(":")[0]) * 60 + Integer.parseInt(horaFim.split(":")[1]);
+                            int horaAtual = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+
+                            if (anoInicio >= now.get(Calendar.YEAR) && anoFim >= now.get(Calendar.YEAR))
+                                if (mesInicio >= now.get(Calendar.MONTH) && mesFim >= now.get(Calendar.MONTH))
+                                    if (diaInicio <= now.get(Calendar.DAY_OF_MONTH) && diaFim >= now.get(Calendar.DAY_OF_MONTH))
+                                        if (horaInicioInt <= horaAtual && horaFimInt >= horaAtual)
                                             regista = true;
                         }
                         if (regista)
