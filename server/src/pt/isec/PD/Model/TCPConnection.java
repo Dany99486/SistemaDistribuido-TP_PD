@@ -116,7 +116,7 @@ public class TCPConnection extends Thread {
                     //out.println(envia);
                 }
                 if (aux[0].equalsIgnoreCase(REGISTAR)) {
-                    int registo = bd.registClient(aux[1], aux[2],aux[3],aux[4], args, BDFileName,queryArray);
+                    int registo = bd.registClient(aux[1],aux[2],aux[3],aux[4], args, BDFileName,queryArray);
                     if (registo == 1) {
                         cc = aux[3];
                         role = "user";

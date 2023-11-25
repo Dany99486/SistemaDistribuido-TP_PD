@@ -153,7 +153,7 @@ public class BD {
     }
 
     //TODO: Regista utilizador se nao existir
-    public int registClient(String user, String passe, String cc, String name, String[] args, String BDFileName, String[] queryArray) {
+    public int registClient(String user, String passe, String cc, String email, String[] args, String BDFileName, String[] queryArray) {
         String url = "jdbc:sqlite:" + args[1] + File.separator + BDFileName;
         int registed = 0;
 
@@ -168,14 +168,19 @@ public class BD {
                     show += "\nConexão com a base de dados não foi estabelecida.";
                     return -1;
                 }
+                Statement statement = connection.createStatement();
+                String query = "SELECT * FROM utilizadores WHERE email='" + email + "';";
+                ResultSet resultSetS = statement.executeQuery(query);
+                if (resultSetS.next())
+                    return registed;
 
-                String query = "INSERT OR IGNORE INTO utilizadores (nome, pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
+                query = "INSERT OR IGNORE INTO utilizadores (nome,pass,cartaoCidadao,email,role) VALUES (?,?,?,?,?);";
                 queryArray[0] = query;
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setString(1, name);
+                preparedStatement.setString(1, user);
                 preparedStatement.setString(2, passe);
                 preparedStatement.setString(3, cc);
-                preparedStatement.setString(4, user);
+                preparedStatement.setString(4, email);
                 preparedStatement.setString(5, USER);
                 int resultSet = preparedStatement.executeUpdate();
 

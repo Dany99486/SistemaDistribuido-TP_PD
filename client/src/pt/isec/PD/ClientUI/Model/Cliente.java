@@ -114,7 +114,7 @@ public class Cliente {
 
                 autenticar = "A registar...";
 
-                message = REGISTAR + " " + email + " " + password + " " + cc + " " + nome;
+                message = REGISTAR + " " + nome + " " + password + " " + cc + " " + email;
             }
             out.writeObject(message);
             out.flush();
@@ -122,14 +122,19 @@ public class Cliente {
             String response = (String) in.readObject();
             System.out.println(response);
 
-            autenticar = response;
+            if (response.contains("Sucesso")) {
+                autenticar = response;
+                return true;
+            }
+            if (response.contains("Erro"))
+                error = response;
 
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ocorreu a excepcao {" + e + "} ao nível do socket TCP de leitura do cliente!");
             e.printStackTrace();
             return false;
         }
-        return true;
+        return false;
     }
 
     public boolean pedeDadosParaRegisto() {

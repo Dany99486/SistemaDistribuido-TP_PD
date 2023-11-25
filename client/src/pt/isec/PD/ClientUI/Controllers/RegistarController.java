@@ -42,14 +42,15 @@ public class RegistarController {
 
     @FXML
     public void handleRegistar() throws IOException, InterruptedException {
-        controller.registar(nomeField.getText(), CCField.getText(), emailField.getText(), passwordField.getText());
-        if(controller.getError() != null) {
+        if (controller.registar(nomeField.getText(), CCField.getText(), emailField.getText(), passwordField.getText())) {
+            lblError.setVisible(false);
+            lblRegistar.setText(controller.getAutenticar());
+            Thread.sleep(500);
+            handleToMenuInicial();
+        } else if(controller.getError() != null) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
         }
-        lblRegistar.setText(controller.getAutenticar());
-        Thread.sleep(500);
-        handleToMenuInicial();
     }
 
     @FXML
