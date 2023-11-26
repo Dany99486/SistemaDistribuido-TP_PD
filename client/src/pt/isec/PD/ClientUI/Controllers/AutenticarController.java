@@ -51,10 +51,10 @@ public class AutenticarController {
         if (!controller.autenticar(emailField.getText(), passwordField.getText())) {
             lblError.setText(controller.getError());
             lblError.setVisible(true);
-        }else {
+            voltar();
+        } else {
             lblAutenticar.setText(controller.getAutenticar());
             lblAutenticar.setVisible(true);
-            Thread.sleep(1000);
             handleToClienteMenu();
         }
     }

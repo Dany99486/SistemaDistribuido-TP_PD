@@ -19,6 +19,10 @@ public class MainJFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parameters params = getParameters();
+        if (params.getRaw().size() != 2) {
+            System.out.println("Sintaxe: java Cliente <serverAddress> <serverUdpPort>");
+            System.exit(1);
+        }
         controller.arrancaCliente(params.getRaw().toArray(new String[2]));
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainJFX.class.getResource("/pt/isec/PD/ClientUI/Views/MenuInicialPD.fxml"));

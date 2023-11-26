@@ -112,6 +112,7 @@ public class TCPConnection extends Thread {
                         envia = "Nao foi possivel logar";
                         out.writeObject(envia);
                         out.flush();
+                        return;
                     }
                     //out.println(envia);
                 }
@@ -120,17 +121,18 @@ public class TCPConnection extends Thread {
                     if (registo == 1) {
                         cc = aux[3];
                         role = "user";
+                        System.out.println(Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
                     }
-                    System.out.println(Arrays.toString(queryArray));
-                    notifyObservers(queryArray);
                     defaultRegistoReturn(registo);
                 }
                 if (aux[0].equalsIgnoreCase(EDICAO)) {
                     int registo = bd.editClient(aux[1], aux[2], cc, args, BDFileName,queryArray);
-
-                    System.out.println(Arrays.toString(queryArray));
+                    if (registo == 1) {
+                        System.out.println(Arrays.toString(queryArray));
+                        notifyObservers(queryArray);
+                    }
                     defaultRegistoReturn(registo);
-                    notifyObservers(queryArray);
                 }
                 if (aux[0].equalsIgnoreCase(LOGOUT)) {
                     boolean registo = clients.remove(toClientSocket);

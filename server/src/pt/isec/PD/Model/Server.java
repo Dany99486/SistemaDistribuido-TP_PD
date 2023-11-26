@@ -51,7 +51,7 @@ public class Server {
 
         show = checkBDFolder();
         if (show != null)
-            return null;
+            return show;
 
         show = bd.createBDIfNotExists(args, BDFileName); //TODO: Criar base de dados se não existir
         //System.out.println(show);

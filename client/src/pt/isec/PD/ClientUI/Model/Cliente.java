@@ -64,8 +64,10 @@ public class Cliente {
     public boolean autenticar(String email, String password) {
         String message;
         try {
-            if (!socket.isConnected())
+            if (!socket.isConnected()) {
+                error = "Não está ligado ao servidor";
                 return false;
+            }
             if (email.isEmpty() || password.isEmpty()) {
                 error = "Preencha todos os campos!";
                 return false;
